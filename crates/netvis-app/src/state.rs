@@ -365,7 +365,7 @@ impl State {
     pub fn distribute(&mut self, axis: Axis) {
         let mut devs: Vec<_> =
             self.doc.project.devices.iter().filter(|d| self.sel.devices.contains(&d.id)).cloned().collect();
-        if devs.len() < 3 {
+        if devs.len() < 2 {
             return;
         }
         let start = |d: &netvis_core::Device| match axis {
@@ -380,7 +380,14 @@ impl State {
         let first = start(&devs[0]);
         let last_end = devs.iter().map(|d| start(d) + extent(d)).fold(f32::MIN, f32::max);
         let total: f32 = devs.iter().map(&extent).sum();
-        let gap = (last_end - first - total) / (devs.len() - 1) as f32;
+        let mut gap = (last_end - first - total) / (devs.len() - 1) as f32;
+        // Overlapping (stacked) cards have no room to share out: spread them
+        // apart instead, a grid step between each, starting from the first.
+        let rects: Vec<_> = devs.iter().map(|d| d.rect()).collect();
+        let overlapping = rects.iter().enumerate().any(|(i, a)| rects[i + 1..].iter().any(|b| a.intersects(b)));
+        if overlapping {
+            gap = gap.max(crate::canvas::GRID);
+        }
 
         let mut cursor = first;
         let edits = devs
@@ -396,5 +403,63 @@ impl State {
             })
             .collect();
         self.apply(Edit::Batch(edits), "Distribute");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use netvis_core::{DeviceKind, Pos};
+
+    fn state_with(xs: &[(f32, f32)]) -> (State, Vec<netvis_core::DeviceId>) {
+        let mut st = State::new(Settings::default());
+        let mut ids = Vec::new();
+        for &(x, y) in xs {
+            let (id, e) = st.doc.project.add_device_edit(DeviceKind::Pc, Pos::new(x, y));
+            st.apply(e, "add");
+            st.sel.add(Item::Device(id));
+            ids.push(id);
+        }
+        (st, ids)
+    }
+
+    fn xs(st: &State, ids: &[netvis_core::DeviceId]) -> Vec<f32> {
+        ids.iter().map(|id| st.doc.project.device(*id).unwrap().pos.x).collect()
+    }
+
+    #[test]
+    fn distribute_spaces_evenly() {
+        let (mut st, ids) = state_with(&[(0.0, 0.0), (300.0, 0.0), (1000.0, 0.0)]);
+        st.distribute(Axis::Horizontal);
+        assert_eq!(xs(&st, &ids), vec![0.0, 500.0, 1000.0]);
+        // A neat row has nothing to distribute vertically.
+        st.distribute(Axis::Vertical);
+        assert_eq!(xs(&st, &ids), vec![0.0, 500.0, 1000.0]);
+    }
+
+    #[test]
+    fn distribute_spreads_stacked_cards() {
+        let (mut st, ids) = state_with(&[(0.0, 0.0), (40.0, 0.0), (80.0, 0.0)]);
+        let w = st.doc.project.device(ids[0]).unwrap().size().x;
+        st.distribute(Axis::Horizontal);
+        let x = xs(&st, &ids);
+        assert_eq!(x[0], 0.0);
+        assert_eq!(x[1], w + crate::canvas::GRID);
+        assert_eq!(x[2], 2.0 * (w + crate::canvas::GRID));
+        st.undo();
+        assert_eq!(xs(&st, &ids), vec![0.0, 40.0, 80.0], "one undo step");
+    }
+
+    #[test]
+    fn align_and_spread_a_pair() {
+        let (mut st, ids) = state_with(&[(0.0, 0.0), (300.0, 75.0)]);
+        st.align(Align::Top);
+        let ys: Vec<f32> = ids.iter().map(|id| st.doc.project.device(*id).unwrap().pos.y).collect();
+        assert_eq!(ys, vec![0.0, 0.0]);
+        st.align(Align::Left);
+        assert_eq!(xs(&st, &ids), vec![0.0, 0.0], "now fully stacked");
+        st.distribute(Axis::Horizontal);
+        let w = st.doc.project.device(ids[0]).unwrap().size().x;
+        assert_eq!(xs(&st, &ids), vec![0.0, w + crate::canvas::GRID]);
     }
 }

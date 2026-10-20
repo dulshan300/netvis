@@ -1357,12 +1357,12 @@ fn multi_inspector(ui: &mut Ui, st: &mut State) {
         });
     });
     section(ui, "Distribute");
-    ui.add_enabled_ui(n >= 3, |ui| {
+    ui.add_enabled_ui(n >= 2, |ui| {
         ui.horizontal(|ui| {
-            if ui.button(format!("{} Horizontally", icons::ARROWS_HORIZONTAL)).clicked() {
+            if ui.button(format!("{} Horizontally", icons::ARROWS_HORIZONTAL)).on_hover_text("Equal gaps between the selected devices; overlapping devices are spread apart").clicked() {
                 st.distribute(Axis::Horizontal);
             }
-            if ui.button(format!("{} Vertically", icons::ARROWS_VERTICAL)).clicked() {
+            if ui.button(format!("{} Vertically", icons::ARROWS_VERTICAL)).on_hover_text("Equal gaps between the selected devices; overlapping devices are spread apart").clicked() {
                 st.distribute(Axis::Vertical);
             }
         });

@@ -51,6 +51,12 @@ impl Rect {
     }
 
     /// Smallest rectangle covering both.
+    /// Overlap with a positive area (touching edges don't count).
+    pub fn intersects(&self, other: &Rect) -> bool {
+        let (a, b) = (self.max(), other.max());
+        self.min.x < b.x && other.min.x < a.x && self.min.y < b.y && other.min.y < a.y
+    }
+
     pub fn union(&self, other: &Rect) -> Rect {
         let (a, b) = (self.max(), other.max());
         let min = Pos::new(self.min.x.min(other.min.x), self.min.y.min(other.min.y));
