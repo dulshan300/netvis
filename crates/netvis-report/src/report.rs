@@ -385,6 +385,69 @@ fn topology(doc: &mut Doc, n: usize, p: &Project, opts: &ReportOptions) {
         x += 30.0 + text_width(FontKind::Regular, 8.0, label);
     }
     doc.set_y(y + 10.0);
+
+    // Too small to read on one page: a page per area, splitting an area
+    // into the areas inside it until each part is legible.
+    if (doc.content_width() / w).min(max_h / h) < READABLE {
+        for a in detail_areas(p) {
+            let Some(area) = p.area(a) else { continue };
+            doc.new_page(true);
+            doc.subsection(&format!("{} · {}", area.name, area.kind.label()), 200.0);
+            let (svg, w, h) = diagram::region_svg(p, &opts.diagram, area.rect);
+            doc.svg(svg, w, h, None);
+        }
+    }
+}
+
+/// Diagram scale below which card names get too small to read.
+const READABLE: f32 = 0.5;
+
+/// Areas to give their own diagram page, outermost first, in layout order.
+fn detail_areas(p: &Project) -> Vec<netvis_core::AreaId> {
+    // Landscape content box, less the heading.
+    let (pw, ph) = (crate::layout::A4.1 - 2.0 * MARGIN_X, crate::layout::A4.0 - 160.0);
+    let fits = |r: &netvis_core::Rect| (pw / (r.size.x + 60.0)).min(ph / (r.size.y + 60.0)) >= READABLE;
+    let parent = |a: &netvis_core::Area| {
+        p.areas
+            .iter()
+            .filter(|b| b.id != a.id && b.rect.contains_rect(&a.rect) && b.rect != a.rect)
+            .min_by(|x, y| (x.rect.size.x * x.rect.size.y).total_cmp(&(y.rect.size.x * y.rect.size.y)))
+            .map(|b| b.id)
+    };
+    let children = |of: Option<netvis_core::AreaId>| {
+        let mut v: Vec<&netvis_core::Area> = p.areas.iter().filter(|a| parent(a) == of).collect();
+        v.sort_by(|a, b| a.rect.min.x.total_cmp(&b.rect.min.x).then(a.rect.min.y.total_cmp(&b.rect.min.y)));
+        v
+    };
+    let mut out = Vec::new();
+    fn walk<'a>(
+        a: &'a netvis_core::Area,
+        p: &Project,
+        fits: &dyn Fn(&netvis_core::Rect) -> bool,
+        children: &dyn Fn(Option<netvis_core::AreaId>) -> Vec<&'a netvis_core::Area>,
+        out: &mut Vec<netvis_core::AreaId>,
+    ) {
+        let kids = children(Some(a.id));
+        // Devices of its own (not in a child area) keep the area whole.
+        let own = p.devices_in_area(a.id).iter().any(|d| {
+            let r = d.rect();
+            let c = r.min.offset(r.size.x / 2.0, r.size.y / 2.0);
+            !kids.iter().any(|k| k.rect.contains(c))
+        });
+        if fits(&a.rect) || kids.is_empty() || own {
+            if !p.devices_in_area(a.id).is_empty() {
+                out.push(a.id);
+            }
+            return;
+        }
+        for k in kids {
+            walk(k, p, fits, children, out);
+        }
+    }
+    for a in children(None) {
+        walk(a, p, &fits, &children, &mut out);
+    }
+    out
 }
 
 fn devices(doc: &mut Doc, n: usize, p: &Project) {

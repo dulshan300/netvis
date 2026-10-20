@@ -9,7 +9,7 @@ use crate::canvas;
 use crate::file_dialog::{self, PathPurpose};
 use crate::icons;
 use crate::panels;
-use crate::state::{Action, Document, Settings, State};
+use crate::state::{Action, Align, Axis, Document, Settings, State};
 use crate::theme::{self, APP_NAME, BRAND_NAME, ThemeChoice};
 
 const SETTINGS_KEY: &str = "netvis.settings";
@@ -152,6 +152,9 @@ impl NetVisApp {
         }
         if let Some(t) = std::env::var("NETVIS_TOOL").ok().and_then(|k| panels::tools::Tool::from_key(&k)) {
             self.st.tools.tool = t;
+        }
+        if std::env::var_os("NETVIS_LAYOUT").is_some() {
+            self.st.auto_layout(false);
         }
         if std::env::var_os("NETVIS_EXPORT").is_some() {
             self.st.export = Some(panels::export::ExportDialog::new(&self.st));
@@ -359,6 +362,9 @@ impl NetVisApp {
         } else if fire(sc(cmd, Key::S)) {
             self.st.actions.push(Action::Save);
         }
+        if fire(sc(cmd_shift, Key::L)) {
+            self.st.auto_layout(false);
+        }
         if fire(sc(cmd, Key::Num0)) {
             self.st.canvas.request_fit();
         }
@@ -478,6 +484,41 @@ impl NetVisApp {
                     st.delete_selection();
                 }
             });
+            ui.menu_button("Arrange", |ui| {
+                if ui.add(egui::Button::new(format!("{}  Auto-layout diagram", icons::TREE_STRUCTURE)).shortcut_text("Ctrl+Shift+L")).on_hover_text("Layers from the Internet down to the desks; areas are kept and resized around their devices").clicked() {
+                    st.auto_layout(false);
+                }
+                let n = st.sel.devices.len();
+                if ui.add_enabled(n >= 2, egui::Button::new(format!("{}  Arrange selection", icons::TREE_STRUCTURE))).on_hover_text("Lay out only the selected devices, in place").clicked() {
+                    st.auto_layout(true);
+                }
+                ui.separator();
+                ui.add_enabled_ui(n >= 2, |ui| {
+                    for (icon, label, how) in [
+                        (icons::ALIGN_LEFT, "Align left", Align::Left),
+                        (icons::ALIGN_CENTER_HORIZONTAL, "Align centres horizontally", Align::CenterX),
+                        (icons::ALIGN_RIGHT, "Align right", Align::Right),
+                        (icons::ALIGN_TOP, "Align top", Align::Top),
+                        (icons::ALIGN_CENTER_VERTICAL, "Align centres vertically", Align::CenterY),
+                        (icons::ALIGN_BOTTOM, "Align bottom", Align::Bottom),
+                    ] {
+                        if ui.button(format!("{icon}  {label}")).clicked() {
+                            st.align(how);
+                        }
+                    }
+                    ui.separator();
+                    if ui.button(format!("{}  Distribute horizontally", icons::ARROWS_HORIZONTAL)).clicked() {
+                        st.distribute(Axis::Horizontal);
+                    }
+                    if ui.button(format!("{}  Distribute vertically", icons::ARROWS_VERTICAL)).clicked() {
+                        st.distribute(Axis::Vertical);
+                    }
+                });
+                ui.separator();
+                if ui.add_enabled(!st.sel.devices.is_empty(), egui::Button::new(format!("{}  Bring to front", icons::STACK))).clicked() {
+                    st.bring_to_front();
+                }
+            });
             ui.menu_button("View", |ui| {
                 if ui.add(egui::Button::new(format!("{}  Zoom to fit", icons::CORNERS_OUT)).shortcut_text("Ctrl+0")).clicked() {
                     st.canvas.request_fit();
@@ -561,6 +602,9 @@ impl NetVisApp {
             }
             if icon_btn(ui, icons::CORNERS_OUT, "Zoom to fit (Ctrl+0)", true) {
                 st.canvas.request_fit();
+            }
+            if icon_btn(ui, icons::TREE_STRUCTURE, "Auto-layout diagram (Ctrl+Shift+L)", !st.doc.project.devices.is_empty()) {
+                st.auto_layout(false);
             }
             ui.separator();
             ui.toggle_value(&mut st.settings.show_grid, RichText::new(icons::GRID_FOUR).size(16.0)).on_hover_text("Show grid");
@@ -705,6 +749,7 @@ impl NetVisApp {
                         ("Ctrl+Z / Ctrl+Y", "Undo / Redo"),
                         ("Ctrl+D / Del", "Duplicate / Delete"),
                         ("Ctrl+0 / Ctrl+1", "Fit / 100%"),
+                        ("Ctrl+Shift+L", "Auto-layout diagram"),
                     ] {
                         ui.label(RichText::new(k).monospace());
                         ui.label(v);

@@ -375,6 +375,29 @@ impl State {
         self.apply(Edit::Batch(edits), "Align");
     }
 
+    /// Arrange the whole diagram (areas included), or only the selected
+    /// devices when `selection` is set. One undo step; zooms to fit after.
+    pub fn auto_layout(&mut self, selection: bool) {
+        use netvis_core::autolayout::{LayoutOptions, Scope, auto_layout};
+        let o = LayoutOptions { grid: crate::canvas::GRID, ..Default::default() };
+        let edit = if selection {
+            if self.sel.devices.len() < 2 {
+                return;
+            }
+            auto_layout(&self.doc.project, Scope::Devices(&self.sel.devices), &o)
+        } else {
+            auto_layout(&self.doc.project, Scope::All, &o)
+        };
+        if edit.is_noop() {
+            self.set_status("Already arranged");
+            return;
+        }
+        self.apply(edit, if selection { "Arrange selection" } else { "Auto-layout" });
+        if !selection {
+            self.canvas.request_fit();
+        }
+    }
+
     /// Space selected devices so the gaps between them are equal.
     pub fn distribute(&mut self, axis: Axis) {
         let mut devs: Vec<_> =

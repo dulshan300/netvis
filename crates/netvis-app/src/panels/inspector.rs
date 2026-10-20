@@ -1367,6 +1367,11 @@ fn multi_inspector(ui: &mut Ui, st: &mut State) {
             }
         });
     });
+    ui.add_enabled_ui(n >= 2, |ui| {
+        if ui.button(format!("{} Arrange selection", icons::TREE_STRUCTURE)).on_hover_text("Lay out the selected devices in layers, following their cables").clicked() {
+            st.auto_layout(true);
+        }
+    });
     ui.add_space(8.0);
     ui.horizontal(|ui| {
         if ui.add_enabled(n > 0, egui::Button::new(format!("{} Duplicate", icons::COPY))).clicked() {

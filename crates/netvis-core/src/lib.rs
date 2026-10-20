@@ -4,6 +4,7 @@
 //! GUI, the renderer and (later) the validation and report crates.
 
 pub mod area;
+pub mod autolayout;
 pub mod device;
 pub mod edit;
 pub mod geom;

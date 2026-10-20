@@ -116,6 +116,10 @@ mod tests {
         let doc = crate::report::build(&p, &Default::default());
         assert!(doc.pages.len() > 40);
         assert_in_bounds(&doc);
+        // Too big for one page: every floor gets a detail page.
+        let floors = p.areas.iter().filter(|a| a.kind == netvis_core::AreaKind::Floor).count();
+        let details = doc.toc.iter().filter(|e| e.level == 1 && e.title.ends_with("· Floor")).count();
+        assert_eq!(details, floors);
         assert!(crate::render_pdf(&p, &Default::default()).is_ok());
     }
 }

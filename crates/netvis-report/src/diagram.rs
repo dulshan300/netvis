@@ -5,7 +5,7 @@ use std::fmt::Write;
 
 use netvis_core::device::layout;
 use netvis_core::style::{cable_dashed, cable_rgb, category_rgb};
-use netvis_core::{Device, PortMedia, Project};
+use netvis_core::{Device, PortMedia, Project, Rect};
 
 /// Font family used in the SVG. The report registers the bundled DejaVu
 /// Sans Condensed under this family name (its stretch is semi-condensed).
@@ -63,14 +63,28 @@ pub fn size(p: &Project, opts: &DiagramOptions) -> (f32, f32) {
 pub fn topology_svg(p: &Project, opts: &DiagramOptions) -> String {
     let (w, h) = size(p, opts);
     let origin = p.bounds().map(|b| b.min).unwrap_or(netvis_core::Pos::new(0.0, 0.0));
-    let (ox, oy) = (opts.margin - origin.x, opts.margin - origin.y);
+    draw(p, opts, Rect::new(origin.x - opts.margin, origin.y - opts.margin, w, h))
+}
+
+/// One part of the diagram: the world rectangle `view` plus the margin.
+/// Cables leaving it run to the edge. Returns the SVG and its size.
+pub fn region_svg(p: &Project, opts: &DiagramOptions, view: Rect) -> (String, f32, f32) {
+    let m = opts.margin;
+    let r = Rect::new(view.min.x - m, view.min.y - m, view.size.x + 2.0 * m, view.size.y + 2.0 * m);
+    (draw(p, opts, r), r.size.x, r.size.y)
+}
+
+fn draw(p: &Project, opts: &DiagramOptions, view: Rect) -> String {
+    let (w, h) = (view.size.x, view.size.y);
+    let (ox, oy) = (-view.min.x, -view.min.y);
+    let visible = |r: &Rect| r.intersects(&view);
     let mut s = String::new();
     let _ = write!(
         s,
         r##"<svg xmlns="http://www.w3.org/2000/svg" width="{w:.1}" height="{h:.1}" viewBox="0 0 {w:.1} {h:.1}" font-family="{SANS}"><rect width="100%" height="100%" fill="#ffffff"/><g transform="translate({ox:.2} {oy:.2})">"##
     );
 
-    for a in &p.areas {
+    for a in p.areas.iter().filter(|a| visible(&a.rect)) {
         let r = a.rect;
         let c = hex(a.color);
         let _ = write!(
@@ -96,6 +110,11 @@ pub fn topology_svg(p: &Project, opts: &DiagramOptions) -> String {
     for l in &p.links {
         let (Some(da), Some(db)) = (p.device(l.a.device), p.device(l.b.device)) else { continue };
         let (Some(a), Some(b)) = (da.port_center_by_id(l.a.port), db.port_center_by_id(l.b.port)) else { continue };
+        // Only cables that start or end in view; ones just passing over
+        // a detail page are noise.
+        if !view.contains(a) && !view.contains(b) {
+            continue;
+        }
         let fam = l.cable.family();
         let dash = if cable_dashed(fam) { r#" stroke-dasharray="6 4""# } else { "" };
         let _ = write!(
@@ -107,10 +126,11 @@ pub fn topology_svg(p: &Project, opts: &DiagramOptions) -> String {
             b.y,
             hex(cable_rgb(fam))
         );
+        let (mx, my) = ((a.x + b.x) / 2.0, (a.y + b.y) / 2.0);
         if opts.show_lengths
             && let Some(m) = l.length_m
+            && view.contains(netvis_core::Pos::new(mx, my))
         {
-            let (mx, my) = ((a.x + b.x) / 2.0, (a.y + b.y) / 2.0);
             let text = format!("{m:.0} m");
             let tw = text.chars().count() as f32 * 4.6 + 8.0;
             let _ = write!(
@@ -124,7 +144,7 @@ pub fn topology_svg(p: &Project, opts: &DiagramOptions) -> String {
     }
     s.push_str(&labels);
 
-    for d in &p.devices {
+    for d in p.devices.iter().filter(|d| visible(&d.rect())) {
         device_card(&mut s, p, d, opts);
     }
     s.push_str("</g></svg>");
