@@ -1,76 +1,100 @@
 //! Undo/redo via reversible edits.
 //!
-//! Each edit stores the full before/after value of the entity it touches, so
+//! Each edit stores the full before/after value of what it touches, so
 //! applying and reverting are symmetric and cannot drift.
 
 use crate::area::Area;
 use crate::device::Device;
-use crate::ids::{AreaId, DeviceId, LinkId};
+use crate::ids::{AreaId, DeviceId, LinkId, SsidId, SubnetId, VlanId};
 use crate::link::Link;
 use crate::project::{Project, ProjectMeta};
+use crate::routing::Services;
+use crate::subnet::Subnet;
+use crate::vlan::{Ssid, Vlan};
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum Edit {
-    Device { id: DeviceId, before: Option<Device>, after: Option<Device> },
-    Link { id: LinkId, before: Option<Link>, after: Option<Link> },
-    Area { id: AreaId, before: Option<Area>, after: Option<Area> },
-    Meta { before: Box<ProjectMeta>, after: Box<ProjectMeta> },
-    Batch(Vec<Edit>),
+/// Generates the `Edit` enum plus apply/invert/noop/merge for:
+/// - entity variants: `{ id, before: Option<T>, after: Option<T> }`, applied via `Project::$setter`
+/// - singleton variants: `{ before: Box<T>, after: Box<T> }`, applied by assigning `project.$field`
+macro_rules! edits {
+    (
+        entities { $($ev:ident($eid:ty, $ety:ty) => $setter:ident),* $(,)? }
+        singletons { $($sv:ident($sty:ty) => $field:ident),* $(,)? }
+    ) => {
+        #[derive(Debug, Clone, PartialEq)]
+        pub enum Edit {
+            $($ev { id: $eid, before: Option<$ety>, after: Option<$ety> },)*
+            $($sv { before: Box<$sty>, after: Box<$sty> },)*
+            Batch(Vec<Edit>),
+        }
+
+        impl Edit {
+            pub fn apply(&self, p: &mut Project) {
+                match self {
+                    $(Edit::$ev { id, after, .. } => p.$setter(*id, after.clone()),)*
+                    $(Edit::$sv { after, .. } => p.$field = (**after).clone(),)*
+                    Edit::Batch(edits) => edits.iter().for_each(|e| e.apply(p)),
+                }
+            }
+
+            pub fn inverted(&self) -> Edit {
+                match self {
+                    $(Edit::$ev { id, before, after } => Edit::$ev { id: *id, before: after.clone(), after: before.clone() },)*
+                    $(Edit::$sv { before, after } => Edit::$sv { before: after.clone(), after: before.clone() },)*
+                    Edit::Batch(edits) => Edit::Batch(edits.iter().rev().map(Edit::inverted).collect()),
+                }
+            }
+
+            pub fn is_noop(&self) -> bool {
+                match self {
+                    $(Edit::$ev { before, after, .. } => before == after,)*
+                    $(Edit::$sv { before, after } => before == after,)*
+                    Edit::Batch(edits) => edits.iter().all(Edit::is_noop),
+                }
+            }
+
+            /// Fold `next` into `self`, keeping `self`'s "before" state.
+            fn merge(self, next: Edit) -> Edit {
+                match (self, next) {
+                    $((Edit::$ev { id, before, .. }, Edit::$ev { id: id2, after, .. }) if id == id2 => {
+                        Edit::$ev { id, before, after }
+                    })*
+                    $((Edit::$sv { before, .. }, Edit::$sv { after, .. }) => Edit::$sv { before, after },)*
+                    (Edit::Batch(a), Edit::Batch(b)) if same_shape(&a, &b) => {
+                        Edit::Batch(a.into_iter().zip(b).map(|(x, y)| x.merge(y)).collect())
+                    }
+                    (first, next) => Edit::Batch(vec![first, next]),
+                }
+            }
+
+            /// Discriminant plus entity id, used to decide whether batches line up.
+            fn target(&self) -> Option<(std::mem::Discriminant<Edit>, Option<uuid::Uuid>)> {
+                match self {
+                    $(Edit::$ev { id, .. } => Some((std::mem::discriminant(self), Some(id.0))),)*
+                    $(Edit::$sv { .. } => Some((std::mem::discriminant(self), None)),)*
+                    Edit::Batch(_) => None,
+                }
+            }
+        }
+    };
 }
 
-impl Edit {
-    pub fn apply(&self, p: &mut Project) {
-        match self {
-            Edit::Device { id, after, .. } => p.set_device(*id, after.clone()),
-            Edit::Link { id, after, .. } => p.set_link(*id, after.clone()),
-            Edit::Area { id, after, .. } => p.set_area(*id, after.clone()),
-            Edit::Meta { after, .. } => p.meta = (**after).clone(),
-            Edit::Batch(edits) => edits.iter().for_each(|e| e.apply(p)),
-        }
+edits! {
+    entities {
+        Device(DeviceId, Device) => set_device,
+        Link(LinkId, Link) => set_link,
+        Area(AreaId, Area) => set_area,
+        Vlan(VlanId, Vlan) => set_vlan,
+        Subnet(SubnetId, Subnet) => set_subnet,
+        Ssid(SsidId, Ssid) => set_ssid,
     }
+    singletons {
+        Meta(ProjectMeta) => meta,
+        Services(Services) => services,
+    }
+}
 
-    pub fn inverted(&self) -> Edit {
-        match self {
-            Edit::Device { id, before, after } => {
-                Edit::Device { id: *id, before: after.clone(), after: before.clone() }
-            }
-            Edit::Link { id, before, after } => {
-                Edit::Link { id: *id, before: after.clone(), after: before.clone() }
-            }
-            Edit::Area { id, before, after } => {
-                Edit::Area { id: *id, before: after.clone(), after: before.clone() }
-            }
-            Edit::Meta { before, after } => Edit::Meta { before: after.clone(), after: before.clone() },
-            Edit::Batch(edits) => Edit::Batch(edits.iter().rev().map(Edit::inverted).collect()),
-        }
-    }
-
-    pub fn is_noop(&self) -> bool {
-        match self {
-            Edit::Device { before, after, .. } => before == after,
-            Edit::Link { before, after, .. } => before == after,
-            Edit::Area { before, after, .. } => before == after,
-            Edit::Meta { before, after } => before == after,
-            Edit::Batch(edits) => edits.iter().all(Edit::is_noop),
-        }
-    }
-
-    /// Fold `next` into `self`, keeping `self`'s "before" state.
-    fn merge(self, next: Edit) -> Edit {
-        match (self, next) {
-            (Edit::Device { id, before, .. }, Edit::Device { id: id2, after, .. }) if id == id2 => {
-                Edit::Device { id, before, after }
-            }
-            (Edit::Link { id, before, .. }, Edit::Link { id: id2, after, .. }) if id == id2 => {
-                Edit::Link { id, before, after }
-            }
-            (Edit::Area { id, before, .. }, Edit::Area { id: id2, after, .. }) if id == id2 => {
-                Edit::Area { id, before, after }
-            }
-            (Edit::Meta { before, .. }, Edit::Meta { after, .. }) => Edit::Meta { before, after },
-            (first, next) => Edit::Batch(vec![first, next]),
-        }
-    }
+fn same_shape(a: &[Edit], b: &[Edit]) -> bool {
+    a.len() == b.len() && a.iter().zip(b).all(|(x, y)| x.target().is_some() && x.target() == y.target())
 }
 
 #[derive(Debug)]
@@ -222,6 +246,25 @@ mod tests {
         assert_eq!(p.device(id).unwrap(), &original);
         h.undo(&mut p);
         assert!(p.devices.is_empty());
+    }
+
+    #[test]
+    fn coalesced_batches_stay_flat() {
+        let mut p = Project::default();
+        let mut h = History::default();
+        let (id, e) = p.add_device_edit(DeviceKind::Pc, Pos::default());
+        h.apply(&mut p, e, "Add");
+        for _ in 0..50 {
+            let d = p.device(id).unwrap().clone();
+            let mut moved = d.clone();
+            moved.pos = d.pos.offset(1.0, 0.0);
+            let edit = Edit::Batch(vec![Edit::Device { id, before: Some(d), after: Some(moved) }]);
+            h.apply_coalescing(&mut p, edit, "Nudge", "nudge".into());
+        }
+        let top = &h.undo.last().unwrap().edit;
+        assert!(matches!(top, Edit::Batch(v) if v.len() == 1), "merged batch must not nest");
+        h.undo(&mut p);
+        assert_eq!(p.device(id).unwrap().pos, Pos::default());
     }
 
     #[test]

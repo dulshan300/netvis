@@ -13,7 +13,7 @@ use crate::state::{Action, Document, Settings, State};
 use crate::theme::{self, APP_NAME, BRAND_NAME, ThemeChoice};
 
 const SETTINGS_KEY: &str = "netvis.settings";
-const DOCK_KEY: &str = "netvis.dock.v1";
+const DOCK_KEY: &str = "netvis.dock.v2";
 const AUTOSAVE_SECS: f64 = 90.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -23,6 +23,8 @@ pub enum Tab {
     Canvas,
     Inspector,
     Issues,
+    IpPlan,
+    Vlans,
 }
 
 impl Tab {
@@ -33,6 +35,8 @@ impl Tab {
             Tab::Canvas => (icons::MAP_TRIFOLD, "Topology"),
             Tab::Inspector => (icons::SLIDERS_HORIZONTAL, "Inspector"),
             Tab::Issues => (icons::LIST_CHECKS, "Issues"),
+            Tab::IpPlan => (icons::TREE_STRUCTURE, "IP Plan"),
+            Tab::Vlans => (icons::TAG, "VLANs & Wi-Fi"),
         };
         format!("{icon}  {name}")
     }
@@ -43,7 +47,7 @@ fn default_layout() -> DockState<Tab> {
     let surface = dock.main_surface_mut();
     let [canvas, _inspector] = surface.split_right(NodeIndex::root(), 0.77, vec![Tab::Inspector]);
     let [canvas, _left] = surface.split_left(canvas, 0.22, vec![Tab::Toolbox, Tab::Outline]);
-    surface.split_below(canvas, 0.8, vec![Tab::Issues]);
+    surface.split_below(canvas, 0.68, vec![Tab::IpPlan, Tab::Vlans, Tab::Issues]);
     dock
 }
 
@@ -107,23 +111,47 @@ impl NetVisApp {
             app.dialog = Some(Dialog::Recover { path: p });
         }
         #[cfg(debug_assertions)]
-        app.apply_debug_env();
+        app.apply_debug_env(&cc.egui_ctx);
         app
     }
 
     /// Debug-only overrides used for scripted visual checks.
     #[cfg(debug_assertions)]
-    fn apply_debug_env(&mut self) {
+    fn apply_debug_env(&mut self, ctx: &egui::Context) {
         match std::env::var("NETVIS_THEME").as_deref() {
             Ok("dark") => self.st.settings.theme = ThemeChoice::Dark,
             Ok("light") => self.st.settings.theme = ThemeChoice::Light,
             _ => {}
         }
-        if let Ok(name) = std::env::var("NETVIS_SELECT") {
-            for n in name.split(',') {
-                if let Some(d) = self.st.doc.project.devices.iter().find(|d| d.name == n) {
-                    self.st.sel.add(crate::state::Item::Device(d.id));
+        if let Ok(names) = std::env::var("NETVIS_SELECT") {
+            use crate::state::Item;
+            let p = &self.st.doc.project;
+            for n in names.split(',') {
+                let item = p
+                    .devices
+                    .iter()
+                    .find(|d| d.name == n)
+                    .map(|d| Item::Device(d.id))
+                    .or_else(|| p.subnets.iter().find(|s| s.name == n).map(|s| Item::Subnet(s.id)))
+                    .or_else(|| p.vlans.iter().find(|v| v.name == n).map(|v| Item::Vlan(v.id)));
+                if let Some(item) = item {
+                    self.st.sel.add(item);
                 }
+            }
+        }
+        if let Ok(tab) = std::env::var("NETVIS_DEVTAB") {
+            panels::debug_set_device_tab(ctx, &tab);
+        }
+        if let Ok(tab) = std::env::var("NETVIS_BOTTOM") {
+            let want = match tab.as_str() {
+                "vlans" => Some(Tab::Vlans),
+                "issues" => Some(Tab::Issues),
+                _ => None,
+            };
+            if let Some(t) = want
+                && let Some(path) = self.dock.find_tab(&t)
+            {
+                let _ = self.dock.set_active_tab(path);
             }
         }
     }
@@ -278,7 +306,7 @@ impl NetVisApp {
     // ---- input ---------------------------------------------------------
 
     fn shortcuts(&mut self, ctx: &egui::Context) {
-        if self.dialog.is_some() {
+        if self.dialog.is_some() || self.st.vlsm.is_some() {
             return;
         }
         let typing = ctx.egui_wants_keyboard_input();
@@ -421,6 +449,7 @@ impl NetVisApp {
                 ui.checkbox(&mut st.settings.show_grid, "Show grid");
                 ui.checkbox(&mut st.settings.snap_to_grid, "Snap to grid");
                 ui.checkbox(&mut st.settings.show_minimap, "Show minimap");
+                ui.checkbox(&mut st.settings.show_addresses, "Show IP addresses on devices");
                 ui.separator();
                 ui.menu_button(format!("{}  Theme", icons::PALETTE), |ui| {
                     for t in [ThemeChoice::System, ThemeChoice::Light, ThemeChoice::Dark] {
@@ -691,6 +720,8 @@ impl egui_dock::TabViewer for Tabs<'_> {
             Tab::Outline => panels::outline(ui, self.st),
             Tab::Inspector => panels::inspector(ui, self.st),
             Tab::Issues => panels::issues(ui, self.st),
+            Tab::IpPlan => panels::ip_plan(ui, self.st),
+            Tab::Vlans => panels::vlans(ui, self.st),
             Tab::Canvas => unreachable!(),
         });
     }
@@ -737,6 +768,7 @@ impl eframe::App for NetVisApp {
                 .show_inside(ui, &mut Tabs { st: &mut self.st });
         });
 
+        panels::vlsm::show(&ctx, &mut self.st);
         self.dialogs(&ctx);
 
         for a in std::mem::take(&mut self.st.actions) {

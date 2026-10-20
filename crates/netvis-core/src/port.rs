@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+use crate::iface::{InterfaceConfig, RadioConfig};
 use crate::ids::PortId;
 
 /// Physical connector / cage type of a port.
@@ -127,6 +128,8 @@ pub struct Port {
     pub poe: PoeRole,
     #[serde(default)]
     pub description: String,
+    #[serde(default)]
+    pub cfg: InterfaceConfig,
 }
 
 impl Port {
@@ -138,6 +141,10 @@ impl Port {
             speed_mbps: media.default_speed_mbps(),
             poe: PoeRole::None,
             description: String::new(),
+            cfg: InterfaceConfig {
+                radio: (media == PortMedia::Wireless).then(RadioConfig::default),
+                ..InterfaceConfig::default()
+            },
         }
     }
 

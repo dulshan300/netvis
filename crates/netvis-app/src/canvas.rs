@@ -6,7 +6,7 @@ use egui::{
 };
 use netvis_core::device::layout;
 use netvis_core::{
-    Area, AreaId, AreaKind, Device, DeviceId, DeviceKind, Edit, Endpoint, Link, Pos, PoeRole, Project,
+    Area, AreaId, AreaKind, Device, DeviceId, DeviceKind, Edit, Endpoint, Link, Pos, PoeRole, Project, SwitchportMode,
 };
 
 use crate::icons;
@@ -288,7 +288,7 @@ pub fn show(ui: &mut Ui, st: &mut State) {
     };
     for d in &p.devices {
         let selected = st.sel.contains(Item::Device(d.id));
-        draw_device(&painter, &cam, origin, p, d, selected, hover_port, &pal);
+        draw_device(&painter, &cam, origin, p, d, selected, hover_port, st.settings.show_addresses, &pal);
     }
     if let (Drag::Marquee { start, .. }, Some(ptr)) = (&st.canvas.drag, pointer) {
         let r = Rect::from_two_pos(*start, ptr);
@@ -627,6 +627,18 @@ fn port_tooltip(p: &Project, ep: Endpoint) -> Option<String> {
         port.media.label(),
         netvis_core::port::format_speed(port.speed_mbps)
     );
+    match &port.cfg.mode {
+        SwitchportMode::Access { vlan } => s.push_str(&format!("\nAccess · VLAN {}", p.vlan_label(*vlan))),
+        SwitchportMode::Trunk { native, .. } => s.push_str(&format!("\nTrunk · native {}", p.vlan_label(*native))),
+        SwitchportMode::Routed => s.push_str("\nRouted"),
+        SwitchportMode::Unset => {}
+    }
+    for a in &port.cfg.l3.addresses {
+        s.push_str(&format!("\n{}", a.net));
+    }
+    if port.cfg.l3.dhcp_client {
+        s.push_str("\nDHCP client");
+    }
     match port.poe {
         PoeRole::Source(std) => s.push_str(&format!("\nPoE source · {}", std.label())),
         PoeRole::Powered(std) => s.push_str(&format!("\nPoE powered · {}", std.label())),
@@ -771,6 +783,7 @@ fn draw_device(
     d: &Device,
     selected: bool,
     hover_port: Option<Endpoint>,
+    show_addresses: bool,
     pal: &Palette,
 ) {
     let z = cam.zoom;
@@ -810,7 +823,12 @@ fn draw_device(
             let clipped = painter.with_clip_rect(Rect::from_min_size(name_pos, vec2(max_w, 20.0 * z)));
             clipped.galley(name_pos, name, pal.text);
         }
-        let sub = if d.model.is_empty() { d.kind.label().to_owned() } else { d.model.clone() };
+        let addr = show_addresses.then(|| d.primary_address()).flatten();
+        let sub = match addr {
+            Some(a) => a.net.to_string(),
+            None if d.model.is_empty() => d.kind.label().to_owned(),
+            None => d.model.clone(),
+        };
         let sub_painter = painter.with_clip_rect(Rect::from_min_size(pos2(tx, badge.top()), vec2(max_w, 40.0 * z)));
         sub_painter.text(
             pos2(tx, badge.bottom() - 1.0 * z),
@@ -829,8 +847,15 @@ fn draw_device(
             let link = p.port_link(port.id);
             let fill = link.map_or(pal.port_free, |l| theme::cable_color(l.cable.family()));
             let hovered = hover_port.is_some_and(|h| h.port == port.id);
+            let vlan_color = match &port.cfg.mode {
+                SwitchportMode::Access { vlan: Some(v) } => p.vlan(*v).map(|v| rgb(v.color)),
+                SwitchportMode::Trunk { .. } => Some(pal.text),
+                _ => None,
+            };
             let stroke = if hovered {
                 Stroke::new(2.0, pal.accent)
+            } else if let Some(c) = vlan_color {
+                Stroke::new(1.6, c)
             } else if matches!(port.poe, PoeRole::Source(_)) {
                 Stroke::new(1.0, pal.poe)
             } else {

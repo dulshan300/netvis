@@ -1,0 +1,10 @@
+[package]
+name = "netvis-ip"
+description = "IPv4/IPv6 subnet math, VLSM and address allocation for NetVis"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+ipnet.workspace = true
+thiserror.workspace = true

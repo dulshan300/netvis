@@ -1,7 +1,11 @@
 use serde::{Deserialize, Serialize};
 
+use std::net::IpAddr;
+
 use crate::geom::{Pos, Rect};
-use crate::ids::{DeviceId, PortId};
+use crate::iface::{IfaceKey, L3Config, LogicalInterface, LogicalKind};
+use crate::ids::{DeviceId, LogicalId, PortId, VlanId};
+use crate::routing::Routing;
 use crate::port::{PoeRole, PoeStandard, Port, PortMedia};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -258,6 +262,23 @@ pub struct Device {
     pub model: String,
     #[serde(default)]
     pub notes: String,
+    /// SVIs, loopbacks, sub-interfaces and tunnels.
+    #[serde(default)]
+    pub logical: Vec<LogicalInterface>,
+    /// Resolver override; empty = project defaults.
+    #[serde(default)]
+    pub dns: Vec<IpAddr>,
+    #[serde(default)]
+    pub routing: Routing,
+}
+
+/// Borrowed view of any addressable interface.
+#[derive(Debug, Clone, Copy)]
+pub struct IfaceRef<'a> {
+    pub key: IfaceKey,
+    pub name: &'a str,
+    pub l3: &'a L3Config,
+    pub enabled: bool,
 }
 
 /// Device-card geometry shared by the canvas and the SVG renderer.
@@ -281,7 +302,72 @@ impl Device {
             vendor: String::new(),
             model: String::new(),
             notes: String::new(),
+            logical: Vec::new(),
+            dns: Vec::new(),
+            routing: Routing::default(),
         }
+    }
+
+    pub fn logical(&self, id: LogicalId) -> Option<&LogicalInterface> {
+        self.logical.iter().find(|l| l.id == id)
+    }
+
+    /// Ports first, then logical interfaces.
+    pub fn interfaces(&self) -> impl Iterator<Item = IfaceRef<'_>> {
+        let ports = self.ports.iter().map(|p| IfaceRef {
+            key: IfaceKey::Port(p.id),
+            name: &p.name,
+            l3: &p.cfg.l3,
+            enabled: p.cfg.enabled,
+        });
+        let logical = self.logical.iter().map(|l| IfaceRef {
+            key: IfaceKey::Logical(l.id),
+            name: &l.name,
+            l3: &l.l3,
+            enabled: l.enabled,
+        });
+        ports.chain(logical)
+    }
+
+    pub fn iface_name(&self, key: IfaceKey) -> Option<&str> {
+        match key {
+            IfaceKey::Port(id) => self.port(id).map(|p| p.name.as_str()),
+            IfaceKey::Logical(id) => self.logical(id).map(|l| l.name.as_str()),
+        }
+    }
+
+    pub fn l3_mut(&mut self, key: IfaceKey) -> Option<&mut L3Config> {
+        match key {
+            IfaceKey::Port(id) => self.ports.iter_mut().find(|p| p.id == id).map(|p| &mut p.cfg.l3),
+            IfaceKey::Logical(id) => self.logical.iter_mut().find(|l| l.id == id).map(|l| &mut l.l3),
+        }
+    }
+
+    /// First configured address (logical interfaces first, as they usually carry management).
+    pub fn primary_address(&self) -> Option<crate::iface::IfAddr> {
+        self.logical
+            .iter()
+            .flat_map(|l| l.l3.addresses.first())
+            .chain(self.ports.iter().flat_map(|p| p.cfg.l3.addresses.first()))
+            .next()
+            .copied()
+    }
+
+    /// Drop references to deleted VLANs. Returns true if anything changed.
+    pub fn forget_vlans(&mut self, gone: &[VlanId]) -> bool {
+        let mut changed = false;
+        for p in &mut self.ports {
+            changed |= p.cfg.mode.forget_vlans(gone);
+        }
+        for l in &mut self.logical {
+            if let LogicalKind::Svi { vlan } | LogicalKind::SubInterface { vlan, .. } = &mut l.kind
+                && vlan.is_some_and(|v| gone.contains(&v))
+            {
+                *vlan = None;
+                changed = true;
+            }
+        }
+        changed
     }
 
     pub fn port(&self, id: PortId) -> Option<&Port> {
@@ -323,14 +409,27 @@ impl Device {
         self.ports.iter().position(|p| p.id == id).map(|i| self.port_center(i))
     }
 
-    /// Deep copy with fresh device and port ids.
+    /// Deep copy with fresh ids. Static addresses and MACs are cleared so the
+    /// copy does not instantly conflict with the original.
     pub fn duplicate(&self, name: String, pos: Pos) -> Device {
         let mut d = self.clone();
         d.id = DeviceId::new();
         d.name = name;
         d.pos = pos;
+        let mut remap = std::collections::HashMap::new();
         for p in &mut d.ports {
-            p.id = PortId::new();
+            let new = PortId::new();
+            remap.insert(p.id, new);
+            p.id = new;
+            p.cfg.l3.addresses.clear();
+            p.cfg.mac.clear();
+        }
+        for l in &mut d.logical {
+            l.id = LogicalId::new();
+            l.l3.addresses.clear();
+            if let LogicalKind::SubInterface { parent: Some(parent), .. } = &mut l.kind {
+                *parent = remap.get(parent).copied().unwrap_or(*parent);
+            }
         }
         d
     }

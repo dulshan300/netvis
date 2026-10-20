@@ -25,3 +25,7 @@ id_type!(DeviceId);
 id_type!(PortId);
 id_type!(LinkId);
 id_type!(AreaId);
+id_type!(VlanId);
+id_type!(SubnetId);
+id_type!(SsidId);
+id_type!(LogicalId);

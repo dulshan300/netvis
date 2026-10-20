@@ -2,7 +2,8 @@
 
 use std::path::PathBuf;
 
-use netvis_core::{AreaId, DeviceId, Edit, History, LinkId, Pos, Project};
+pub use netvis_core::{Item, Selection};
+use netvis_core::{Edit, History, Pos, Project};
 use serde::{Deserialize, Serialize};
 
 use crate::canvas::CanvasState;
@@ -47,92 +48,6 @@ impl Document {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Item {
-    Device(DeviceId),
-    Link(LinkId),
-    Area(AreaId),
-}
-
-#[derive(Debug, Clone, Default, PartialEq)]
-pub struct Selection {
-    pub devices: Vec<DeviceId>,
-    pub links: Vec<LinkId>,
-    pub areas: Vec<AreaId>,
-}
-
-impl Selection {
-    pub fn is_empty(&self) -> bool {
-        self.devices.is_empty() && self.links.is_empty() && self.areas.is_empty()
-    }
-
-    pub fn len(&self) -> usize {
-        self.devices.len() + self.links.len() + self.areas.len()
-    }
-
-    pub fn clear(&mut self) {
-        *self = Self::default();
-    }
-
-    pub fn contains(&self, item: Item) -> bool {
-        match item {
-            Item::Device(id) => self.devices.contains(&id),
-            Item::Link(id) => self.links.contains(&id),
-            Item::Area(id) => self.areas.contains(&id),
-        }
-    }
-
-    pub fn add(&mut self, item: Item) {
-        if self.contains(item) {
-            return;
-        }
-        match item {
-            Item::Device(id) => self.devices.push(id),
-            Item::Link(id) => self.links.push(id),
-            Item::Area(id) => self.areas.push(id),
-        }
-    }
-
-    pub fn toggle(&mut self, item: Item) {
-        if !self.contains(item) {
-            self.add(item);
-            return;
-        }
-        match item {
-            Item::Device(id) => self.devices.retain(|d| *d != id),
-            Item::Link(id) => self.links.retain(|l| *l != id),
-            Item::Area(id) => self.areas.retain(|a| *a != id),
-        }
-    }
-
-    pub fn set_single(&mut self, item: Item) {
-        self.clear();
-        self.add(item);
-    }
-
-    /// Click semantics: shift toggles, plain click replaces.
-    pub fn click(&mut self, item: Item, additive: bool) {
-        if additive { self.toggle(item) } else { self.set_single(item) }
-    }
-
-    pub fn single(&self) -> Option<Item> {
-        if self.len() != 1 {
-            return None;
-        }
-        self.devices
-            .first()
-            .map(|d| Item::Device(*d))
-            .or_else(|| self.links.first().map(|l| Item::Link(*l)))
-            .or_else(|| self.areas.first().map(|a| Item::Area(*a)))
-    }
-
-    pub fn retain_existing(&mut self, p: &Project) {
-        self.devices.retain(|id| p.device(*id).is_some());
-        self.links.retain(|id| p.link(*id).is_some());
-        self.areas.retain(|id| p.area(*id).is_some());
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
@@ -140,12 +55,13 @@ pub struct Settings {
     pub show_grid: bool,
     pub snap_to_grid: bool,
     pub show_minimap: bool,
+    pub show_addresses: bool,
     pub recent: Vec<PathBuf>,
 }
 
 impl Default for Settings {
     fn default() -> Self {
-        Self { theme: ThemeChoice::System, show_grid: true, snap_to_grid: true, show_minimap: true, recent: Vec::new() }
+        Self { theme: ThemeChoice::System, show_grid: true, snap_to_grid: true, show_minimap: true, show_addresses: true, recent: Vec::new() }
     }
 }
 
@@ -196,6 +112,9 @@ pub struct State {
     pub actions: Vec<Action>,
     status: Option<(String, f64)>,
     pub now: f64,
+    pub vlsm: Option<crate::panels::vlsm::VlsmPlanner>,
+    /// Report from the most recent auto-assign run.
+    pub last_assign: Option<(Vec<String>, Vec<String>)>,
 }
 
 impl State {
@@ -208,6 +127,8 @@ impl State {
             actions: Vec::new(),
             status: None,
             now: 0.0,
+            vlsm: None,
+            last_assign: None,
         }
     }
 
@@ -270,9 +191,24 @@ impl State {
             return;
         }
         let n = self.sel.len();
-        let edit = self.doc.project.remove_edit(&self.sel.devices, &self.sel.links, &self.sel.areas);
+        let edit = self.doc.project.remove_edit(&self.sel);
         self.apply(edit, &format!("Delete {n} item(s)"));
         self.sel.clear();
+    }
+
+    /// Auto-assign addresses to the selected devices, or to all devices if none are selected.
+    pub fn auto_assign(&mut self) {
+        let scope = (!self.sel.devices.is_empty()).then(|| self.sel.devices.clone());
+        let run = self.doc.project.auto_assign_edit(scope.as_deref());
+        let (n, skipped) = (run.assigned.len(), run.skipped.len());
+        let where_ = if scope.is_some() { "selected devices" } else { "all devices" };
+        self.apply(run.edit, "Auto-assign addresses");
+        self.set_status(match (n, skipped) {
+            (0, 0) => format!("Auto-assign ({where_}): nothing to do — every eligible interface already has an address"),
+            (n, 0) => format!("Auto-assign ({where_}): {n} address(es) assigned"),
+            (n, s) => format!("Auto-assign ({where_}): {n} assigned, {s} skipped — see IP Plan"),
+        });
+        self.last_assign = Some((run.assigned, run.skipped));
     }
 
     pub fn duplicate_selection(&mut self) {

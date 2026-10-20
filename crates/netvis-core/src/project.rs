@@ -5,9 +5,13 @@ use crate::area::Area;
 use crate::device::{Device, DeviceKind};
 use crate::edit::Edit;
 use crate::geom::{Pos, Rect};
-use crate::ids::{AreaId, DeviceId, LinkId, PortId};
+use crate::ids::{AreaId, DeviceId, LinkId, PortId, SsidId, SubnetId, VlanId};
 use crate::link::{CableKind, Endpoint, Link};
 use crate::port::PortMedia;
+use crate::routing::Services;
+use crate::select::Selection;
+use crate::subnet::Subnet;
+use crate::vlan::{Ssid, Vlan};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
@@ -42,6 +46,10 @@ pub struct Project {
     pub links: Vec<Link>,
     /// Draw order: later areas are on top (all areas are behind devices).
     pub areas: Vec<Area>,
+    pub vlans: Vec<Vlan>,
+    pub subnets: Vec<Subnet>,
+    pub ssids: Vec<Ssid>,
+    pub services: Services,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -73,6 +81,48 @@ impl Project {
 
     pub fn area_mut(&mut self, id: AreaId) -> Option<&mut Area> {
         self.areas.iter_mut().find(|a| a.id == id)
+    }
+
+    pub fn vlan(&self, id: VlanId) -> Option<&Vlan> {
+        self.vlans.iter().find(|v| v.id == id)
+    }
+
+    pub fn subnet(&self, id: SubnetId) -> Option<&Subnet> {
+        self.subnets.iter().find(|s| s.id == id)
+    }
+
+    pub fn ssid(&self, id: SsidId) -> Option<&Ssid> {
+        self.ssids.iter().find(|s| s.id == id)
+    }
+
+    /// `"20 · Staff"`, or a placeholder for dangling references.
+    pub fn vlan_label(&self, id: Option<VlanId>) -> String {
+        match id {
+            None => "—".into(),
+            Some(id) => self.vlan(id).map(Vlan::label).unwrap_or_else(|| "(deleted VLAN)".into()),
+        }
+    }
+
+    /// Lowest unused multiple of 10 (10, 20, …), falling back to any free tag.
+    pub fn next_vlan_tag(&self) -> u16 {
+        let used = |t: u16| self.vlans.iter().any(|v| v.tag == t);
+        (1..=409u16)
+            .map(|n| n * 10)
+            .find(|t| !used(*t))
+            .or_else(|| (Vlan::MIN_TAG..=Vlan::MAX_TAG).find(|t| !used(*t)))
+            .unwrap_or(1)
+    }
+
+    pub(crate) fn set_vlan(&mut self, id: VlanId, value: Option<Vlan>) {
+        set_entity(&mut self.vlans, |v| v.id == id, value);
+    }
+
+    pub(crate) fn set_subnet(&mut self, id: SubnetId, value: Option<Subnet>) {
+        set_entity(&mut self.subnets, |s| s.id == id, value);
+    }
+
+    pub(crate) fn set_ssid(&mut self, id: SsidId, value: Option<Ssid>) {
+        set_entity(&mut self.ssids, |s| s.id == id, value);
     }
 
     pub(crate) fn set_device(&mut self, id: DeviceId, value: Option<Device>) {
@@ -163,18 +213,45 @@ impl Project {
         Ok((link.id, Edit::Link { id: link.id, before: None, after: Some(link) }))
     }
 
-    /// Remove devices (with their links), links and areas in one undoable step.
-    pub fn remove_edit(&self, devices: &[DeviceId], links: &[LinkId], areas: &[AreaId]) -> Edit {
+    /// Remove everything in `sel` in one undoable step. Links attached to
+    /// removed devices go too, and references to removed VLANs are cleared.
+    pub fn remove_edit(&self, sel: &Selection) -> Edit {
         let mut edits = Vec::new();
-        let doomed_link = |l: &Link| links.contains(&l.id) || devices.iter().any(|d| l.touches_device(*d));
+        let doomed_link = |l: &Link| sel.links.contains(&l.id) || sel.devices.iter().any(|d| l.touches_device(*d));
         for l in self.links.iter().filter(|l| doomed_link(l)) {
             edits.push(Edit::Link { id: l.id, before: Some(l.clone()), after: None });
         }
-        for d in self.devices.iter().filter(|d| devices.contains(&d.id)) {
-            edits.push(Edit::Device { id: d.id, before: Some(d.clone()), after: None });
+        for d in &self.devices {
+            if sel.devices.contains(&d.id) {
+                edits.push(Edit::Device { id: d.id, before: Some(d.clone()), after: None });
+            } else if !sel.vlans.is_empty() {
+                let mut after = d.clone();
+                if after.forget_vlans(&sel.vlans) {
+                    edits.push(Edit::Device { id: d.id, before: Some(d.clone()), after: Some(after) });
+                }
+            }
         }
-        for a in self.areas.iter().filter(|a| areas.contains(&a.id)) {
+        for a in self.areas.iter().filter(|a| sel.areas.contains(&a.id)) {
             edits.push(Edit::Area { id: a.id, before: Some(a.clone()), after: None });
+        }
+        for s in &self.subnets {
+            if sel.subnets.contains(&s.id) {
+                edits.push(Edit::Subnet { id: s.id, before: Some(s.clone()), after: None });
+            } else if s.vlan.is_some_and(|v| sel.vlans.contains(&v)) {
+                let after = Subnet { vlan: None, ..s.clone() };
+                edits.push(Edit::Subnet { id: s.id, before: Some(s.clone()), after: Some(after) });
+            }
+        }
+        for s in &self.ssids {
+            if sel.ssids.contains(&s.id) {
+                edits.push(Edit::Ssid { id: s.id, before: Some(s.clone()), after: None });
+            } else if s.vlan.is_some_and(|v| sel.vlans.contains(&v)) {
+                let after = Ssid { vlan: None, ..s.clone() };
+                edits.push(Edit::Ssid { id: s.id, before: Some(s.clone()), after: Some(after) });
+            }
+        }
+        for v in self.vlans.iter().filter(|v| sel.vlans.contains(&v.id)) {
+            edits.push(Edit::Vlan { id: v.id, before: Some(v.clone()), after: None });
         }
         Edit::Batch(edits)
     }
@@ -271,7 +348,7 @@ mod tests {
         h.apply(&mut p, e, "link");
         let snapshot = p.clone();
 
-        let e = p.remove_edit(&[a], &[], &[]);
+        let e = p.remove_edit(&Selection { devices: vec![a], ..Default::default() });
         h.apply(&mut p, e, "delete");
         assert!(p.device(a).is_none());
         assert!(p.links.is_empty());
@@ -280,6 +357,50 @@ mod tests {
         assert_eq!(p.devices.len(), snapshot.devices.len());
         assert_eq!(p.links, snapshot.links);
         assert_eq!(p.device(a), snapshot.device(a));
+    }
+
+    #[test]
+    fn removing_vlan_clears_references_and_undo_restores() {
+        use crate::iface::{AllowedVlans, LogicalInterface, LogicalKind, SwitchportMode};
+        let (mut p, mut h, a, _) = two_switches();
+        let v10 = Vlan::new(10, "Mgmt");
+        let v20 = Vlan::new(20, "Staff");
+        let (i10, i20) = (v10.id, v20.id);
+        for v in [v10, v20] {
+            h.apply(&mut p, Edit::Vlan { id: v.id, before: None, after: Some(v) }, "vlan");
+        }
+        let subnet = Subnet { vlan: Some(i20), ..Subnet::new("Staff", "10.0.20.0/24".parse().unwrap()) };
+        h.apply(&mut p, Edit::Subnet { id: subnet.id, before: None, after: Some(subnet) }, "subnet");
+        let mut d = p.device(a).unwrap().clone();
+        let before = d.clone();
+        d.ports[0].cfg.mode = SwitchportMode::Access { vlan: Some(i20) };
+        d.ports[1].cfg.mode = SwitchportMode::Trunk { native: Some(i10), allowed: AllowedVlans::List(vec![i10, i20]) };
+        d.logical.push(LogicalInterface::new("Vlan20", LogicalKind::Svi { vlan: Some(i20) }));
+        h.apply(&mut p, Edit::Device { id: a, before: Some(before), after: Some(d) }, "cfg");
+        let snapshot = p.clone();
+
+        let e = p.remove_edit(&Selection { vlans: vec![i20], ..Default::default() });
+        h.apply(&mut p, e, "delete vlan");
+        assert!(p.vlan(i20).is_none());
+        let d = p.device(a).unwrap();
+        assert_eq!(d.ports[0].cfg.mode, SwitchportMode::Access { vlan: None });
+        assert_eq!(d.ports[1].cfg.mode, SwitchportMode::Trunk { native: Some(i10), allowed: AllowedVlans::List(vec![i10]) });
+        assert_eq!(d.logical[0].kind, LogicalKind::Svi { vlan: None });
+        assert_eq!(p.subnets[0].vlan, None);
+
+        h.undo(&mut p);
+        assert_eq!(p.device(a), snapshot.device(a));
+        assert_eq!(p.subnets, snapshot.subnets);
+        assert_eq!(p.vlans.len(), 2);
+    }
+
+    #[test]
+    fn next_vlan_tag_fills_gaps() {
+        let mut p = Project::default();
+        assert_eq!(p.next_vlan_tag(), 10);
+        p.vlans.push(Vlan::new(10, "a"));
+        p.vlans.push(Vlan::new(30, "b"));
+        assert_eq!(p.next_vlan_tag(), 20);
     }
 
     #[test]

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/netvis-core", "crates/netvis-app"]
+members = ["crates/netvis-core", "crates/netvis-ip", "crates/netvis-app"]
 
 [workspace.package]
 version = "0.1.0"
@@ -10,6 +10,8 @@ authors = ["Corescale"]
 
 [workspace.dependencies]
 netvis-core = { path = "crates/netvis-core" }
+netvis-ip = { path = "crates/netvis-ip" }
+ipnet = { version = "2.12", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 uuid = { version = "1.28", features = ["v4", "serde"] }
