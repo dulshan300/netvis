@@ -42,12 +42,14 @@ fn heading(ui: &mut Ui, icon: &str, title: &str, subtitle: &str) {
     ui.separator();
 }
 
-/// Validation findings that involve `item`, shown under the heading.
-fn item_issues(ui: &mut Ui, issues: &[netvis_validate::Issue], item: Item) {
-    let mine: Vec<_> = issues.iter().filter(|i| i.involves(item)).collect();
+/// Validation findings that involve `item`, shown under the heading, with
+/// their one-click fixes.
+fn item_issues(ui: &mut Ui, st: &mut State, item: Item) {
+    let mine: Vec<_> = st.issues.iter().filter(|i| i.involves(item)).cloned().collect();
     if mine.is_empty() {
         return;
     }
+    let mut fix = None;
     egui::Frame::new().inner_margin(6.0).corner_radius(6.0).fill(ui.visuals().faint_bg_color).show(ui, |ui| {
         ui.set_width(ui.available_width());
         for i in mine {
@@ -59,10 +61,18 @@ fn item_issues(ui: &mut Ui, issues: &[netvis_validate::Issue], item: Item) {
             ui.horizontal_wrapped(|ui| {
                 ui.label(RichText::new(super::severity_icon(i.severity)).color(color));
                 ui.label(RichText::new(&i.message).small());
+                if let Some(f) = &i.fix
+                    && ui.small_button(format!("{} {}", icons::WRENCH, f.label(&st.doc.project))).clicked()
+                {
+                    fix = Some(f.clone());
+                }
             });
         }
     });
     ui.add_space(4.0);
+    if let Some(f) = fix {
+        st.apply_fix(&f);
+    }
 }
 
 fn form_grid(ui: &mut Ui, id: impl Salt, add: impl FnOnce(&mut Ui)) {
@@ -180,16 +190,18 @@ pub fn debug_set_device_tab(ctx: &egui::Context, name: &str) {
 }
 
 fn device_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::DeviceId) {
+    let Some(head) = st.doc.project.device(id) else { return };
+    let sub = match head.primary_address() {
+        Some(a) => format!("{} · {}", head.kind.label(), a.net),
+        None => format!("{} · {}", head.kind.label(), head.kind.category().label()),
+    };
+    let (icon, name) = (icons::device(head.kind), head.name.clone());
+    heading(ui, icon, &name, &sub);
+    // Fixes applied here change the device, so read it afterwards.
+    item_issues(ui, st, Item::Device(id));
     let Some(before) = st.doc.project.device(id).cloned() else { return };
     let mut d = before.clone();
     let mut field: Option<String> = None;
-
-    let sub = match d.primary_address() {
-        Some(a) => format!("{} · {}", d.kind.label(), a.net),
-        None => format!("{} · {}", d.kind.label(), d.kind.category().label()),
-    };
-    heading(ui, icons::device(d.kind), &before.name, &sub);
-    item_issues(ui, &st.issues, Item::Device(id));
 
     let tab_id = temp_id("devtab", ());
     let mut tab: DevTab = ui.data(|m| m.get_temp(tab_id)).unwrap_or_default();
@@ -340,6 +352,7 @@ fn hardware_section(
     let racks: Vec<_> = p.racks().map(|r| (r.id, r.name.clone(), r.rack_units)).collect();
     let id = d.id;
     let kind = d.kind;
+    let stp = &mut d.stp;
     let hw = &mut d.hw;
     form_grid(ui, ("hw", id), |ui| {
         ui.label("Rack height");
@@ -358,6 +371,17 @@ fn hardware_section(
         if has_pd {
             ui.label("PoE draw");
             if opt_watts(ui, ("pd", id), &mut hw.pd_draw_w, "class max") { mark(field, "hw.pd") }
+            ui.end_row();
+        }
+        if matches!(kind, DeviceKind::SwitchL2 | DeviceKind::SwitchL3) {
+            ui.label("Spanning tree");
+            egui::ComboBox::from_id_salt(("stp", id)).selected_text(stp.label()).show_ui(ui, |ui| {
+                for m in netvis_core::StpMode::ALL {
+                    if ui.selectable_value(stp, m, m.label()).changed() {
+                        mark(field, "stp");
+                    }
+                }
+            });
             ui.end_row();
         }
         if matches!(kind, DeviceKind::Ups | DeviceKind::Pdu) {
@@ -658,6 +682,9 @@ fn port_detail(ui: &mut Ui, p: &Project, d: &mut netvis_core::Device, pid: netvi
         }
         ui.label("MTU");
         if widgets::parsed_opt(ui, ("mtu", pid), &mut port.cfg.mtu, 70.0, "1500") { mark(field, f("mtu")) }
+        ui.end_row();
+        ui.label("LAG group").on_hover_text("Port-channel number; parallel links in the same group are one logical link");
+        if widgets::parsed_opt(ui, ("lag", pid), &mut port.cfg.lag, 70.0, "none") { mark(field, f("lag")) }
         ui.end_row();
         if text_row(ui, "MAC", &mut port.cfg.mac) { mark(field, f("mac")) }
         ui.label("PoE");
@@ -1153,6 +1180,8 @@ fn poe_long(r: PoeRole) -> String {
 // ---- link / area / multi -------------------------------------------------
 
 fn link_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::LinkId) {
+    heading(ui, icons::LINK, "Link", st.doc.project.link(id).map_or("", |l| l.cable.label()));
+    item_issues(ui, st, Item::Link(id));
     let p = &st.doc.project;
     let Some(before) = p.link(id).cloned() else { return };
     let mut l = before.clone();
@@ -1173,8 +1202,6 @@ fn link_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::LinkId) {
     };
     let (a, b) = (end(l.a), end(l.b));
 
-    heading(ui, icons::LINK, "Link", l.cable.label());
-    item_issues(ui, &st.issues, Item::Link(id));
     form_grid(ui, "link", |ui| {
         ui.label("End A");
         ui.label(a);
@@ -1244,11 +1271,13 @@ fn link_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::LinkId) {
 }
 
 fn area_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::AreaId) {
+    let Some(head) = st.doc.project.area(id) else { return };
+    let (icon, name, kind) = (icons::area(head.kind), head.name.clone(), head.kind.label());
+    heading(ui, icon, &name, kind);
+    item_issues(ui, st, Item::Area(id));
     let Some(before) = st.doc.project.area(id).cloned() else { return };
     let mut a = before.clone();
     let mut field = None;
-    heading(ui, icons::area(a.kind), &before.name, a.kind.label());
-    item_issues(ui, &st.issues, Item::Area(id));
     let mut auto_place = false;
     form_grid(ui, "area", |ui| {
         if text_row(ui, "Name", &mut a.name) {

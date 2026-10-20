@@ -159,6 +159,31 @@ impl State {
         [n(Error), n(Warning), n(Info)]
     }
 
+    /// Apply an issue's fix as one undo step.
+    pub fn apply_fix(&mut self, fix: &netvis_validate::Fix) {
+        let label = fix.label(&self.doc.project);
+        match fix.edit(&self.doc.project) {
+            Some(e) => {
+                self.apply(e, &format!("Fix: {label}"));
+                self.set_status(format!("Fixed: {label}"));
+            }
+            None => self.set_status("That fix no longer applies"),
+        }
+    }
+
+    /// Apply every fix for errors and warnings as one undo step.
+    pub fn fix_all(&mut self) {
+        use netvis_validate::Severity;
+        let mut codes: Vec<&str> =
+            self.issues.iter().filter(|i| i.fix.is_some() && i.severity != Severity::Info).map(|i| i.code).collect();
+        codes.dedup();
+        let (edit, n) = netvis_validate::fix_all(&self.doc.project, Some(&codes));
+        self.apply(edit, &format!("Fix {n} issue(s)"));
+        self.refresh_issues();
+        let [e, w, _] = self.issue_counts();
+        self.set_status(format!("Applied {n} fix(es); {e} error(s) and {w} warning(s) remain"));
+    }
+
     /// Select an item and centre the canvas on it.
     pub fn reveal(&mut self, item: Item) {
         self.doc.history.break_coalescing();

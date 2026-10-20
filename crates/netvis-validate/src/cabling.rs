@@ -5,7 +5,7 @@ use netvis_core::catalog::{CableFamily, Reach, TxMedium};
 use netvis_core::catalog::format_speed;
 use netvis_core::{CableKind, Duplex, Item, Link, PortMedia, Project};
 
-use crate::{End, Sink};
+use crate::{End, Fix, Sink};
 
 pub fn check(p: &Project, out: &mut Sink) {
     for l in &p.links {
@@ -24,15 +24,19 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
     // Module sanity per end.
     for e in [&a, &b] {
         match (&e.port.transceiver, e.tx) {
-            (Some(id), None) => out.warn("tx.unknown", format!("{}: unknown transceiver “{id}”", e.label()), items()),
-            (Some(_), Some(t)) if !e.port.media.is_optical_cage() => {
-                out.warn("tx.no-cage", format!("{}: {} fitted to a {} port", e.label(), t.name, e.port.media.label()), items())
+            (Some(id), None) => {
+                out.warn("tx.unknown", format!("{}: unknown transceiver “{id}”", e.label()), items());
             }
-            (Some(_), Some(t)) if !t.fits(e.port.media) => out.error(
-                "tx.form-factor",
-                format!("{}: {} ({}) does not fit a {} cage", e.label(), t.name, t.form.label(), e.port.media.label()),
-                items(),
-            ),
+            (Some(_), Some(t)) if !e.port.media.is_optical_cage() => {
+                out.warn("tx.no-cage", format!("{}: {} fitted to a {} port", e.label(), t.name, e.port.media.label()), items());
+            }
+            (Some(_), Some(t)) if !t.fits(e.port.media) => {
+                out.error(
+                    "tx.form-factor",
+                    format!("{}: {} ({}) does not fit a {} cage", e.label(), t.name, t.form.label(), e.port.media.label()),
+                    items(),
+                );
+            }
             _ => {}
         }
     }
@@ -52,10 +56,15 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
         out.info("cable.unset", format!("{pair}: cable type not set"), items());
     }
     if l.cable.is_fibre() {
-        for e in [&a, &b] {
-            if e.tx.is_none() && e.port.transceiver.is_none() {
-                out.info("tx.missing", format!("{}: no transceiver selected for the {} link", e.label(), l.cable.label()), items());
-            }
+        let missing: Vec<&End> = [&a, &b].into_iter().filter(|e| e.tx.is_none() && e.port.transceiver.is_none()).collect();
+        if !missing.is_empty() {
+            let names: Vec<_> = missing.iter().map(|e| e.label()).collect();
+            let picks: Option<Vec<_>> = missing
+                .iter()
+                .map(|e| suggest_optic(e, l.cable).map(|t| (e.dev.id, e.port.id, t.id.to_owned())))
+                .collect();
+            out.info("tx.missing", format!("{}: no transceiver selected for the {} link", names.join(", "), l.cable.label()), items())
+                .with_fix(picks.filter(|v| !v.is_empty()).map(Fix::SetTransceivers));
         }
     }
     if l.cable.family() == CableFamily::DirectAttach {
@@ -70,7 +79,9 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
     if let (Some(ta), Some(tb)) = (a.tx, b.tx)
         && (ta.medium != tb.medium || ta.wavelength_nm != tb.wavelength_nm || ta.speed_mbps != tb.speed_mbps)
     {
-        out.error("tx.mismatch", format!("{pair}: transceiver mismatch {} ↔ {}", ta.name, tb.name), items());
+        let fix = (ta.fits(b.port.media) && ta.reach_on(l.cable).is_some())
+            .then(|| Fix::SetTransceivers(vec![(b.dev.id, b.port.id, ta.id.to_owned())]));
+        out.error("tx.mismatch", format!("{pair}: transceiver mismatch {} ↔ {}", ta.name, tb.name), items()).with_fix(fix);
         return;
     }
 
@@ -115,8 +126,18 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
             _ => Reach::Max(m),
         };
     }
+    // Copper that is too slow or too long at 10G: Cat6A carries 10G to 100 m.
+    let upgrade = (l.cable.is_twisted_pair()
+        && speed <= 10_000
+        && module_limit.is_none()
+        && l.cable != CableKind::Cat6A
+        && l.length_m.is_none_or(|m| m <= 100.0))
+    .then_some(Fix::SetCable { link: l.id, cable: CableKind::Cat6A });
     match reach {
-        Reach::Unsupported => out.error("cable.speed", format!("{pair}: {} is not rated for {}", l.cable.label(), format_speed(speed)), items()),
+        Reach::Unsupported => {
+            out.error("cable.speed", format!("{pair}: {} is not rated for {}", l.cable.label(), format_speed(speed)), items())
+                .with_fix(upgrade);
+        }
         Reach::Max(max) => {
             if let Some(len) = l.length_m
                 && len > max
@@ -125,13 +146,26 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
                     "cable.reach",
                     format!("{pair}: {len} m exceeds the {max} m limit of {} at {}", l.cable.label(), format_speed(speed)),
                     items(),
-                );
+                )
+                .with_fix(upgrade);
             }
         }
         Reach::Unlimited | Reach::Unknown => {}
     }
 
     check_duplex(&a, &b, &pair, items(), out);
+}
+
+/// A module for an empty cage that suits the fibre and the port speed:
+/// SR-class on multimode, LR-class on single-mode.
+fn suggest_optic(e: &End, cable: CableKind) -> Option<&'static netvis_core::catalog::Transceiver> {
+    netvis_core::catalog::transceiver::for_cage(e.port.media)
+        .filter(|t| t.speed_mbps == e.port.speed_mbps && t.reach_on(cable).is_some())
+        .max_by(|x, y| {
+            // Prefer the shortest-reach module that does the job (cheapest optic).
+            let (rx, ry) = (x.reach_on(cable).unwrap_or(0.0), y.reach_on(cable).unwrap_or(0.0));
+            ry.total_cmp(&rx)
+        })
 }
 
 /// Switching/routing gear, as opposed to end devices and access points.
@@ -243,6 +277,22 @@ mod tests {
         assert_eq!(t.codes(), vec!["cable.reach"], "10G over Cat6 is limited to 55 m");
         t.p.links[0].cable = CableKind::Cat5e;
         assert_eq!(t.codes(), vec!["cable.speed"]);
+        t.fix("cable.speed");
+        assert_eq!(t.p.links[0].cable, CableKind::Cat6A);
+        assert!(t.codes().is_empty());
+    }
+
+    #[test]
+    fn missing_optics_are_suggested() {
+        let mut t = T::new();
+        let (a, b) = (t.dev(DeviceKind::SwitchL3), t.dev(DeviceKind::SwitchL2));
+        let (pa, pb) = (t.port(a, PortMedia::SfpPlus), t.port(b, PortMedia::SfpPlus));
+        t.link((a, pa), (b, pb), CableKind::Os2, Some(2_000.0));
+        assert_eq!(t.codes(), vec!["tx.missing"]);
+        t.fix("tx.missing");
+        assert!(t.codes().is_empty(), "{:?}", t.codes());
+        let tx = t.p.device(a).unwrap().port(pa).unwrap().transceiver.clone();
+        assert_eq!(tx.as_deref(), Some("sfpp-10g-lr"), "LR, not the pricier ER");
     }
 
     #[test]

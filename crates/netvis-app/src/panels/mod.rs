@@ -181,6 +181,8 @@ pub fn outline(ui: &mut Ui, st: &mut State) {
 
 pub fn issues(ui: &mut Ui, st: &mut State) {
     use netvis_validate::Severity;
+    let mut fix_all = false;
+    let mut fix: Option<netvis_validate::Fix> = None;
     let filt_id = crate::widgets::temp_id("issues.filter", ());
     let mut show: [bool; 3] = ui.data(|d| d.get_temp(filt_id)).unwrap_or([true, true, true]);
     let counts = st.issue_counts();
@@ -199,6 +201,16 @@ pub fn issues(ui: &mut Ui, st: &mut State) {
         if st.issues.is_empty() {
             ui.label(RichText::new(format!("{} No problems found", icons::CHECK_CIRCLE)).color(Color32::from_rgb(22, 163, 74)));
         }
+        let fixable = st.issues.iter().filter(|i| i.fix.is_some() && i.severity != Severity::Info).count();
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            if ui
+                .add_enabled(fixable > 0, egui::Button::new(format!("{} Fix all ({fixable})", icons::WRENCH)))
+                .on_hover_text("Apply every one-click fix for errors and warnings as a single undo step")
+                .clicked()
+            {
+                fix_all = true;
+            }
+        });
     });
     ui.data_mut(|d| d.insert_temp(filt_id, show));
     ui.separator();
@@ -219,6 +231,11 @@ pub fn issues(ui: &mut Ui, st: &mut State) {
             let resp = ui
                 .horizontal(|ui| {
                     ui.label(RichText::new(severity_icon(issue.severity)).color(color));
+                    if let Some(f) = &issue.fix
+                        && ui.small_button(format!("{} {}", icons::WRENCH, f.label(&st.doc.project))).clicked()
+                    {
+                        fix = Some(f.clone());
+                    }
                     ui.add(egui::Label::new(RichText::new(&issue.message)).sense(Sense::click()).truncate())
                 })
                 .inner;
@@ -235,6 +252,12 @@ pub fn issues(ui: &mut Ui, st: &mut State) {
     });
     if let Some(item) = reveal {
         st.reveal(item);
+    }
+    if let Some(f) = fix {
+        st.apply_fix(&f);
+    }
+    if fix_all {
+        st.fix_all();
     }
 }
 

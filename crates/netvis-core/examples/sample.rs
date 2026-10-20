@@ -124,6 +124,7 @@ fn main() {
     b.subnet("CCTV", "10.10.40.0/24", Some(cctv), false);
     b.subnet("Guest", "10.10.50.0/23", Some(guest), true);
     b.subnet("DMZ", "172.16.99.0/28", None, false);
+    b.subnet("ISP handoff", "203.0.113.8/29", None, false);
 
     // ---- devices ----
     let inet = b.device(Internet, "Internet", 620.0, -180.0);
@@ -248,6 +249,10 @@ fn main() {
     guest_ssid.security = WifiSecurity::Owe;
     for s in [corp, guest_ssid] {
         b.h.apply(&mut b.p, Edit::Ssid { id: s.id, before: None, after: Some(s) }, "ssid");
+    }
+
+    for d in [core, sw1, sw2] {
+        b.p.device_mut(d).unwrap().stp = netvis_core::StpMode::Rstp;
     }
 
     let mdf = b.p.racks().next().map(|r| r.id).unwrap();

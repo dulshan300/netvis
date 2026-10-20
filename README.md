@@ -2,7 +2,7 @@
 
 Network planning tool for Windows, written in Rust (egui/eframe). It's built for Corescale.
 
-**Status:** Phases 0–3 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, and the physical layer (cables, optics, PoE, racks) with live validation.
+**Status:** Phases 0–4 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), and a live conflict engine with one-click fixes.
 
 ## Build and run
 
@@ -96,6 +96,24 @@ Deleting a VLAN clears every reference to it on ports, SVIs, subnets and SSIDs, 
 - **Racks:** every Rack area on the canvas is a rack, and the Racks tab shows its elevation. Drag devices to move them (the outline turns green when the slot is free), right-click to remove one, and place unmounted devices with one click or **Auto-place** (network gear from the top; servers, storage and UPS from the bottom). It reports overlaps, devices that don't fit the rack, and devices drawn in a rack but not placed in it. Each rack shows its power load against its UPS capacity (warning above 80%, error above 100%).
 - **Issues tab:** every finding, filterable by severity. Click one to select and centre the item involved. The inspector also lists the findings for the selected item, and the canvas marks devices and links that have errors or warnings with red or amber badges.
 
+## Conflict checks and fixes
+
+Validation runs live after every change. Findings appear in the Issues tab, in the inspector for the selected item, and as badges on the canvas.
+
+| Area | Rules |
+|---|---|
+| Addressing | Duplicate IPs · address outside any planned subnet · network or broadcast address · prefix that differs from the subnet · static address inside a DHCP pool · **address in the wrong VLAN's subnet** · gateway outside the interface's subnet, or equal to its own address |
+| Subnets & DHCP | Gateway not a usable host, or inside the pool · DHCP range invalid or overlapping a reserved range · duplicate prefixes · overlapping subnets that are both bound to VLANs · DHCP clients in a subnet with no scope · pool too small for the planned DHCP clients (warning above 80%) |
+| VLANs | Access/access mismatch across a link · access port facing a trunk with a different native VLAN · native VLAN mismatch between trunks · allowed-VLAN lists that differ · **VLAN used on a switch but not carried by any trunk to another switch** · SVI with no connected port carrying its VLAN · duplicate VLAN IDs · references to deleted VLANs · unused VLANs |
+| Wi-Fi | Channel not valid for the band · band or width not supported by the radio standard · 40 MHz on 2.4 GHz · 2.4 GHz channels other than 1/6/11 · **overlapping channels between APs on the same floor or switch** (allowing for 40/80/160/320 MHz bonding) · SSID VLAN not carried on an AP's uplink · 6 GHz without WPA3/OWE · open SSIDs · duplicate SSIDs |
+| Names | Duplicate hostnames (case-insensitive) · invalid DNS hostnames · invalid or duplicate MAC addresses (any common notation) |
+| Topology | **Layer-2 loops** between switches with no spanning tree noted (set STP under General → Hardware; links in the same LAG group count once) · ports used by more than one link · devices cabled to themselves |
+| Physical | Everything from Phase 3: media, optics, speed, reach, duplex, PoE, UPS load and racks |
+
+**Fixes:** issues with an unambiguous remedy have a fix button in the Issues tab and in the inspector, for example *Assign 10.10.40.2/24*, *Set SW-L2-01 native 10 · Management*, *Allow VLAN 30 on 2 trunks*, *Move to channel 52*, *Use Cat6A*, *Fit 10GBASE-LR*, *Enable RSTP on 3 switches* or *Auto-place in rack*. **Fix all** applies every fix for errors and warnings as one undo step, re-checking after each fix so they don't conflict.
+
+**Command line:** `cargo run -p netvis-validate --example check -- file.netvis [--fix]` prints every issue, and with `--fix` also what remains after the fixes. It exits non-zero if errors remain, so it can run in CI.
+
 Autosave runs every 90 s while there are unsaved changes. If the app wasn't closed cleanly, it offers to recover the autosave on the next start.
 
 ## Workspace layout
@@ -105,7 +123,7 @@ crates/
   netvis-ip/       IPv4/IPv6 subnet math, VLSM, summarisation, next-free search — pure, unit-tested
   netvis-catalog/  physical-layer reference data: media, cable reach, transceivers, PoE, device models (JSON)
   netvis-core/     data model, VLANs/subnets/IPAM, hardware/racks/PoE, undo/redo, .netvis file I/O — no UI
-  netvis-validate/ design-rule engine (cabling, power, racks) producing Issues
+  netvis-validate/ design-rule engine (addressing, VLANs, Wi-Fi, names, topology, cabling, power, racks) with fixes
   netvis-app/      eframe GUI: docking shell, canvas, panels, dialogs
 samples/         example project
 ```
@@ -123,7 +141,7 @@ A `.netvis` file is pretty-printed JSON inside a small envelope: `{"format":"net
 | 0–1 ✅ | Shell, docking layout, light/dark themes, device palette, canvas, save/load, undo/redo |
 | 2 ✅ | VLANs, subnets, IPAM, per-interface IP configuration, auto-assign |
 | 3 ✅ | Cable and transceiver catalogue, cable validation, PoE budget, racks |
-| 4 | IP/VLAN/Wi-Fi conflict rules and one-click auto-fixes (the Issues panel and engine already exist) |
+| 4 ✅ | IP/VLAN/Wi-Fi/name/loop conflict rules and one-click fixes |
 | 5 | IT tools panel (calculators, OUI lookup, port reference, BOM) |
 | 6 | Patch schedule and port map |
 | 7 | PDF report (Corescale cover, TOC, vector diagrams, tables) |

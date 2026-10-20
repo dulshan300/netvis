@@ -56,7 +56,8 @@ pub fn check(p: &Project, out: &mut Sink) {
                 "rack.unplaced",
                 format!("{}: {} drawn in the rack but not placed in its elevation ({})", rack.name, names.len(), names.join(", ")),
                 items,
-            );
+            )
+            .with_fix(Some(crate::Fix::MountInRack { rack: rack.id }));
         }
     }
 }

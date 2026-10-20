@@ -30,7 +30,7 @@ pub use hardware::{Hardware, Mounted, PoeLoad, PoeReport, RackMount, RackPower};
 pub use netvis_catalog as catalog;
 pub use iface::{
     AddrKind, AllowedVlans, Duplex, IfAddr, IfaceKey, InterfaceConfig, L3Config, LogicalInterface, LogicalKind,
-    RadioConfig, SwitchportMode, WifiStandard,
+    RadioConfig, StpMode, SwitchportMode, WifiStandard,
 };
 pub use ids::{AreaId, DeviceId, LinkId, LogicalId, PortId, SsidId, SubnetId, VlanId};
 pub use link::{CableKind, Endpoint, Link};

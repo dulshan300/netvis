@@ -273,6 +273,8 @@ pub struct Device {
     pub routing: Routing,
     #[serde(default)]
     pub hw: Hardware,
+    #[serde(default)]
+    pub stp: crate::iface::StpMode,
 }
 
 /// Borrowed view of any addressable interface.
@@ -309,6 +311,7 @@ impl Device {
             dns: Vec::new(),
             routing: Routing::default(),
             hw: kind.default_hardware(),
+            stp: Default::default(),
         }
     }
 

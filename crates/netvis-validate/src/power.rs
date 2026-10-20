@@ -19,17 +19,23 @@ fn poe_budgets(p: &Project, out: &mut Sink) {
         let mut items = vec![Item::Device(d.id)];
         items.extend(r.loads.iter().map(|l| Item::Device(l.pd.device)));
         match r.budget_w {
-            None => out.info("poe.no-budget", format!("{}: powers {} PoE device(s) but has no PoE budget set", d.name, r.loads.len()), items),
-            Some(b) if r.demand_w > b => out.error(
+            None => {
+                out.info("poe.no-budget", format!("{}: powers {} PoE device(s) but has no PoE budget set", d.name, r.loads.len()), items);
+            }
+            Some(b) if r.demand_w > b => {
+                out.error(
                 "poe.budget",
                 format!("{}: PoE budget exceeded — {:.0} W needed, {:.0} W available", d.name, r.demand_w, b),
                 items,
-            ),
-            Some(b) if r.demand_w > 0.9 * b => out.warn(
+            );
+            }
+            Some(b) if r.demand_w > 0.9 * b => {
+                out.warn(
                 "poe.budget",
                 format!("{}: PoE budget at {:.0}% ({:.0} of {:.0} W) — little headroom", d.name, r.demand_w / b * 100.0, r.demand_w, b),
                 items,
-            ),
+            );
+            }
             Some(_) => {}
         }
     }
@@ -44,15 +50,19 @@ fn poe_delivery(p: &Project, out: &mut Sink) {
             let items = vec![Item::Device(pd_dev.id), Item::Link(l.id), Item::Device(pse_dev.id)];
             let (pd, pse) = (format!("{}:{}", pd_dev.name, pd_port.name), format!("{}:{}", pse_dev.name, pse_port.name));
             match pse_port.poe {
-                PoeRole::Source(have) if have < need => out.warn(
-                    "poe.class",
-                    format!("{pd} needs {} but {pse} supplies {} — the device may run with reduced features", need.label(), have.label()),
-                    items,
-                ),
+                PoeRole::Source(have) if have < need => {
+                    out.warn(
+                        "poe.class",
+                        format!("{pd} needs {} but {pse} supplies {} — the device may run with reduced features", need.label(), have.label()),
+                        items,
+                    );
+                }
                 PoeRole::Source(_) => {}
                 // Patch panels and media converters are passive in this model.
                 _ if matches!(pse_dev.kind, DeviceKind::PatchPanel | DeviceKind::MediaConverter) => {}
-                _ => out.warn("poe.missing", format!("{pd} expects PoE but {pse} provides none — add PoE or a local power supply"), items),
+                _ => {
+                    out.warn("poe.missing", format!("{pd} expects PoE but {pse} provides none — add PoE or a local power supply"), items);
+                }
             }
         }
     }
@@ -91,17 +101,21 @@ mod tests {
             let (a, b) = (t.port(sw, PortMedia::Rj45), t.port(ap, PortMedia::Rj45));
             t.link((sw, a), (ap, b), CableKind::Cat6, None);
         }
-        assert_eq!(t.codes(), vec!["link.speed", "link.speed"], "2.5G APs on 1G ports are noted; 60 of 70 W is fine");
+        assert!(poe(&t).is_empty(), "60 of 70 W is fine: {:?}", poe(&t));
 
         let cam = t.dev(DeviceKind::IpCamera);
         let (a, b) = (t.port(sw, PortMedia::Rj45), t.port(cam, PortMedia::Rj45));
         t.link((sw, a), (cam, b), CableKind::Cat6, None);
         let issues = crate::validate(&t.p);
-        assert_eq!((issues[0].code, issues[0].severity), ("poe.budget", crate::Severity::Error));
+        assert!(issues.iter().any(|i| i.code == "poe.budget" && i.severity == crate::Severity::Error));
 
         // A bt PD on an at port.
         t.p.device_mut(cam).unwrap().ports[0].poe = PoeRole::Powered(PoeStandard::BtType3);
         assert!(t.codes().contains(&"poe.class"));
+    }
+
+    fn poe(t: &T) -> Vec<&'static str> {
+        t.codes().into_iter().filter(|c| c.starts_with("poe")).collect()
     }
 
     #[test]

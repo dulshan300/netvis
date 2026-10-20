@@ -217,6 +217,8 @@ pub struct InterfaceConfig {
     pub duplex: Duplex,
     pub mac: String,
     pub radio: Option<RadioConfig>,
+    /// Link-aggregation (port-channel) group number.
+    pub lag: Option<u16>,
 }
 
 impl Default for InterfaceConfig {
@@ -229,6 +231,7 @@ impl Default for InterfaceConfig {
             duplex: Duplex::Auto,
             mac: String::new(),
             radio: None,
+            lag: None,
         }
     }
 }
@@ -291,6 +294,36 @@ impl LogicalInterface {
             l3: L3Config::default(),
             mtu: None,
         }
+    }
+}
+
+/// Spanning-tree protocol running on a switch.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+pub enum StpMode {
+    /// Not recorded in the plan.
+    #[default]
+    Unset,
+    Off,
+    Stp,
+    Rstp,
+    Mstp,
+}
+
+impl StpMode {
+    pub const ALL: [StpMode; 5] = [StpMode::Unset, StpMode::Off, StpMode::Stp, StpMode::Rstp, StpMode::Mstp];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            StpMode::Unset => "Not specified",
+            StpMode::Off => "Disabled",
+            StpMode::Stp => "STP (802.1D)",
+            StpMode::Rstp => "RSTP (802.1w)",
+            StpMode::Mstp => "MSTP (802.1s)",
+        }
+    }
+
+    pub fn is_enabled(self) -> bool {
+        matches!(self, StpMode::Stp | StpMode::Rstp | StpMode::Mstp)
     }
 }
 
