@@ -1,0 +1,31 @@
+[workspace]
+resolver = "3"
+members = ["crates/netvis-core", "crates/netvis-app"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "LicenseRef-Proprietary"
+authors = ["Corescale"]
+
+[workspace.dependencies]
+netvis-core = { path = "crates/netvis-core" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.28", features = ["v4", "serde"] }
+thiserror = "2"
+eframe = { version = "0.36", default-features = false, features = ["default_fonts", "glow", "persistence", "wayland", "x11"] }
+egui = "0.36"
+egui_dock = { version = "0.21", features = ["serde"] }
+egui-phosphor = "0.14"
+directories = "6"
+rfd = "0.17"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+opt-level = 3
+
+[profile.dev.package."*"]
+opt-level = 2

@@ -1,0 +1,12 @@
+[package]
+name = "netvis-core"
+description = "NetVis data model: devices, ports, links, areas, undo/redo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+thiserror.workspace = true
