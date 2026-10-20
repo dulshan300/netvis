@@ -57,11 +57,23 @@ pub struct Settings {
     pub show_minimap: bool,
     pub show_addresses: bool,
     pub recent: Vec<PathBuf>,
+    /// Report sections the user left out (by `Section::key`).
+    pub report_skip: Vec<String>,
+    pub report_open_after: bool,
 }
 
 impl Default for Settings {
     fn default() -> Self {
-        Self { theme: ThemeChoice::System, show_grid: true, snap_to_grid: true, show_minimap: true, show_addresses: true, recent: Vec::new() }
+        Self {
+            theme: ThemeChoice::System,
+            show_grid: true,
+            snap_to_grid: true,
+            show_minimap: true,
+            show_addresses: true,
+            recent: Vec::new(),
+            report_skip: Vec::new(),
+            report_open_after: true,
+        }
     }
 }
 
@@ -117,6 +129,7 @@ pub struct State {
     pub now: f64,
     pub vlsm: Option<crate::panels::vlsm::VlsmPlanner>,
     pub tools: crate::panels::tools::ToolsState,
+    pub export: Option<crate::panels::export::ExportDialog>,
     /// Report from the most recent auto-assign run.
     pub last_assign: Option<(Vec<String>, Vec<String>)>,
     /// Validation results for `issues_rev`.
@@ -136,6 +149,7 @@ impl State {
             now: 0.0,
             vlsm: None,
             tools: Default::default(),
+            export: None,
             last_assign: None,
             issues: Vec::new(),
             issues_rev: None,

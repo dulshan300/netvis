@@ -2,7 +2,7 @@
 
 Network planning tool for Windows, written in Rust (egui/eframe). It's built for Corescale.
 
-**Status:** Phases 0–6 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), a live conflict engine with one-click fixes, an IT tools panel, and patching (patch schedule and port maps).
+**Status:** Phases 0–7 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), a live conflict engine with one-click fixes, an IT tools panel, patching (patch schedule and port maps), and a branded PDF design report.
 
 ## Build and run
 
@@ -120,6 +120,40 @@ For fibre panels, choose a model with **LC** (or MPO) adapters, such as *12/24-p
 
 **Port map** (bottom tab): a faceplate of the selected device. Port colour shows state (connected, patched but going nowhere, one side only, shut down), with a bar for the access VLAN colour, stripes for trunks and ⚡ for PoE. Below it is a table of every port with its mode, the far end traced through panels, the cables and labels. Click a port to jump to the device at the other end.
 
+## PDF report
+
+**File → Export PDF report…** (Ctrl+P) builds a Corescale-branded design report from the open project. The project name, client, author, company, revision and description come from the project details (Inspector with nothing selected).
+
+- **Cover:** Corescale band, title, description, a topology preview, client, preparer, revision and date.
+- **Contents:** page numbers with clickable entries; every section and subsection is also a PDF bookmark.
+- **Sections** (each can be switched off in the export dialog; the choice is remembered):
+
+| # | Section | Contents |
+|---|---|---|
+| 1 | Summary | Overview, counts, design-check result, devices by type |
+| 2 | Topology | The canvas as a vector diagram on a landscape page, with a cable legend |
+| 3 | Device inventory | Name, type, model, location, rack position, address, ports in use |
+| 4 | IP addressing | Subnets with VLAN, gateway, DHCP range and usage; every interface address |
+| 5 | VLANs and Wi-Fi | VLAN database with usage; SSIDs with VLAN, security and bands |
+| 6 | Routing and services | DNS/NTP/syslog, static routes, NAT |
+| 7 | Racks and power | Rack elevation drawings and tables, rack power vs UPS, PoE budgets |
+| 8 | Patch schedule | Every run end to end through panels, with lengths and labels |
+| 9 | Port maps | Per switch, router, firewall and panel; runs of free ports are collapsed |
+| 10 | Bill of materials | Hardware, optics, cabling to order, racks |
+| 11 | Design check | Every finding from the design rules |
+
+**Format:**
+- A4 pages, with landscape pages for the diagram and wide tables.
+- Every page after the contents has a running header and a "Page *n* of *N*" footer.
+- Text is selectable and the diagrams stay vector.
+- Fonts (DejaVu Sans Condensed and Mono, [licence](crates/netvis-report/fonts/LICENSE-DejaVu.txt)) are bundled and embedded as subsets, so a typical report is around 120 KB.
+
+**Other exports:**
+- **File → Export diagram as SVG…** writes the topology on its own.
+- From the command line, `cargo run -p netvis-report --example report -- in.netvis out.pdf` renders a report without opening the app.
+
+On Windows the PDF opens in your default viewer when it's done; this can be turned off in the dialog.
+
 ## Conflict checks and fixes
 
 Validation runs live after every change. Findings appear in the Issues tab, in the inspector for the selected item, and as badges on the canvas.
@@ -172,12 +206,12 @@ crates/
   netvis-catalog/  reference data: media, cable reach, transceivers, PoE, device models (JSON), IEEE OUI registry, well-known ports
   netvis-core/     data model, VLANs/subnets/IPAM, hardware/racks/PoE, undo/redo, .netvis file I/O — no UI
   netvis-validate/ design-rule engine (addressing, VLANs, Wi-Fi, names, topology, cabling, power, racks) with fixes
-  netvis-tools/    IT calculators: transfer time, oversubscription, fibre loss, PoE budget, bill of materials
+  netvis-tools/    IT calculators and cabling reports: transfer time, oversubscription, fibre loss, PoE, BOM, patch schedule, port maps
+  netvis-report/   PDF design report (krilla): layout engine, vector topology and rack SVG, bundled fonts
   netvis-app/      eframe GUI: docking shell, canvas, panels, dialogs
 samples/         example project
 ```
 
-New crates are added in the phase that needs them (`netvis-render`, `netvis-report`, …).
 
 ## File format
 
@@ -193,29 +227,15 @@ A `.netvis` file is pretty-printed JSON inside a small envelope: `{"format":"net
 | 4 | ✅ Done | IP, VLAN, Wi-Fi, name and loop conflict rules, one-click fixes and Fix all, CLI checker |
 | 5 | ✅ Done | IT tools panel: subnet/VLSM calculators, IPv4/IPv6 notation, MAC vendor lookup, transfer time, oversubscription, fibre loss, PoE budget, port reference, bill of materials |
 | 6 | ✅ Done | Patch panels and wall outlets traced end to end, patch schedule with auto-labelling, port maps, CSV exports |
-| 7 | 🚧 In progress | PDF design report — see below |
+| 7 | ✅ Done | Corescale PDF design report: cover, contents and bookmarks, vector topology and racks, 11 plan sections, SVG export |
 | 8 | Planned | Auto-layout, polish, Windows installer |
-
-**Phase 7 progress:**
-- Done (in the `netvis-report` crate):
-  - Corescale-branded cover with a topology preview.
-  - Contents page with page numbers and clickable entries, plus PDF bookmarks.
-  - Running header and footer with page *n* of *N*.
-  - Vector topology diagram and rack elevation drawings.
-  - Sections: summary, devices, IP addressing, VLANs and Wi-Fi, routing and services, racks and power, patch schedule, port maps, bill of materials and design check.
-  - Fonts are bundled (DejaVu) and embedded as subsets.
-  - Try it with `cargo run -p netvis-report --example report -- in.netvis out.pdf`.
-- Remaining:
-  - **File → Export PDF report…** in the app, with a choice of sections.
-  - SVG export of the topology diagram.
-  - Report tests on larger projects.
 
 **Phase 8 plan:**
 - Automatic layout of the topology (hierarchical: WAN, core, distribution, access, endpoints) and tidy-up of crossing links.
 - UI polish from hands-on use.
 - A Windows installer with Start-menu shortcut and `.netvis` file association.
 
-**Fixes since Phase 6:**
+**Fixes after Phase 6:**
 - Resizing a rack below mounted devices no longer crashes the app.
 - Selected devices are drawn on top of overlapping ones.
 - Distribute now spreads stacked devices.

@@ -25,15 +25,29 @@ pub fn native(_purpose: PathPurpose, _suggested_name: &str) -> Option<Option<Pat
     None
 }
 
-/// Save dialog for a CSV export; same contract as [`native`].
+/// Save dialog for an export (`filter` e.g. "PDF document", `ext` "pdf");
+/// same contract as [`native`].
 #[cfg(windows)]
-pub fn save_csv(suggested_name: &str) -> Option<Option<PathBuf>> {
-    Some(rfd::FileDialog::new().add_filter("CSV", &["csv"]).set_file_name(suggested_name).save_file())
+pub fn save_export(filter: &str, ext: &str, suggested_name: &str) -> Option<Option<PathBuf>> {
+    Some(rfd::FileDialog::new().add_filter(filter, &[ext]).set_file_name(suggested_name).save_file())
 }
 
 #[cfg(not(windows))]
-pub fn save_csv(_suggested_name: &str) -> Option<Option<PathBuf>> {
+pub fn save_export(_filter: &str, _ext: &str, _suggested_name: &str) -> Option<Option<PathBuf>> {
     None
+}
+
+/// Open a file with its default application (Windows only; elsewhere the
+/// status bar shows the path).
+pub fn open_with_default_app(path: &std::path::Path) {
+    #[cfg(windows)]
+    {
+        let _ = std::process::Command::new("explorer.exe").arg(path).spawn();
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = path;
+    }
 }
 
 /// Ensure the path carries the `.netvis` extension.

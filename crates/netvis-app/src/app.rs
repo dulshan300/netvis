@@ -153,6 +153,9 @@ impl NetVisApp {
         if let Some(t) = std::env::var("NETVIS_TOOL").ok().and_then(|k| panels::tools::Tool::from_key(&k)) {
             self.st.tools.tool = t;
         }
+        if std::env::var_os("NETVIS_EXPORT").is_some() {
+            self.st.export = Some(panels::export::ExportDialog::new(&self.st));
+        }
         if let Ok(tab) = std::env::var("NETVIS_BOTTOM") {
             let want = match tab.as_str() {
                 "vlans" => Some(Tab::Vlans),
@@ -333,7 +336,7 @@ impl NetVisApp {
     // ---- input ---------------------------------------------------------
 
     fn shortcuts(&mut self, ctx: &egui::Context) {
-        if self.dialog.is_some() || self.st.vlsm.is_some() {
+        if self.dialog.is_some() || self.st.vlsm.is_some() || self.st.export.is_some() {
             return;
         }
         let typing = ctx.egui_wants_keyboard_input();
@@ -347,6 +350,9 @@ impl NetVisApp {
         }
         if fire(sc(cmd, Key::O)) {
             self.st.actions.push(Action::Open);
+        }
+        if fire(sc(cmd, Key::P)) {
+            self.st.export = Some(panels::export::ExportDialog::new(&self.st));
         }
         if fire(sc(cmd_shift, Key::S)) {
             self.st.actions.push(Action::SaveAs);
@@ -432,6 +438,13 @@ impl NetVisApp {
                 }
                 if ui.button(format!("{}  Save as…       Ctrl+Shift+S", icons::FLOPPY_DISK_BACK)).clicked() {
                     st.actions.push(Action::SaveAs);
+                }
+                ui.separator();
+                if ui.add(egui::Button::new(format!("{}  Export PDF report…", icons::FILE_PDF)).shortcut_text("Ctrl+P")).clicked() {
+                    st.export = Some(panels::export::ExportDialog::new(st));
+                }
+                if ui.button(format!("{}  Export diagram as SVG…", icons::FILE_SVG)).clicked() {
+                    panels::export::export_svg(st);
                 }
                 ui.separator();
                 if ui.button(format!("{}  Exit", icons::SIGN_OUT)).clicked() {
@@ -825,6 +838,7 @@ impl eframe::App for NetVisApp {
         });
 
         panels::vlsm::show(&ctx, &mut self.st);
+        panels::export::show(&ctx, &mut self.st);
         self.dialogs(&ctx);
 
         for a in std::mem::take(&mut self.st.actions) {

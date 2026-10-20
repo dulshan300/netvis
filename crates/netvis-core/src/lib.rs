@@ -18,6 +18,7 @@ pub mod port;
 pub mod project;
 pub mod routing;
 pub mod select;
+pub mod style;
 pub mod subnet;
 pub mod vlan;
 

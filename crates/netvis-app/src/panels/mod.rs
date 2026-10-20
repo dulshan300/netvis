@@ -2,6 +2,7 @@
 
 mod inspector;
 mod ipplan;
+pub mod export;
 mod patching;
 mod racks;
 pub mod tools;
@@ -278,10 +279,20 @@ pub fn severity_icon(s: netvis_validate::Severity) -> &'static str {
 /// Save `csv` as `<project>-<suffix>.csv`: a native dialog on Windows, next to
 /// the project (or in Documents) elsewhere.
 pub(crate) fn save_csv(st: &mut State, suffix: &str, csv: &str) {
+    // Byte-order mark so Excel reads the file as UTF-8 (×, ·, ↔).
+    let bytes = format!("\u{feff}{csv}").into_bytes();
+    export_file(st, suffix, "CSV", "csv", &bytes);
+}
+
+/// Ask where to save `<project>-<suffix>.<ext>` (native dialog on Windows;
+/// next to the project, or in Documents, elsewhere) and write `bytes`.
+/// Returns the path written.
+pub(crate) fn export_file(st: &mut State, suffix: &str, filter: &str, ext: &str, bytes: &[u8]) -> Option<std::path::PathBuf> {
     let stem = format!("{}-{suffix}", crate::file_dialog::file_stem_for(&st.doc.project.meta.name));
-    let path = match crate::file_dialog::save_csv(&format!("{stem}.csv")) {
+    let name = format!("{stem}.{ext}");
+    let path = match crate::file_dialog::save_export(filter, ext, &name) {
         Some(Some(p)) => p,
-        Some(None) => return,
+        Some(None) => return None,
         None => st
             .doc
             .path
@@ -289,11 +300,16 @@ pub(crate) fn save_csv(st: &mut State, suffix: &str, csv: &str) {
             .and_then(|p| p.parent())
             .map(|d| d.to_path_buf())
             .unwrap_or_else(crate::file_dialog::default_dir)
-            .join(format!("{stem}.csv")),
+            .join(name),
     };
-    // Byte-order mark so Excel reads the file as UTF-8 (×, ·, ↔).
-    match std::fs::write(&path, format!("\u{feff}{csv}")) {
-        Ok(()) => st.set_status(format!("Saved {}", path.display())),
-        Err(e) => st.set_status(format!("Could not save {}: {e}", path.display())),
+    match std::fs::write(&path, bytes) {
+        Ok(()) => {
+            st.set_status(format!("Saved {}", path.display()));
+            Some(path)
+        }
+        Err(e) => {
+            st.set_status(format!("Could not save {}: {e}", path.display()));
+            None
+        }
     }
 }

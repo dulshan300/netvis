@@ -162,25 +162,13 @@ impl Palette {
 }
 
 pub fn category_color(c: DeviceCategory) -> Color32 {
-    match c {
-        DeviceCategory::Network => Color32::from_rgb(37, 99, 235),
-        DeviceCategory::EndDevice => Color32::from_rgb(22, 163, 74),
-        DeviceCategory::Infrastructure => Color32::from_rgb(100, 116, 139),
-        DeviceCategory::CloudWan => Color32::from_rgb(147, 51, 234),
-    }
+    let [r, g, b] = netvis_core::style::category_rgb(c);
+    Color32::from_rgb(r, g, b)
 }
 
 pub fn cable_color(f: CableFamily) -> Color32 {
-    match f {
-        CableFamily::Copper => Color32::from_rgb(59, 130, 246),
-        CableFamily::Multimode => Color32::from_rgb(6, 182, 212),
-        CableFamily::SingleMode => Color32::from_rgb(234, 179, 8),
-        CableFamily::DirectAttach => Color32::from_rgb(168, 85, 247),
-        CableFamily::Coax => Color32::from_rgb(180, 120, 70),
-        CableFamily::Wireless => Color32::from_rgb(34, 197, 94),
-        CableFamily::Console => Color32::from_rgb(148, 163, 184),
-        CableFamily::Logical => Color32::from_rgb(148, 163, 184),
-    }
+    let [r, g, b] = netvis_core::style::cable_rgb(f);
+    Color32::from_rgb(r, g, b)
 }
 
 pub fn media_is_round(m: PortMedia) -> bool {

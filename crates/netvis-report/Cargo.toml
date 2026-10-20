@@ -1,0 +1,16 @@
+[package]
+name = "netvis-report"
+description = "NetVis PDF design report: cover, contents, vector topology, plan tables"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+netvis-core.workspace = true
+netvis-validate.workspace = true
+netvis-tools.workspace = true
+krilla = "0.8.2"
+krilla-svg = "0.8.1"
+ttf-parser = "0.25"
+usvg = "0.47"
+thiserror.workspace = true
