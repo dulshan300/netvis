@@ -24,3 +24,6 @@ directories.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 rfd.workspace = true
+
+[build-dependencies]
+winresource = "0.1.34"

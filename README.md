@@ -2,7 +2,7 @@
 
 Network planning tool for Windows, written in Rust (egui/eframe). It's built for Corescale.
 
-**Status:** Phases 0–7 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), a live conflict engine with one-click fixes, an IT tools panel, patching (patch schedule and port maps), and a branded PDF design report.
+**Status:** Phases 0–7 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), a live conflict engine with one-click fixes, an IT tools panel, patching (patch schedule and port maps), and a branded PDF design report. Phase 8 is in progress: auto-layout and the Windows installer are done; UI polish follows hands-on use.
 
 ## Build and run
 
@@ -25,7 +25,25 @@ rustup target add x86_64-pc-windows-gnu
 cargo build --release -p netvis-app --target x86_64-pc-windows-gnu
 ```
 
-The output is `target/x86_64-pc-windows-gnu/release/netvis.exe`. It uses only system DLLs, so copy it anywhere and run it.
+The output is `target/x86_64-pc-windows-gnu/release/netvis.exe`. It uses only system DLLs, so copy it anywhere and run it. Windows builds embed the app icon and version details (`crates/netvis-app/build.rs`).
+
+### Windows installer
+
+`scripts/build-windows.sh` cross-compiles the release exe and wraps it with NSIS into `target/installer/NetVis-<version>-setup.exe` (about 6 MB):
+
+```bash
+sudo apt install mingw-w64 nsis
+rustup target add x86_64-pc-windows-gnu
+scripts/build-windows.sh                 # or MAKENSIS=/path/to/makensis scripts/build-windows.sh
+```
+
+The installer ([installer/netvis.nsi](installer/netvis.nsi)) needs 64-bit Windows and admin rights. It installs to `Program Files\NetVis` and offers these components:
+- **NetVis** (required): the program, Start-menu shortcuts, and an entry in *Apps & features* with an uninstaller.
+- **Open .netvis files with NetVis**: the file association and icon; double-clicking a project opens it.
+- **Sample projects**: both Corescale samples, with a Start-menu shortcut to the folder.
+- **Desktop shortcut**: off by default.
+
+The uninstaller removes all of it. It keeps settings in `%APPDATA%` and leaves a `.netvis` association that another program has since taken over. The icon is drawn by `assets/make_icon.py`.
 
 ### WSL / Linux (development)
 
@@ -39,15 +57,7 @@ Under WSLg, if winit reports `NoCompositor`, point it at the WSLg socket:
 XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir cargo run -p netvis-app
 ```
 
-On Linux the native file dialogs are replaced by an in-app path prompt.
-
-**Cross-compiling a Windows `.exe` from WSL** (optional):
-
-```bash
-sudo apt install mingw-w64
-rustup target add x86_64-pc-windows-gnu
-cargo build --release -p netvis-app --target x86_64-pc-windows-gnu
-```
+On Linux the native file dialogs are replaced by an in-app path prompt. To build the Windows exe or installer from WSL, see above.
 
 ### Tests
 
@@ -61,7 +71,7 @@ cargo clippy --workspace --all-targets
 | File | What it is | Size |
 |---|---|---|
 | `samples/corescale-hq.netvis` | Small head office: firewall, core, two floors, DMZ, one rack, a fibre riser and patched desks | 23 devices, 21 cables |
-| `samples/corescale-campus.netvis` | Campus: data centre with dual ISPs, a core pair in a LAG, VM hosts and storage dual-homed to both cores, a DMZ; Building A (3 floors) and B (2 floors), each floor with an IDF rack, two access switches, copper and LC panels, eight desks on wall outlets, three APs, cameras and a printer; single-mode risers through fibre panels; every cable labelled | 176 devices, 326 cables, 156 runs, 63-page report |
+| `samples/corescale-campus.netvis` | Campus: data centre with dual ISPs, a core pair in a LAG, VM hosts and storage dual-homed to both cores, a DMZ; Building A (3 floors) and B (2 floors), each floor with an IDF rack, two access switches, copper and LC panels, eight desks on wall outlets, three APs, cameras and a printer; single-mode risers through fibre panels; every cable labelled | 176 devices, 326 cables, 156 runs, 71-page report |
 
 Both samples pass every design rule, and a test enforces it. Regenerate them with `cargo run -p netvis-core --example sample` and `cargo run -p netvis-core --example sample_campus`. The generators build the projects through the same edit and auto-assign code the app uses.
 
@@ -79,6 +89,13 @@ Both samples pass every design rule, and a test enforces it. Regenerate them wit
 | Undo / redo | Ctrl+Z, Ctrl+Y (or Ctrl+Shift+Z) |
 | Duplicate / delete | Ctrl+D / Del |
 | Fit / 100% | Ctrl+0 / Ctrl+1 |
+| Auto-layout | **Arrange → Auto-layout diagram** (Ctrl+Shift+L, or the toolbar button); **Arrange selection** for just the selected devices |
+
+**Auto-layout** puts devices in layers by cable distance from the top of the network: WAN clouds, then the firewall or router, core, access switches, patch panels, outlets and desks. Isolated devices go to their type's usual layer.
+- **Areas are kept.** Each area becomes a column holding its own devices and its child areas side by side, and its rectangle is rebuilt around them. Areas never overlap, and every device stays in the area it was in.
+- **Tidy rows.** A layer wraps after six devices per column. Devices are ordered to keep cables short, and outlets follow the order of the panel ports they're patched to.
+- **Stable.** The top-left corner stays put and the view zooms to fit. It's one undo step, and running it twice changes nothing.
+- **Selection only.** *Arrange selection* lays out just the selected devices in place and leaves areas alone.
 
 When nothing is selected, the Inspector edits project details. With one item selected it edits that device, link or area, including each port's name, media, speed and PoE role. With several selected it offers align and distribute.
 
@@ -138,7 +155,7 @@ For fibre panels, choose a model with **LC** (or MPO) adapters, such as *12/24-p
 | # | Section | Contents |
 |---|---|---|
 | 1 | Summary | Overview, counts, design-check result, devices by type |
-| 2 | Topology | The canvas as a vector diagram on a landscape page, with a cable legend |
+| 2 | Topology | The canvas as a vector diagram on a landscape page, with a cable legend. A diagram too large to read on one page adds a detail page per area (building, floor, rack…), splitting areas until each is legible |
 | 3 | Device inventory | Name, type, model, location, rack position, address, ports in use |
 | 4 | IP addressing | Subnets with VLAN, gateway, DHCP range and usage; every interface address |
 | 5 | VLANs and Wi-Fi | VLAN database with usage; SSIDs with VLAN, security and bands |
@@ -216,7 +233,10 @@ crates/
   netvis-tools/    IT calculators and cabling reports: transfer time, oversubscription, fibre loss, PoE, BOM, patch schedule, port maps
   netvis-report/   PDF design report (krilla): layout engine, vector topology and rack SVG, bundled fonts
   netvis-app/      eframe GUI: docking shell, canvas, panels, dialogs
-samples/         example project
+samples/         example projects
+assets/          app icon (and the script that draws it)
+installer/       NSIS installer script
+scripts/         build-windows.sh: cross-compile and package for Windows
 ```
 
 
@@ -235,12 +255,13 @@ A `.netvis` file is pretty-printed JSON inside a small envelope: `{"format":"net
 | 5 | ✅ Done | IT tools panel: subnet/VLSM calculators, IPv4/IPv6 notation, MAC vendor lookup, transfer time, oversubscription, fibre loss, PoE budget, port reference, bill of materials |
 | 6 | ✅ Done | Patch panels and wall outlets traced end to end, patch schedule with auto-labelling, port maps, CSV exports |
 | 7 | ✅ Done | Corescale PDF design report: cover, contents and bookmarks, vector topology and racks, 11 plan sections, SVG export |
-| 8 | Planned | Auto-layout, polish, Windows installer |
+| 8 | 🚧 In progress | Auto-layout, per-area report diagrams, app icon and Windows installer (done); UI polish from hands-on use (next) |
 
-**Phase 8 plan:**
-- Automatic layout of the topology (hierarchical: WAN, core, distribution, access, endpoints) and tidy-up of crossing links.
-- UI polish from hands-on use.
-- A Windows installer with Start-menu shortcut and `.netvis` file association.
+**Phase 8 so far:**
+- Hierarchical auto-layout that keeps areas: whole diagram or selection, with an **Arrange** menu.
+- Report detail pages per area for large diagrams.
+- App icon and version info embedded in the exe.
+- NSIS installer with Start-menu shortcuts, `.netvis` association, samples and an uninstaller.
 
 **Fixes after Phase 6:**
 - Resizing a rack below mounted devices no longer crashes the app.

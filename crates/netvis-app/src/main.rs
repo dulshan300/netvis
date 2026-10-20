@@ -20,7 +20,8 @@ fn main() -> eframe::Result {
             .with_title(theme::APP_NAME)
             .with_app_id("netvis")
             .with_inner_size([1440.0, 900.0])
-            .with_min_inner_size([960.0, 600.0]),
+            .with_min_inner_size([960.0, 600.0])
+            .with_icon(eframe::icon_data::from_png_bytes(include_bytes!("../../../assets/netvis.png")).unwrap_or_default()),
         ..Default::default()
     };
     eframe::run_native(theme::APP_NAME, options, Box::new(|cc| Ok(Box::new(app::NetVisApp::new(cc, open)))))
