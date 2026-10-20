@@ -108,4 +108,14 @@ mod tests {
         let pdf = crate::render_pdf(&p, &Default::default()).unwrap();
         assert!(pdf.len() > 50_000);
     }
+
+    #[test]
+    fn campus_sample_renders_within_margins() {
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../samples/corescale-campus.netvis");
+        let p = netvis_core::io::load(&path).unwrap();
+        let doc = crate::report::build(&p, &Default::default());
+        assert!(doc.pages.len() > 40);
+        assert_in_bounds(&doc);
+        assert!(crate::render_pdf(&p, &Default::default()).is_ok());
+    }
 }

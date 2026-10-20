@@ -13,7 +13,7 @@
     },
     "devices": [
       {
-        "id": "17ffb7b5-bfe3-4172-adfd-e10f144eb08d",
+        "id": "ed6a2397-aef7-4bce-b980-c5d7e5a382b5",
         "kind": "Internet",
         "name": "Internet",
         "pos": {
@@ -22,7 +22,7 @@
         },
         "ports": [
           {
-            "id": "193f0ba2-7ec8-47b5-98f0-4a708ee1e9a2",
+            "id": "6e53fcba-b1e1-4813-90bf-5bb6519e4ef6",
             "name": "link1",
             "media": "Virtual",
             "speed_mbps": 1000,
@@ -45,7 +45,7 @@
             "transceiver": null
           },
           {
-            "id": "70dbcd20-d767-40be-82d6-84a1d28ed28f",
+            "id": "b3cb6bb5-2cf4-48d9-aa66-6842b40fbc77",
             "name": "link2",
             "media": "Virtual",
             "speed_mbps": 1000,
@@ -68,7 +68,7 @@
             "transceiver": null
           },
           {
-            "id": "0f25d8aa-38a3-4d81-8ded-b71519638ebb",
+            "id": "5341e164-5cbe-4e7c-8292-2b3395f3b679",
             "name": "link3",
             "media": "Virtual",
             "speed_mbps": 1000,
@@ -91,7 +91,7 @@
             "transceiver": null
           },
           {
-            "id": "025e4617-34c5-4909-99ed-7a8e4a4861f3",
+            "id": "69826f09-40e7-42ba-9ba7-7867ebab1ace",
             "name": "link4",
             "media": "Virtual",
             "speed_mbps": 1000,
@@ -136,7 +136,7 @@
         "stp": "Unset"
       },
       {
-        "id": "e9448d61-c96a-4595-a2c0-3ced269ab4af",
+        "id": "125c4899-ffca-4388-87e9-80df72bfe6cb",
         "kind": "Firewall",
         "name": "FW-01",
         "pos": {
@@ -145,7 +145,7 @@
         },
         "ports": [
           {
-            "id": "86bbf9e5-556b-4dfa-ab14-f37dc9ab1273",
+            "id": "5f66f594-9ca2-4910-92a2-1e8390e48811",
             "name": "port1",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -173,7 +173,7 @@
             "transceiver": null
           },
           {
-            "id": "7ed9557e-d847-45f4-9550-c56ced8b3abc",
+            "id": "c55a2bba-cad4-4dfa-b385-edda9e78ee38",
             "name": "port2",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -196,7 +196,7 @@
             "transceiver": null
           },
           {
-            "id": "a3ad534a-942e-472f-bd2c-636313d44d79",
+            "id": "39747490-3fa3-4575-bd1d-ab4fe6f92708",
             "name": "port3",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -219,7 +219,7 @@
             "transceiver": null
           },
           {
-            "id": "5855741c-fe14-48c3-bd7f-784bd1c2adfd",
+            "id": "cd614355-122c-4839-b957-cf61a4f2fb5d",
             "name": "port4",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -242,7 +242,7 @@
             "transceiver": null
           },
           {
-            "id": "3035eab1-bed9-4cd8-9c43-0a61d5fa6196",
+            "id": "25e76839-21b6-4b68-a7d6-d159fccef37f",
             "name": "port5",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -265,7 +265,7 @@
             "transceiver": null
           },
           {
-            "id": "2b126de5-7c75-4c36-84e0-59809dfaa2c6",
+            "id": "cb4a40c8-6047-490a-88d2-232d6397f8fd",
             "name": "port6",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -288,7 +288,7 @@
             "transceiver": null
           },
           {
-            "id": "48f95f7e-3daf-4d4d-8c85-ffcce98d2ddc",
+            "id": "aa55c5e8-eefb-4cbf-b56e-4b946646ed84",
             "name": "port7",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -311,7 +311,7 @@
             "transceiver": null
           },
           {
-            "id": "1fd11e26-967f-41ea-ab70-caede14afbeb",
+            "id": "9e33ce83-f89b-45d8-8829-cb87410944e3",
             "name": "port8",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -334,7 +334,7 @@
             "transceiver": null
           },
           {
-            "id": "1ca408fc-74d2-4900-9e50-f44ead91328a",
+            "id": "56173a8d-4c24-4076-a18b-f5ed66f897f7",
             "name": "port9",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -357,7 +357,7 @@
             "transceiver": null
           },
           {
-            "id": "29ba86f9-3e9a-40d8-800f-f75ef564afe9",
+            "id": "0bebdabd-7ec7-4bec-af97-5b527d7a824d",
             "name": "port10",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -380,7 +380,7 @@
             "transceiver": null
           },
           {
-            "id": "01daf1b3-ffa7-4e4b-94b6-53ac15c110c6",
+            "id": "cb25fb6c-94bf-479e-bd7b-d34ea5e14a42",
             "name": "port11",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -403,7 +403,7 @@
             "transceiver": null
           },
           {
-            "id": "b653e6e5-2d23-4ab3-8c38-69f12a1e23d1",
+            "id": "231acf5c-650f-4bf3-855b-52369b6afe17",
             "name": "port12",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -426,7 +426,7 @@
             "transceiver": null
           },
           {
-            "id": "da681591-e171-4801-bdce-e6dc80ca1a81",
+            "id": "f56ab2c2-a797-4bc2-99b2-fee045311d67",
             "name": "port13",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -449,7 +449,7 @@
             "transceiver": null
           },
           {
-            "id": "e88acc8d-da0e-40c4-a938-2e4a301fdde3",
+            "id": "84e04ff6-4071-40a1-a5cd-20b1bfa1e041",
             "name": "port14",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -472,7 +472,7 @@
             "transceiver": null
           },
           {
-            "id": "a9046291-08ff-4cc0-b99f-a1a69fdc0fb3",
+            "id": "d31eabba-ef11-413b-b26b-d5554eea9ce1",
             "name": "port15",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -495,7 +495,7 @@
             "transceiver": null
           },
           {
-            "id": "58596817-0b74-4fa8-8c23-820d061c7012",
+            "id": "3df69e28-7846-4471-a68b-22f55d30f05a",
             "name": "port16",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -518,7 +518,7 @@
             "transceiver": null
           },
           {
-            "id": "e994743c-3cfa-42c2-bd72-881f8ffafaa3",
+            "id": "37157c82-c955-4106-8ea5-9b2c1859393a",
             "name": "x1",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -546,7 +546,7 @@
             "transceiver": null
           },
           {
-            "id": "c15e8898-ce3f-46c9-8798-3462691b3668",
+            "id": "d8b563fb-4740-4ef1-8de7-791f5bfc3c4e",
             "name": "x2",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -574,7 +574,7 @@
             "transceiver": "sfpp-10g-sr"
           },
           {
-            "id": "fee1b70e-4ab7-4d67-9f86-fe4f8cb75e88",
+            "id": "1bc78230-024d-4341-831f-4fc5151bbadb",
             "name": "x3",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -597,7 +597,7 @@
             "transceiver": null
           },
           {
-            "id": "e2106ecb-ef70-405c-92be-2d91c7ab88c0",
+            "id": "73d719aa-1c3a-4bc9-b7c2-f818a3fad3cf",
             "name": "x4",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -620,7 +620,7 @@
             "transceiver": null
           },
           {
-            "id": "469432d0-d41b-4faf-9b02-183e83c80a2b",
+            "id": "82036404-e705-400b-b691-51afcef4a172",
             "name": "x5",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -643,7 +643,7 @@
             "transceiver": null
           },
           {
-            "id": "4ff2286a-5582-46a0-8cf3-5e0b0cc7cd73",
+            "id": "f88b1b28-7710-41c1-b370-86425135c70d",
             "name": "x6",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -666,7 +666,7 @@
             "transceiver": null
           },
           {
-            "id": "da088539-2e19-4fba-8b5a-64bdd97e14d7",
+            "id": "0148535a-4245-4cc2-9eee-bec22ba536ba",
             "name": "x7",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -689,7 +689,7 @@
             "transceiver": null
           },
           {
-            "id": "20d6f5d5-6722-45d0-bda7-8d284abab64b",
+            "id": "ecd0dc2c-8067-4060-b073-3771eddab132",
             "name": "x8",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -712,7 +712,7 @@
             "transceiver": null
           },
           {
-            "id": "6ef32f9e-f902-4a6b-a803-7623c3a70476",
+            "id": "c205dfc2-1b44-40c0-a1ea-ecad0865d8af",
             "name": "hu1",
             "media": "Qsfp28",
             "speed_mbps": 100000,
@@ -735,7 +735,7 @@
             "transceiver": null
           },
           {
-            "id": "e0fa80ea-0f4c-45ce-91cb-9fc6490267fa",
+            "id": "d521f362-3b76-4ddd-b5e5-4eea0a93d153",
             "name": "hu2",
             "media": "Qsfp28",
             "speed_mbps": 100000,
@@ -803,7 +803,7 @@
         "stp": "Unset"
       },
       {
-        "id": "9c0e7859-1cc1-4d52-b9b1-75b78d3ecae1",
+        "id": "4c46aaf2-8b29-499f-a108-a2c38f6109a4",
         "kind": "SwitchL3",
         "name": "CSW-01",
         "pos": {
@@ -812,7 +812,7 @@
         },
         "ports": [
           {
-            "id": "ea10929d-b6ed-4c57-868a-94c118b53e10",
+            "id": "c669e9f0-ce4d-463d-9aac-b7ad10975bb9",
             "name": "xe1",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -840,7 +840,7 @@
             "transceiver": null
           },
           {
-            "id": "47164093-d6ce-442e-9fc0-e8e5f2a910a5",
+            "id": "19ede575-368e-4402-b770-d274b20e371d",
             "name": "xe2",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -850,7 +850,7 @@
               "enabled": true,
               "mode": {
                 "Access": {
-                  "vlan": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f"
+                  "vlan": "b555b14b-4340-4294-8ae3-cce39dfb10f4"
                 }
               },
               "l3": {
@@ -867,7 +867,7 @@
             "transceiver": null
           },
           {
-            "id": "e180a66f-8626-4003-b4b4-9f0ed519c580",
+            "id": "d63af439-fc0e-4520-a50a-7de65c9d1633",
             "name": "xe3",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -877,7 +877,7 @@
               "enabled": true,
               "mode": {
                 "Trunk": {
-                  "native": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+                  "native": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
                   "allowed": "All"
                 }
               },
@@ -895,7 +895,7 @@
             "transceiver": "sfpp-10g-sr"
           },
           {
-            "id": "6e4f5876-82b2-45e4-a09a-1c1aa2ec2616",
+            "id": "9606709c-0db8-4bd8-a0d1-10ec15e8bd81",
             "name": "xe4",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -905,7 +905,7 @@
               "enabled": true,
               "mode": {
                 "Trunk": {
-                  "native": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+                  "native": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
                   "allowed": "All"
                 }
               },
@@ -923,7 +923,7 @@
             "transceiver": "sfpp-10g-lr"
           },
           {
-            "id": "e0913c19-5b19-4ca8-a701-056eb2fc97fc",
+            "id": "518bd237-ea8f-4639-8b57-493a8cd0934a",
             "name": "xe5",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -946,7 +946,7 @@
             "transceiver": null
           },
           {
-            "id": "3d2754e0-d801-4f78-abb0-dc157ced96e1",
+            "id": "0884cb91-1cd5-481e-ac54-33a1cf6b606c",
             "name": "xe6",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -969,7 +969,7 @@
             "transceiver": null
           },
           {
-            "id": "e6e206e9-a7c5-4cf2-9b67-59d72abfa9ac",
+            "id": "5c47aab7-690b-470b-ac07-704f9e37d62e",
             "name": "xe7",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -992,7 +992,7 @@
             "transceiver": null
           },
           {
-            "id": "b824e421-ca17-484e-a435-e3d316ed2974",
+            "id": "f99336fe-15ea-4fc2-9469-10756743d8ea",
             "name": "xe8",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1015,7 +1015,7 @@
             "transceiver": null
           },
           {
-            "id": "9afe4cd6-c712-4d94-999e-b9f413449129",
+            "id": "858832ea-0671-4335-9a48-610bb05c73f0",
             "name": "xe9",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1038,7 +1038,7 @@
             "transceiver": null
           },
           {
-            "id": "58f4888a-367f-410b-80f0-ec7f855bad7d",
+            "id": "36b9d09a-ad87-4a54-8959-432df818ae11",
             "name": "xe10",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1061,7 +1061,7 @@
             "transceiver": null
           },
           {
-            "id": "82535fcb-bb9c-4d1d-9477-131f2a18f381",
+            "id": "9935e3eb-d779-4675-b0a4-8d8f1f48a0ed",
             "name": "xe11",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1084,7 +1084,7 @@
             "transceiver": null
           },
           {
-            "id": "36d9d146-38d9-4b9b-b415-150c93c7a8ca",
+            "id": "501e75b9-4597-4498-af7a-1db88e6b2b07",
             "name": "xe12",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1107,7 +1107,7 @@
             "transceiver": null
           },
           {
-            "id": "b3b2c5c6-cd5d-40ab-9ba9-f3c91a9bef8e",
+            "id": "25fe042c-d15a-4073-8290-97d2661b64db",
             "name": "xe13",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1130,7 +1130,7 @@
             "transceiver": null
           },
           {
-            "id": "14111001-4159-4a86-a814-c36e7c720132",
+            "id": "ac365d60-463b-47b9-baf3-4c4110936064",
             "name": "xe14",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1153,7 +1153,7 @@
             "transceiver": null
           },
           {
-            "id": "aee0b7ee-c36f-41ec-9e4b-8e867953ffbe",
+            "id": "54278f69-51f9-4acd-8161-b7e3c05a215a",
             "name": "xe15",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1176,7 +1176,7 @@
             "transceiver": null
           },
           {
-            "id": "9db07244-e2e3-4da9-8d84-efafa659a5ad",
+            "id": "7e5a7aef-741a-453a-964b-dc7f9b0a3762",
             "name": "xe16",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1199,7 +1199,7 @@
             "transceiver": null
           },
           {
-            "id": "1036f186-e639-4475-81ba-63fef7c6f232",
+            "id": "fb5f4d41-18cb-491b-8219-b955c379bf85",
             "name": "xe17",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1222,7 +1222,7 @@
             "transceiver": null
           },
           {
-            "id": "4068a0ae-2e13-40cb-8a77-3812c209d86c",
+            "id": "707c11ab-7604-4f94-844c-070bdf5e8654",
             "name": "xe18",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1245,7 +1245,7 @@
             "transceiver": null
           },
           {
-            "id": "d2128195-db32-4709-87d5-54b5be256d5d",
+            "id": "c673666d-986b-4903-a9f6-39165d24f32b",
             "name": "xe19",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1268,7 +1268,7 @@
             "transceiver": null
           },
           {
-            "id": "47812bc9-dae3-4737-b886-1cda2ceea8dc",
+            "id": "cfc4ee24-ddd8-4640-bfad-e6e13fb267c8",
             "name": "xe20",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1291,7 +1291,7 @@
             "transceiver": null
           },
           {
-            "id": "7ee7a632-d22d-487d-bb05-c1e7524d51b9",
+            "id": "76ba4645-189b-4f00-9c8a-ebd3641c8d4c",
             "name": "xe21",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1314,7 +1314,7 @@
             "transceiver": null
           },
           {
-            "id": "2660b889-7a4d-4710-ba5e-9ad61b2ca7d2",
+            "id": "e0ced31b-dffd-4372-94a4-d82ab1f0bcf8",
             "name": "xe22",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1337,7 +1337,7 @@
             "transceiver": null
           },
           {
-            "id": "9ddc9508-6749-4700-85eb-22ad24e88750",
+            "id": "12947f1a-65ef-47be-9698-0e7ea73b9627",
             "name": "xe23",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1360,7 +1360,7 @@
             "transceiver": null
           },
           {
-            "id": "faea1a6b-818e-4048-aeac-e2e77d3259b4",
+            "id": "bd90755c-2f5d-411b-8d81-ca5b54ea53bd",
             "name": "xe24",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -1383,7 +1383,7 @@
             "transceiver": null
           },
           {
-            "id": "3a267063-678e-4185-af6b-061c52432919",
+            "id": "80813572-3fff-471c-bc65-2201e91c872a",
             "name": "et1",
             "media": "QsfpPlus",
             "speed_mbps": 40000,
@@ -1406,7 +1406,7 @@
             "transceiver": null
           },
           {
-            "id": "0ff934f9-bb7f-4f38-8fe1-88901af2d656",
+            "id": "ac91f878-6abe-4382-a928-431da6c78814",
             "name": "et2",
             "media": "QsfpPlus",
             "speed_mbps": 40000,
@@ -1429,7 +1429,7 @@
             "transceiver": null
           },
           {
-            "id": "4fe0911c-0579-414c-b74d-b3c3da919754",
+            "id": "1b378ea3-7130-436c-9dc5-2beebb281449",
             "name": "et3",
             "media": "QsfpPlus",
             "speed_mbps": 40000,
@@ -1452,7 +1452,7 @@
             "transceiver": null
           },
           {
-            "id": "6c4cce20-9385-4cd2-a2b8-40f505d917bc",
+            "id": "04ce139c-ac0b-4b8f-baa4-a0dd1f988dfc",
             "name": "et4",
             "media": "QsfpPlus",
             "speed_mbps": 40000,
@@ -1480,11 +1480,11 @@
         "notes": "",
         "logical": [
           {
-            "id": "1a277268-8be7-4a0c-bae2-5d9aefaf7ed1",
+            "id": "51c40d51-2b3a-4e62-a6b5-b45cffbe9d49",
             "name": "Vlan10",
             "kind": {
               "Svi": {
-                "vlan": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f"
+                "vlan": "b555b14b-4340-4294-8ae3-cce39dfb10f4"
               }
             },
             "enabled": true,
@@ -1502,11 +1502,11 @@
             "mtu": null
           },
           {
-            "id": "6d456228-81a0-4f14-a8d0-903c8011559d",
+            "id": "3ad7c932-cce3-4cb9-a3a7-6e76720f21de",
             "name": "Vlan20",
             "kind": {
               "Svi": {
-                "vlan": "6a18d0d5-1c49-47b0-8f72-fad99023a8ce"
+                "vlan": "5cde5e44-3777-4e22-809e-005123bd2c06"
               }
             },
             "enabled": true,
@@ -1524,11 +1524,11 @@
             "mtu": null
           },
           {
-            "id": "98b38bb5-fcbb-4777-9491-55e9d1447648",
+            "id": "1bc3c196-c7d1-4522-b9f3-921b91bc7f5f",
             "name": "Vlan30",
             "kind": {
               "Svi": {
-                "vlan": "72fec5e0-c9be-4e4b-ac33-a0a6b0a6b3dc"
+                "vlan": "fef9b16a-51ce-46db-822e-6c7c816bba8d"
               }
             },
             "enabled": true,
@@ -1546,11 +1546,11 @@
             "mtu": null
           },
           {
-            "id": "2db4e517-3157-44ea-909f-54b03e16ac6e",
+            "id": "8c3360be-d922-43b7-8872-d57667c27172",
             "name": "Vlan40",
             "kind": {
               "Svi": {
-                "vlan": "4fad8bdd-44cd-4cf4-b15e-f04c4b6fee6b"
+                "vlan": "3cc2ea99-c34a-4b2e-a178-5a2689298745"
               }
             },
             "enabled": true,
@@ -1568,11 +1568,11 @@
             "mtu": null
           },
           {
-            "id": "7cb9b244-1545-4956-9c93-b49edb023806",
+            "id": "8d2e0e85-e548-4b4d-a376-f45a54834a1b",
             "name": "Vlan50",
             "kind": {
               "Svi": {
-                "vlan": "9619a2f6-db5c-4a6d-8858-c2d76d869c00"
+                "vlan": "11e2efd8-c2c6-424c-8e43-d5439f67f4e3"
               }
             },
             "enabled": true,
@@ -1608,7 +1608,7 @@
           "model": "sw-dist-24x10g",
           "rack_units": 1,
           "rack": {
-            "rack": "f8b6e73c-95c8-4964-a5d1-7f515c3b50d8",
+            "rack": "9f3543f8-b9fe-4f38-ac2a-97e0f51e793d",
             "u": 42
           },
           "poe_budget_w": null,
@@ -1619,7 +1619,7 @@
         "stp": "Rstp"
       },
       {
-        "id": "df5700f7-216e-4a15-85d9-a5390498d94b",
+        "id": "83935e49-fd56-4ff6-ad09-aff2605b9712",
         "kind": "Server",
         "name": "SRV-FILE-01",
         "pos": {
@@ -1628,7 +1628,7 @@
         },
         "ports": [
           {
-            "id": "92074078-d623-4b67-b811-3bfdf94b7f93",
+            "id": "ca60ac07-6ee0-4f2c-8502-213a2ed0e44d",
             "name": "mgmt0",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1651,7 +1651,7 @@
             "transceiver": null
           },
           {
-            "id": "b2b26db6-3e8d-4526-8a62-02b799959605",
+            "id": "a0ff0c19-3800-49fe-9c4f-14dd87045f72",
             "name": "eno1",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1674,7 +1674,7 @@
             "transceiver": null
           },
           {
-            "id": "0fb6cdda-bb59-4182-bb07-ac128c2e520d",
+            "id": "0a567f76-7c68-4392-9edd-b426fe25364f",
             "name": "eno2",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1697,7 +1697,7 @@
             "transceiver": null
           },
           {
-            "id": "d7deae66-d342-4f9b-9af0-b26a82455146",
+            "id": "b38900df-bbe3-49f2-a086-8f5880056f09",
             "name": "eno3",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1720,7 +1720,7 @@
             "transceiver": null
           },
           {
-            "id": "aa36b4a9-51a8-4428-9ced-2841281f1a75",
+            "id": "c7a389c5-b3fc-4617-86b3-59e9e576577a",
             "name": "eno4",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1743,7 +1743,7 @@
             "transceiver": null
           },
           {
-            "id": "628603aa-c01a-4295-98b8-9254a9420337",
+            "id": "ff6780a2-433f-4d7c-90a0-61b4c333a0c4",
             "name": "ens1",
             "media": "Sfp28",
             "speed_mbps": 10000,
@@ -1771,7 +1771,7 @@
             "transceiver": null
           },
           {
-            "id": "83a79c22-e78b-4e9d-87ab-becea479681f",
+            "id": "e6b43e74-076b-4382-9e88-80b99925a6d9",
             "name": "ens2",
             "media": "Sfp28",
             "speed_mbps": 10000,
@@ -1808,7 +1808,7 @@
           "model": "srv-2u",
           "rack_units": 2,
           "rack": {
-            "rack": "f8b6e73c-95c8-4964-a5d1-7f515c3b50d8",
+            "rack": "9f3543f8-b9fe-4f38-ac2a-97e0f51e793d",
             "u": 1
           },
           "poe_budget_w": null,
@@ -1819,7 +1819,7 @@
         "stp": "Unset"
       },
       {
-        "id": "09535fbd-25fa-42cf-96ff-c0d7a99e6613",
+        "id": "e9a3fb38-f293-4eb7-8545-af6e74b3b320",
         "kind": "Server",
         "name": "SRV-WEB-01",
         "pos": {
@@ -1828,7 +1828,7 @@
         },
         "ports": [
           {
-            "id": "078e0606-ae4f-4ccb-867c-38aa97ceac5e",
+            "id": "0a06ec19-7ed0-4c11-85f7-f9aed0a53202",
             "name": "eno1",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1851,7 +1851,7 @@
             "transceiver": null
           },
           {
-            "id": "cc5f9b84-2f5b-4334-9efa-baef5d858ef7",
+            "id": "42de82c5-7b7e-4781-ad2a-e2f02ab2d170",
             "name": "eno2",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1874,7 +1874,7 @@
             "transceiver": null
           },
           {
-            "id": "632fc079-4bcf-41a0-beb6-9f052176a4e5",
+            "id": "71dc7eaa-b0e2-4671-aa89-6539c6829824",
             "name": "ens1",
             "media": "Sfp28",
             "speed_mbps": 10000,
@@ -1902,7 +1902,7 @@
             "transceiver": "sfpp-10g-sr"
           },
           {
-            "id": "2e991884-4eb5-4cbf-9114-9c98690db57b",
+            "id": "a4b65c3c-2ec3-4c4d-af36-ecf1009469f5",
             "name": "ens2",
             "media": "Sfp28",
             "speed_mbps": 10000,
@@ -1947,7 +1947,7 @@
         "stp": "Unset"
       },
       {
-        "id": "004bbd91-48f3-4a5f-8595-5ac8aa44d6e3",
+        "id": "1f063a13-c3af-45e9-a5fd-d07cdb2310ff",
         "kind": "SwitchL2",
         "name": "SW-L1-01",
         "pos": {
@@ -1956,7 +1956,7 @@
         },
         "ports": [
           {
-            "id": "c5d3f8ff-7c57-491e-9335-41a71b36c7a9",
+            "id": "f0e8bdd5-f212-440f-a913-571d2839bf1e",
             "name": "ge1",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -1968,12 +1968,12 @@
               "enabled": true,
               "mode": {
                 "Trunk": {
-                  "native": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+                  "native": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
                   "allowed": {
                     "List": [
-                      "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
-                      "6a18d0d5-1c49-47b0-8f72-fad99023a8ce",
-                      "9619a2f6-db5c-4a6d-8858-c2d76d869c00"
+                      "b555b14b-4340-4294-8ae3-cce39dfb10f4",
+                      "5cde5e44-3777-4e22-809e-005123bd2c06",
+                      "11e2efd8-c2c6-424c-8e43-d5439f67f4e3"
                     ]
                   }
                 }
@@ -1992,7 +1992,7 @@
             "transceiver": null
           },
           {
-            "id": "42079ddd-7f85-40e5-8134-c0e420f2125a",
+            "id": "d24d6a9c-e7a0-4c45-ab8c-8292bd680f1b",
             "name": "ge2",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2004,7 +2004,7 @@
               "enabled": true,
               "mode": {
                 "Access": {
-                  "vlan": "6a18d0d5-1c49-47b0-8f72-fad99023a8ce"
+                  "vlan": "5cde5e44-3777-4e22-809e-005123bd2c06"
                 }
               },
               "l3": {
@@ -2021,7 +2021,7 @@
             "transceiver": null
           },
           {
-            "id": "adf418b5-9526-4edf-a5f3-e3f6217a48d8",
+            "id": "66b63c8e-cacd-4841-afd5-965683ca3d97",
             "name": "ge3",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2033,7 +2033,7 @@
               "enabled": true,
               "mode": {
                 "Access": {
-                  "vlan": "72fec5e0-c9be-4e4b-ac33-a0a6b0a6b3dc"
+                  "vlan": "fef9b16a-51ce-46db-822e-6c7c816bba8d"
                 }
               },
               "l3": {
@@ -2050,7 +2050,7 @@
             "transceiver": null
           },
           {
-            "id": "0f577d33-577a-41dd-91be-0ecfc92e7c96",
+            "id": "fb6eca04-6674-4d0f-bddc-7be64105f5b5",
             "name": "ge4",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2062,7 +2062,7 @@
               "enabled": true,
               "mode": {
                 "Access": {
-                  "vlan": "4fad8bdd-44cd-4cf4-b15e-f04c4b6fee6b"
+                  "vlan": "3cc2ea99-c34a-4b2e-a178-5a2689298745"
                 }
               },
               "l3": {
@@ -2079,7 +2079,7 @@
             "transceiver": null
           },
           {
-            "id": "2ca2d699-2b60-437d-a8ba-56a42c4336a8",
+            "id": "b8af1300-39e2-4f09-88e4-4fad8459caed",
             "name": "ge5",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2104,7 +2104,7 @@
             "transceiver": null
           },
           {
-            "id": "e47a782b-7205-4dd6-850a-c821e2480be3",
+            "id": "503003aa-57fd-4c94-b966-a518937186bf",
             "name": "ge6",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2129,7 +2129,7 @@
             "transceiver": null
           },
           {
-            "id": "7a08815e-0d5d-45a5-8dfe-56fe462b6f24",
+            "id": "9e5eedc4-5582-4635-9b13-c7111ef85643",
             "name": "ge7",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2154,7 +2154,7 @@
             "transceiver": null
           },
           {
-            "id": "5b5413be-ce87-44fd-8ec6-2a683ca6bd39",
+            "id": "6bea6a03-aed7-4b1c-84f6-48820b405442",
             "name": "ge8",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2179,7 +2179,7 @@
             "transceiver": null
           },
           {
-            "id": "f3ad6d32-a260-412a-af2a-67930e40a47f",
+            "id": "21c18a4e-b5bb-41ca-b58a-6f2b630f0dcf",
             "name": "ge9",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2204,7 +2204,7 @@
             "transceiver": null
           },
           {
-            "id": "77cd0e09-bb9c-4783-9442-6a373d79b784",
+            "id": "9798b6f6-6eb5-41be-937c-f6f08ff01576",
             "name": "ge10",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2229,7 +2229,7 @@
             "transceiver": null
           },
           {
-            "id": "45174cfb-c3e8-4b0b-a915-0a39ca3ddf52",
+            "id": "3a9d0206-0e2c-42ad-911e-c943b5c7bb23",
             "name": "ge11",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2254,7 +2254,7 @@
             "transceiver": null
           },
           {
-            "id": "f0c1c431-6e68-44cd-892a-07a3249bca1d",
+            "id": "f2b58cb8-6f21-43bc-b513-f67da7996602",
             "name": "ge12",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2279,7 +2279,7 @@
             "transceiver": null
           },
           {
-            "id": "03a7691a-a106-4adb-8dc7-b5c31dee73e3",
+            "id": "cd89e9de-52d8-4136-933c-7e6fe6cd14d6",
             "name": "ge13",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2304,7 +2304,7 @@
             "transceiver": null
           },
           {
-            "id": "a6f00b49-17bf-426b-b6e5-4394b8ef1fea",
+            "id": "85bf1bcf-ea0a-4f1a-b73f-1fe72c8af40f",
             "name": "ge14",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2329,7 +2329,7 @@
             "transceiver": null
           },
           {
-            "id": "9bfdb85b-2b0a-41c7-aada-7d123dc953dd",
+            "id": "d2e50a7f-8b25-4c4d-ae62-69f73d6db742",
             "name": "ge15",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2354,7 +2354,7 @@
             "transceiver": null
           },
           {
-            "id": "cf09ef11-a9a8-4e95-9b62-737b3a5fbf60",
+            "id": "4c87e11e-f8bb-4952-96f2-a2866c5cfb0c",
             "name": "ge16",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2379,7 +2379,7 @@
             "transceiver": null
           },
           {
-            "id": "28ddb8ef-4dae-499c-9ef0-e7cfce240e1c",
+            "id": "a86fc90f-f463-4ba5-9a1f-0f1702dc43a2",
             "name": "ge17",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2404,7 +2404,7 @@
             "transceiver": null
           },
           {
-            "id": "c2f822af-8573-4aa8-962f-afb699045f9c",
+            "id": "46dae916-b27a-4f7a-99cc-2480e03f56c0",
             "name": "ge18",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2429,7 +2429,7 @@
             "transceiver": null
           },
           {
-            "id": "bae0d7c2-6e24-46ea-9d56-f6eda6c77749",
+            "id": "28350204-9790-4262-afe4-32a9a870ec91",
             "name": "ge19",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2454,7 +2454,7 @@
             "transceiver": null
           },
           {
-            "id": "e73fad8a-65f9-42a5-a684-3ec367570d69",
+            "id": "e0c7cddf-184c-4f90-97ef-6ddc800faa47",
             "name": "ge20",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2479,7 +2479,7 @@
             "transceiver": null
           },
           {
-            "id": "8e0e7e35-8f4b-45cf-ad81-7f48700a0fde",
+            "id": "b054d255-cff5-43b4-b88d-bfbac6138921",
             "name": "ge21",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2504,7 +2504,7 @@
             "transceiver": null
           },
           {
-            "id": "6d3a3904-1e26-4ef5-94cd-5842b5554621",
+            "id": "ac0b8d95-7310-4d1e-a9f0-31ac783a0f14",
             "name": "ge22",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2529,7 +2529,7 @@
             "transceiver": null
           },
           {
-            "id": "0cb5bfe0-2dc3-453a-9814-1ee1255aa3b7",
+            "id": "38be2867-fd70-45b8-8268-15d9daf41ad6",
             "name": "ge23",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2554,7 +2554,7 @@
             "transceiver": null
           },
           {
-            "id": "c853c6b7-a5cc-4d83-b586-e26f25ba70ff",
+            "id": "d001404d-2531-4a12-871b-d8833883cf69",
             "name": "ge24",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2579,7 +2579,7 @@
             "transceiver": null
           },
           {
-            "id": "e2c192d1-812a-4935-8aa7-168d0e119770",
+            "id": "8624dd80-fe89-4203-ae9a-00a0d6cd2a19",
             "name": "xe1",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -2589,7 +2589,7 @@
               "enabled": true,
               "mode": {
                 "Trunk": {
-                  "native": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+                  "native": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
                   "allowed": "All"
                 }
               },
@@ -2607,7 +2607,7 @@
             "transceiver": "sfpp-10g-sr"
           },
           {
-            "id": "f9fb820e-1077-4f7e-b8b0-3ce784244dc3",
+            "id": "fc57b7ed-a5ca-4444-b98d-9fc6282163fd",
             "name": "xe2",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -2630,7 +2630,7 @@
             "transceiver": null
           },
           {
-            "id": "8cec68f0-d7fa-4770-b40b-1c51e93e4386",
+            "id": "5e2af940-2356-4012-8fab-c6ceb247c91a",
             "name": "xe3",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -2653,7 +2653,7 @@
             "transceiver": null
           },
           {
-            "id": "9e2227f9-ea28-4641-8ddb-69e34015bc0a",
+            "id": "85191849-a7db-4d16-8ca1-5d67c8a77dac",
             "name": "xe4",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -2681,11 +2681,11 @@
         "notes": "",
         "logical": [
           {
-            "id": "82c6e1f5-e54e-486a-9c04-9023e72d2dc8",
+            "id": "754cedd2-937f-4c73-82bc-505aeb8282f4",
             "name": "Vlan10",
             "kind": {
               "Svi": {
-                "vlan": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f"
+                "vlan": "b555b14b-4340-4294-8ae3-cce39dfb10f4"
               }
             },
             "enabled": true,
@@ -2721,7 +2721,7 @@
         "stp": "Rstp"
       },
       {
-        "id": "0a489bf4-46e0-4182-985a-43c64af244e7",
+        "id": "3d4475ff-a04b-4ec2-81be-9bb67f9960e6",
         "kind": "SwitchL2",
         "name": "SW-L2-01",
         "pos": {
@@ -2730,7 +2730,7 @@
         },
         "ports": [
           {
-            "id": "3ce0c0b0-a21d-4167-b43a-2ba5c18375de",
+            "id": "6889d222-ec85-4714-8277-7ac29e780f43",
             "name": "ge1",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2742,12 +2742,12 @@
               "enabled": true,
               "mode": {
                 "Trunk": {
-                  "native": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+                  "native": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
                   "allowed": {
                     "List": [
-                      "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
-                      "6a18d0d5-1c49-47b0-8f72-fad99023a8ce",
-                      "9619a2f6-db5c-4a6d-8858-c2d76d869c00"
+                      "b555b14b-4340-4294-8ae3-cce39dfb10f4",
+                      "5cde5e44-3777-4e22-809e-005123bd2c06",
+                      "11e2efd8-c2c6-424c-8e43-d5439f67f4e3"
                     ]
                   }
                 }
@@ -2766,7 +2766,7 @@
             "transceiver": null
           },
           {
-            "id": "2ec92098-b70c-44e0-b18e-83b38a4bc0d4",
+            "id": "f3a34454-a084-4a6a-a19d-de0730cc4f4c",
             "name": "ge2",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2778,7 +2778,7 @@
               "enabled": true,
               "mode": {
                 "Access": {
-                  "vlan": "6a18d0d5-1c49-47b0-8f72-fad99023a8ce"
+                  "vlan": "5cde5e44-3777-4e22-809e-005123bd2c06"
                 }
               },
               "l3": {
@@ -2795,7 +2795,7 @@
             "transceiver": null
           },
           {
-            "id": "fc441355-5a74-4b03-b982-023e35b9f5a2",
+            "id": "497364cd-dea8-4c0e-a704-1559ef830de5",
             "name": "ge3",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2807,7 +2807,7 @@
               "enabled": true,
               "mode": {
                 "Access": {
-                  "vlan": "72fec5e0-c9be-4e4b-ac33-a0a6b0a6b3dc"
+                  "vlan": "fef9b16a-51ce-46db-822e-6c7c816bba8d"
                 }
               },
               "l3": {
@@ -2824,7 +2824,7 @@
             "transceiver": null
           },
           {
-            "id": "8328bcdc-822e-4ab2-be08-68bbf2e9e396",
+            "id": "78cc53f0-ea42-4e02-abe8-75721d61cb3a",
             "name": "ge4",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2836,7 +2836,7 @@
               "enabled": true,
               "mode": {
                 "Access": {
-                  "vlan": "4fad8bdd-44cd-4cf4-b15e-f04c4b6fee6b"
+                  "vlan": "3cc2ea99-c34a-4b2e-a178-5a2689298745"
                 }
               },
               "l3": {
@@ -2853,7 +2853,7 @@
             "transceiver": null
           },
           {
-            "id": "83ebf4ed-b255-4f44-8a96-fed9f1730e2b",
+            "id": "8a473955-490e-47b3-a4ff-19d6f3842d8f",
             "name": "ge5",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2878,7 +2878,7 @@
             "transceiver": null
           },
           {
-            "id": "f4e4ab8c-3de5-4ab1-9fce-63987ae0b051",
+            "id": "ad5d037c-a25d-4c4a-b3b3-de58eb9b5bf0",
             "name": "ge6",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2903,7 +2903,7 @@
             "transceiver": null
           },
           {
-            "id": "2c1c2062-7de8-49b8-a92f-7e15506db609",
+            "id": "f4b03a38-dd1b-412f-b0b8-de7ab3b8492e",
             "name": "ge7",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2928,7 +2928,7 @@
             "transceiver": null
           },
           {
-            "id": "e0aa85e7-8849-4e24-b264-34fc0c7f4b1b",
+            "id": "93100f3c-887c-4e7c-b937-df713af29508",
             "name": "ge8",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2953,7 +2953,7 @@
             "transceiver": null
           },
           {
-            "id": "defdb60a-6730-4fc7-81d0-74949c4f6cee",
+            "id": "5b0aa79a-b86f-4694-978d-fbfa79398cf2",
             "name": "ge9",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -2978,7 +2978,7 @@
             "transceiver": null
           },
           {
-            "id": "03bc205a-7740-4eee-be63-538d4a5f0bdf",
+            "id": "77498933-719f-4f70-bc24-826b346d694d",
             "name": "ge10",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3003,7 +3003,7 @@
             "transceiver": null
           },
           {
-            "id": "8b42ed80-3a0e-4e2c-b4cd-34ebc933afcc",
+            "id": "267b76b8-7e46-4c83-a26a-20a4876e2144",
             "name": "ge11",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3028,7 +3028,7 @@
             "transceiver": null
           },
           {
-            "id": "1d04e2b4-7728-473b-ac40-5ea88fc624c7",
+            "id": "1b3d535b-e51b-4e97-8612-7a725450dcc2",
             "name": "ge12",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3053,7 +3053,7 @@
             "transceiver": null
           },
           {
-            "id": "84d2bd02-22b6-4574-b131-d778bf53c6e4",
+            "id": "b47a3e4e-d5ca-4117-9972-1c8b373ce44c",
             "name": "ge13",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3078,7 +3078,7 @@
             "transceiver": null
           },
           {
-            "id": "a465f359-951a-4e94-8a69-ec5d745288c4",
+            "id": "7be27df0-f6b7-4502-9c94-534f1a386b08",
             "name": "ge14",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3103,7 +3103,7 @@
             "transceiver": null
           },
           {
-            "id": "a44dd53a-e6d6-40e5-9625-ea5958b1e39c",
+            "id": "219f7762-e99f-4342-a5af-add6eeb7d8aa",
             "name": "ge15",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3128,7 +3128,7 @@
             "transceiver": null
           },
           {
-            "id": "77b11649-3488-4915-898a-19bd29daa839",
+            "id": "fd12457d-f25a-4aef-a575-087772baa71f",
             "name": "ge16",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3153,7 +3153,7 @@
             "transceiver": null
           },
           {
-            "id": "5f28f740-6204-4300-8e59-ca34d49b5688",
+            "id": "2cdfad9e-59ec-44c0-990b-6ec37304f6ee",
             "name": "ge17",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3178,7 +3178,7 @@
             "transceiver": null
           },
           {
-            "id": "2cbfbb4a-1e63-43e9-9839-a9ad56fcb641",
+            "id": "6c32a0f3-a1e0-47bf-ad6f-121527940657",
             "name": "ge18",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3203,7 +3203,7 @@
             "transceiver": null
           },
           {
-            "id": "1499298e-547d-46db-8372-0e7d72773984",
+            "id": "6e5ed2a5-0249-4fbb-bbf9-3767c313b052",
             "name": "ge19",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3228,7 +3228,7 @@
             "transceiver": null
           },
           {
-            "id": "9ac130d7-6093-43e3-a28b-967a7640fc9d",
+            "id": "9e9db696-f636-4498-b57d-58beb6ee65bf",
             "name": "ge20",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3253,7 +3253,7 @@
             "transceiver": null
           },
           {
-            "id": "eacd578a-d87a-4bda-af0c-ea4a7e15ba0a",
+            "id": "46865923-e2d9-42e0-9941-8ab59701e021",
             "name": "ge21",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3278,7 +3278,7 @@
             "transceiver": null
           },
           {
-            "id": "c7f7ffbf-9996-4a85-8a4b-3cea2038be45",
+            "id": "dd922d61-f31f-4e79-b6d6-d6c874e3d73b",
             "name": "ge22",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3303,7 +3303,7 @@
             "transceiver": null
           },
           {
-            "id": "22692907-8ae1-4ecf-9df3-92513f8f2354",
+            "id": "57dc04d6-2292-41da-943a-2b294de4bca7",
             "name": "ge23",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3328,7 +3328,7 @@
             "transceiver": null
           },
           {
-            "id": "ebc7397b-15db-4924-b5e3-3a82edecc8d1",
+            "id": "242df4ed-3452-4c4e-aa58-5bf4011b3043",
             "name": "ge24",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -3353,7 +3353,7 @@
             "transceiver": null
           },
           {
-            "id": "3f87e695-a738-4950-830e-70ce91839cd1",
+            "id": "d611d858-f365-4fa7-b032-e1ee27664452",
             "name": "xe1",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -3363,7 +3363,7 @@
               "enabled": true,
               "mode": {
                 "Trunk": {
-                  "native": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+                  "native": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
                   "allowed": "All"
                 }
               },
@@ -3381,7 +3381,7 @@
             "transceiver": "sfpp-10g-lr"
           },
           {
-            "id": "a5e7e823-e6b4-497c-b0a7-b82745d65516",
+            "id": "80575b17-7fd4-407c-8c9c-b50f907472d9",
             "name": "xe2",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -3404,7 +3404,7 @@
             "transceiver": null
           },
           {
-            "id": "b723b553-42a9-4c69-94a5-e78d27e84735",
+            "id": "08451850-e94f-46cb-b709-a4f488804cb9",
             "name": "xe3",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -3427,7 +3427,7 @@
             "transceiver": null
           },
           {
-            "id": "9c8fa400-9d68-4ee9-b232-6ed7f4d4fbab",
+            "id": "57c431a4-1970-4eda-af7d-7f413a519986",
             "name": "xe4",
             "media": "SfpPlus",
             "speed_mbps": 10000,
@@ -3455,11 +3455,11 @@
         "notes": "",
         "logical": [
           {
-            "id": "41f7cb4b-050c-44f5-9b60-e00da81b4554",
+            "id": "05054c5d-f420-4c22-963f-0a061914a132",
             "name": "Vlan10",
             "kind": {
               "Svi": {
-                "vlan": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f"
+                "vlan": "b555b14b-4340-4294-8ae3-cce39dfb10f4"
               }
             },
             "enabled": true,
@@ -3495,7 +3495,7 @@
         "stp": "Rstp"
       },
       {
-        "id": "d84d467e-c962-4b8c-9594-818992d49fc5",
+        "id": "f1a48b1b-c0e1-42dd-91cb-1bc71895d5e3",
         "kind": "PatchPanel",
         "name": "PP-MDF-01",
         "pos": {
@@ -3504,7 +3504,7 @@
         },
         "ports": [
           {
-            "id": "3ea00f8e-d843-4505-9a4b-bccf978f9e68",
+            "id": "c6aa3d3f-912a-4e5d-acdf-63112cae6afc",
             "name": "1",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3527,7 +3527,7 @@
             "transceiver": null
           },
           {
-            "id": "5492233f-fcab-4929-b9f4-4f22e4377874",
+            "id": "84a06379-30e9-4f15-a59f-2ea0591d1274",
             "name": "2",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3550,7 +3550,7 @@
             "transceiver": null
           },
           {
-            "id": "fe231322-7da1-4c35-bfc6-77039d00b62f",
+            "id": "38df1675-4dbf-413b-b1fd-d509aa28938d",
             "name": "3",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3573,7 +3573,7 @@
             "transceiver": null
           },
           {
-            "id": "3d0aab3d-4326-4cb2-bc58-b24eaf640d05",
+            "id": "b3448578-9406-497e-9293-e6676d57f64e",
             "name": "4",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3596,7 +3596,7 @@
             "transceiver": null
           },
           {
-            "id": "a0720dee-61fe-4121-b7bd-8dcc4461676d",
+            "id": "20ff392f-cb74-4aa8-b44d-40308b255c1d",
             "name": "5",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3619,7 +3619,7 @@
             "transceiver": null
           },
           {
-            "id": "5c19f703-6714-42fe-9099-302d8919a4f2",
+            "id": "e20e420e-bbed-42fc-8d35-4c62cba2627f",
             "name": "6",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3642,7 +3642,7 @@
             "transceiver": null
           },
           {
-            "id": "dd05dbd0-aa74-479a-81b4-da9119c5e3c7",
+            "id": "9952e718-b1d6-416b-8b4b-b84cdcadb194",
             "name": "7",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3665,7 +3665,7 @@
             "transceiver": null
           },
           {
-            "id": "583a854c-7ac6-463d-a8c5-6b81bb113cc5",
+            "id": "a1f7146e-d77f-4409-b67d-f52501018323",
             "name": "8",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3688,7 +3688,7 @@
             "transceiver": null
           },
           {
-            "id": "f3977cf9-7c53-4afd-8bd8-8e774eb405d5",
+            "id": "49fa7043-627d-469e-b9d3-8d01b5e313e1",
             "name": "9",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3711,7 +3711,7 @@
             "transceiver": null
           },
           {
-            "id": "162307d4-875a-451b-9334-2ab5f98b5916",
+            "id": "c2323ff1-4654-4929-94d8-faf5ab14a30a",
             "name": "10",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3734,7 +3734,7 @@
             "transceiver": null
           },
           {
-            "id": "c3158e76-fb31-43e3-9ac9-b2483d426401",
+            "id": "20d16d97-5cf5-475c-8ef9-cb1fc594106b",
             "name": "11",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3757,7 +3757,7 @@
             "transceiver": null
           },
           {
-            "id": "d39568e0-a38f-4b54-b199-2c38e52e5b61",
+            "id": "119ce9e3-2051-4cac-9ff4-f60da75782db",
             "name": "12",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3780,7 +3780,7 @@
             "transceiver": null
           },
           {
-            "id": "b84a6b6b-722d-4636-b3ba-d88d9155e544",
+            "id": "5ba6a553-70d0-4596-97f6-8bf2940aed6c",
             "name": "13",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3803,7 +3803,7 @@
             "transceiver": null
           },
           {
-            "id": "c0255b20-06de-49a9-b871-e0669c738494",
+            "id": "619891c3-cc48-45f9-b97e-2316dc92ee01",
             "name": "14",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3826,7 +3826,7 @@
             "transceiver": null
           },
           {
-            "id": "e6863598-0eb9-4f3d-81e4-e93ea0e0287a",
+            "id": "40116903-06e3-41ca-9b40-a11faed0a171",
             "name": "15",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3849,7 +3849,7 @@
             "transceiver": null
           },
           {
-            "id": "a67070f8-279e-4221-a3f6-b453a36e2fe5",
+            "id": "1fd3dcbd-1fd6-43ab-986b-8bcf69f1c3e0",
             "name": "16",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3872,7 +3872,7 @@
             "transceiver": null
           },
           {
-            "id": "4894839a-def2-4fab-9a77-eaeb26c64aa1",
+            "id": "02ead977-11b1-4291-a441-a7cb9a82d080",
             "name": "17",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3895,7 +3895,7 @@
             "transceiver": null
           },
           {
-            "id": "70465f83-e884-45b2-9a46-06425befe234",
+            "id": "c7d15d27-696f-46f6-b74e-369bc1c7ed52",
             "name": "18",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3918,7 +3918,7 @@
             "transceiver": null
           },
           {
-            "id": "b92600e7-8aeb-432d-816f-d9a9a6ce4400",
+            "id": "47570cc7-8a15-44fa-ad88-04a565b67e20",
             "name": "19",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3941,7 +3941,7 @@
             "transceiver": null
           },
           {
-            "id": "0300c0d7-25f2-474b-ad06-e7cd9156384f",
+            "id": "94d5ad3a-3cff-4ed1-b14f-f9252e4acd2f",
             "name": "20",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3964,7 +3964,7 @@
             "transceiver": null
           },
           {
-            "id": "c9a5efed-7d3c-4fed-b719-845bd1afb087",
+            "id": "66cff2dd-f188-46fe-a9dc-0b0710a36686",
             "name": "21",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -3987,7 +3987,7 @@
             "transceiver": null
           },
           {
-            "id": "6c6a1b1f-7d44-4829-b1a4-ca9f32c1395f",
+            "id": "4fcfb6a6-e73d-48ee-aaca-8108cd886066",
             "name": "22",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -4010,7 +4010,7 @@
             "transceiver": null
           },
           {
-            "id": "378cabc8-0898-4ce5-a750-cee9f6ae93be",
+            "id": "0b084e01-517b-4778-9bb1-96d3f3825c13",
             "name": "23",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -4033,7 +4033,7 @@
             "transceiver": null
           },
           {
-            "id": "57ff6af0-cc96-4172-9226-dff4156d3d9c",
+            "id": "52aa9419-169a-4a8c-9e76-a3361f632da0",
             "name": "24",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -4070,7 +4070,7 @@
           "model": "pp-24-cat6a",
           "rack_units": 1,
           "rack": {
-            "rack": "f8b6e73c-95c8-4964-a5d1-7f515c3b50d8",
+            "rack": "9f3543f8-b9fe-4f38-ac2a-97e0f51e793d",
             "u": 41
           },
           "poe_budget_w": null,
@@ -4081,7 +4081,7 @@
         "stp": "Unset"
       },
       {
-        "id": "09b2427d-409f-4b53-b227-cf0124ea5ca0",
+        "id": "bb7804d4-f8ba-4c34-af8f-0bb3084c2950",
         "kind": "Ups",
         "name": "UPS-MDF-01",
         "pos": {
@@ -4090,7 +4090,7 @@
         },
         "ports": [
           {
-            "id": "8ad361c7-1179-40e8-9686-6785190953ca",
+            "id": "21de70c1-de23-4728-af21-b8c4b140b5cd",
             "name": "mgmt0",
             "media": "Rj45",
             "speed_mbps": 100,
@@ -4127,7 +4127,7 @@
           "model": "ups-1500",
           "rack_units": 2,
           "rack": {
-            "rack": "f8b6e73c-95c8-4964-a5d1-7f515c3b50d8",
+            "rack": "9f3543f8-b9fe-4f38-ac2a-97e0f51e793d",
             "u": 3
           },
           "poe_budget_w": null,
@@ -4138,7 +4138,7 @@
         "stp": "Unset"
       },
       {
-        "id": "321a3e02-1067-4ae2-971b-bdb07878bb91",
+        "id": "fc515f09-d13c-456a-bcbd-402c145e2555",
         "kind": "PatchPanel",
         "name": "FPP-MDF-01",
         "pos": {
@@ -4147,7 +4147,7 @@
         },
         "ports": [
           {
-            "id": "960d4ea5-0bd0-49be-b44c-d8ccd8f59aa3",
+            "id": "88f27ddb-8463-45ed-bc98-5ed302c80927",
             "name": "1",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4170,7 +4170,7 @@
             "transceiver": null
           },
           {
-            "id": "e2dd7f5b-dd05-4a9f-b9c9-b1d452e50ca3",
+            "id": "57656f81-2a26-4f9e-b76d-2f5c4d8f40d6",
             "name": "2",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4193,7 +4193,7 @@
             "transceiver": null
           },
           {
-            "id": "73d94ea7-0c4d-4d8a-b1a8-176b334c6ace",
+            "id": "709fbd70-7713-4548-81bf-43797884a00a",
             "name": "3",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4216,7 +4216,7 @@
             "transceiver": null
           },
           {
-            "id": "9936fddc-172b-4902-bc7f-828daee15b0f",
+            "id": "642701ad-0f00-4d05-bea6-cf46567fed3a",
             "name": "4",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4239,7 +4239,7 @@
             "transceiver": null
           },
           {
-            "id": "7beefb59-ba04-45db-ac90-b4ee7b9c01d5",
+            "id": "a71b0b05-44f1-44ce-8a60-0e04527b5c22",
             "name": "5",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4262,7 +4262,7 @@
             "transceiver": null
           },
           {
-            "id": "9a404d78-c4ba-4d50-82a0-57d922c03915",
+            "id": "a8f1b4b2-47ad-487c-a4d7-6d83397b508f",
             "name": "6",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4285,7 +4285,7 @@
             "transceiver": null
           },
           {
-            "id": "e1e3170d-ea28-444e-9a9a-342e43a4db8c",
+            "id": "f1ac6f26-ec13-47f5-aea0-829a87b13acb",
             "name": "7",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4308,7 +4308,7 @@
             "transceiver": null
           },
           {
-            "id": "79f223d4-9965-494a-a9a0-2b32acb2d552",
+            "id": "8948d8e1-e662-4f4d-8cfa-8a0135742650",
             "name": "8",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4331,7 +4331,7 @@
             "transceiver": null
           },
           {
-            "id": "ad54a0b7-1aa5-482e-a282-afd1653579b3",
+            "id": "221ead48-64f2-4064-82d7-d28e26015a0f",
             "name": "9",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4354,7 +4354,7 @@
             "transceiver": null
           },
           {
-            "id": "312cadea-c7ae-4ca3-a9cc-6c9f047a2093",
+            "id": "1cd0d76d-930e-432c-90a3-85bbacda4ee6",
             "name": "10",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4377,7 +4377,7 @@
             "transceiver": null
           },
           {
-            "id": "d66eccf0-edf4-42cc-9189-8e67b3b91b90",
+            "id": "975f94d6-88f6-41f1-8ed1-03a61c187cd2",
             "name": "11",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4400,7 +4400,7 @@
             "transceiver": null
           },
           {
-            "id": "a39c911a-3671-4455-a584-17b2b776e3ff",
+            "id": "a84f9673-82a7-4d2f-9c8f-3d787a58f9dd",
             "name": "12",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4437,7 +4437,7 @@
           "model": "pp-12-lc",
           "rack_units": 1,
           "rack": {
-            "rack": "f8b6e73c-95c8-4964-a5d1-7f515c3b50d8",
+            "rack": "9f3543f8-b9fe-4f38-ac2a-97e0f51e793d",
             "u": 40
           },
           "poe_budget_w": null,
@@ -4448,7 +4448,7 @@
         "stp": "Unset"
       },
       {
-        "id": "b6592a7b-b484-45a3-99f6-d70015dcdd9e",
+        "id": "dccefa2a-d75d-43d1-a5f4-3de12b050790",
         "kind": "PatchPanel",
         "name": "FPP-L2-01",
         "pos": {
@@ -4457,7 +4457,7 @@
         },
         "ports": [
           {
-            "id": "ee832372-5066-4ee5-ad22-18b856a4b976",
+            "id": "41e05a27-8223-42e7-a803-6cd75526f6e5",
             "name": "1",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4480,7 +4480,7 @@
             "transceiver": null
           },
           {
-            "id": "48397739-a657-4e18-b2c8-0fe03b248ac8",
+            "id": "eaa01748-2f13-4ee0-af2c-56ded73e4e62",
             "name": "2",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4503,7 +4503,7 @@
             "transceiver": null
           },
           {
-            "id": "0d54a472-2458-4e6f-b657-9af637920f15",
+            "id": "203f0c8a-e0fa-494c-8318-8249a0906eca",
             "name": "3",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4526,7 +4526,7 @@
             "transceiver": null
           },
           {
-            "id": "d6b04cc2-22cf-4d74-b861-59361ecde388",
+            "id": "d7b6a1f8-9279-4ac3-8bd6-0b0c21cf7baa",
             "name": "4",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4549,7 +4549,7 @@
             "transceiver": null
           },
           {
-            "id": "2bfd9b1a-6ca4-4e3f-b366-61a921dabcf2",
+            "id": "74bc838c-b16c-42af-8ad6-3b5d4e2ef835",
             "name": "5",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4572,7 +4572,7 @@
             "transceiver": null
           },
           {
-            "id": "2a2e60a6-4919-4c35-be52-55165d95c468",
+            "id": "30366443-6bef-4290-81be-32fcab563828",
             "name": "6",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4595,7 +4595,7 @@
             "transceiver": null
           },
           {
-            "id": "ddda7c5e-03f0-4093-96e0-edbe46742ef3",
+            "id": "e3c242ca-d578-48f2-a42d-ec15405bb555",
             "name": "7",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4618,7 +4618,7 @@
             "transceiver": null
           },
           {
-            "id": "2a522d91-595a-4aa7-8623-7d13cb8e45e2",
+            "id": "3f83ff26-7c45-40ca-a142-4648cc132d43",
             "name": "8",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4641,7 +4641,7 @@
             "transceiver": null
           },
           {
-            "id": "48000857-07e9-44af-81d7-112a9554f022",
+            "id": "018e0630-da3d-4d59-8159-12462689cec4",
             "name": "9",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4664,7 +4664,7 @@
             "transceiver": null
           },
           {
-            "id": "c61472b9-ddd2-48b9-a6d1-69244f00c879",
+            "id": "e988f154-ffe5-4a35-93c3-f79ce77f1366",
             "name": "10",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4687,7 +4687,7 @@
             "transceiver": null
           },
           {
-            "id": "20b8b490-3fba-4de8-b0f4-4a6603ef15f2",
+            "id": "d30e5001-6151-40fd-87d4-6c1aeb0b5ac2",
             "name": "11",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4710,7 +4710,7 @@
             "transceiver": null
           },
           {
-            "id": "c0428fcf-d22f-47c8-be82-3e94ac571e31",
+            "id": "ccc6ae1b-2027-4312-bb42-11473ddb85a9",
             "name": "12",
             "media": "Lc",
             "speed_mbps": 400000,
@@ -4755,7 +4755,7 @@
         "stp": "Unset"
       },
       {
-        "id": "99fda29b-2082-4d0f-9f00-8939dbf645b2",
+        "id": "f5f8c19b-9c9a-4387-8d9a-60059eddbd35",
         "kind": "AccessPoint",
         "name": "AP-L1-01",
         "pos": {
@@ -4764,7 +4764,7 @@
         },
         "ports": [
           {
-            "id": "97cc7c49-3b6c-41a0-964a-b9c7e9bf05ca",
+            "id": "1513205d-013f-463a-8979-0765b1e791ac",
             "name": "eth0",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -4794,7 +4794,7 @@
             "transceiver": null
           },
           {
-            "id": "e6d89744-6bea-4374-8dd4-7bcebeec8eea",
+            "id": "d29cec7c-095b-451f-a92a-b747c5710507",
             "name": "radio0",
             "media": "Wireless",
             "speed_mbps": 1200,
@@ -4845,7 +4845,7 @@
         "stp": "Unset"
       },
       {
-        "id": "3c659aa5-cd5c-4f6a-ba7a-f7f724fe8e3f",
+        "id": "bede667a-41aa-4c5f-bac0-0430acd3dec3",
         "kind": "Pc",
         "name": "PC-L1-01",
         "pos": {
@@ -4854,7 +4854,7 @@
         },
         "ports": [
           {
-            "id": "06c85cb9-f2d8-44fd-b199-5be9a9859b96",
+            "id": "d8756c75-83ac-4dbf-876b-8d1d5ba1f3d9",
             "name": "eth1",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -4904,7 +4904,7 @@
         "stp": "Unset"
       },
       {
-        "id": "e477d9fc-1402-419d-ad1c-badd4b6967bb",
+        "id": "54c1d57e-c456-44bd-b553-d4ab447c56c5",
         "kind": "IpPhone",
         "name": "PH-L1-01",
         "pos": {
@@ -4913,7 +4913,7 @@
         },
         "ports": [
           {
-            "id": "234c0b99-1570-44cb-acb2-ea7129efc68e",
+            "id": "37288841-2590-495f-a3ba-8548ca93fb67",
             "name": "lan0",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -4938,7 +4938,7 @@
             "transceiver": null
           },
           {
-            "id": "125c5d0a-9559-4160-9bb4-5351d42178e9",
+            "id": "9c820503-4674-4112-9790-80eb49bb3be1",
             "name": "pc0",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -4983,7 +4983,7 @@
         "stp": "Unset"
       },
       {
-        "id": "cbfabef3-de8f-4d5f-ae4c-9ebfabf29c54",
+        "id": "dfd66822-0a69-452c-bf2f-89f1f1ddd8b8",
         "kind": "IpCamera",
         "name": "CAM-L1-01",
         "pos": {
@@ -4992,7 +4992,7 @@
         },
         "ports": [
           {
-            "id": "0b434aef-0c47-4067-8a24-bdb60e941e66",
+            "id": "5f7b5ad6-c341-4369-82fc-59d633e22601",
             "name": "eth0",
             "media": "Rj45",
             "speed_mbps": 100,
@@ -5044,7 +5044,7 @@
         "stp": "Unset"
       },
       {
-        "id": "de99122c-bbc3-4b64-b427-e2d783049bb4",
+        "id": "6c97ad89-fb89-4b9a-8088-29cd774924d7",
         "kind": "PatchPanel",
         "name": "PP-L1-01",
         "pos": {
@@ -5053,7 +5053,7 @@
         },
         "ports": [
           {
-            "id": "121db30e-1a3c-41a2-a504-aad93b283e0f",
+            "id": "a45d4917-7556-465f-a21f-473317f75f3e",
             "name": "1",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5076,7 +5076,7 @@
             "transceiver": null
           },
           {
-            "id": "6b7baea8-9d85-47fd-84c0-f2d28b5bcaa5",
+            "id": "2de03785-7b3e-4ffa-899c-ebc7f827a5de",
             "name": "2",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5099,7 +5099,7 @@
             "transceiver": null
           },
           {
-            "id": "d30889a4-1623-464d-b4db-ebb0f48982eb",
+            "id": "75ae090f-30eb-41d6-91f9-b8b21bfdb9cb",
             "name": "3",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5122,7 +5122,7 @@
             "transceiver": null
           },
           {
-            "id": "c7a721a3-28d6-47a5-a6b2-977fcbef06dd",
+            "id": "feea502c-ec3c-4a1f-8fa3-9d5aea0ae959",
             "name": "4",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5145,7 +5145,7 @@
             "transceiver": null
           },
           {
-            "id": "20ea4e6b-bc8b-46fc-bce5-35294854343e",
+            "id": "87bddcd9-a197-4a0a-9e4f-44207b8e39d0",
             "name": "5",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5168,7 +5168,7 @@
             "transceiver": null
           },
           {
-            "id": "78d659aa-edbd-4af2-8071-77759d5fd3c8",
+            "id": "1044c67b-cc19-41ac-8be0-31e6fe0d2351",
             "name": "6",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5191,7 +5191,7 @@
             "transceiver": null
           },
           {
-            "id": "f3c604f7-2bc4-4ccd-869f-76fc860ea17c",
+            "id": "e768c6ea-e366-4695-aff0-d380b9e7f8a4",
             "name": "7",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5214,7 +5214,7 @@
             "transceiver": null
           },
           {
-            "id": "487747c5-a8cc-43bf-8f2e-c5453f394c1d",
+            "id": "f7c7c1d3-8a59-4b59-a91e-91ce8b6338cc",
             "name": "8",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5237,7 +5237,7 @@
             "transceiver": null
           },
           {
-            "id": "0c24d682-c6d3-4a81-84b9-b644cdf554ef",
+            "id": "cca6bb07-d70c-47ca-a6b1-b6a6c3b39de4",
             "name": "9",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5260,7 +5260,7 @@
             "transceiver": null
           },
           {
-            "id": "0c8e3505-cf20-44a1-9706-0d172c6ee903",
+            "id": "d021e8de-a865-4421-a388-3d6b117fbfa2",
             "name": "10",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5283,7 +5283,7 @@
             "transceiver": null
           },
           {
-            "id": "e857d6a9-bfe3-4655-912d-b05b1c8a2812",
+            "id": "6c48b899-e72b-49b6-9e49-05ef33656af1",
             "name": "11",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5306,7 +5306,7 @@
             "transceiver": null
           },
           {
-            "id": "4d41d22d-04fc-4a15-b56c-b70311b74299",
+            "id": "8773953e-e74d-4800-95c0-4c98c6e757a9",
             "name": "12",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5329,7 +5329,7 @@
             "transceiver": null
           },
           {
-            "id": "492c1e92-684b-46e0-b855-b46ed5e0fac7",
+            "id": "76232e14-e902-42ef-bad0-c3f0f6fb13fd",
             "name": "13",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5352,7 +5352,7 @@
             "transceiver": null
           },
           {
-            "id": "e8dc6dcd-1b89-43ce-a96a-9ae26837badc",
+            "id": "25f87432-7dec-45c9-9f0a-351bfa5439aa",
             "name": "14",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5375,7 +5375,7 @@
             "transceiver": null
           },
           {
-            "id": "164b49ad-fe29-4be9-94d4-99dbf8612833",
+            "id": "990ec5fb-4c50-4e5b-a482-7241054a4f25",
             "name": "15",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5398,7 +5398,7 @@
             "transceiver": null
           },
           {
-            "id": "33058977-a0c0-4273-b34d-10127252fd2e",
+            "id": "3f1c75b6-47b7-464b-bcee-9681ab7c7c1a",
             "name": "16",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5421,7 +5421,7 @@
             "transceiver": null
           },
           {
-            "id": "ba96c2bd-793c-42cc-b202-bcbd6bb11f60",
+            "id": "7d1dbb87-3c16-4016-89ad-02f85023fe8e",
             "name": "17",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5444,7 +5444,7 @@
             "transceiver": null
           },
           {
-            "id": "f696d3ed-068e-4d1f-b254-32a49d3396dd",
+            "id": "bb22bb51-619a-41fe-87d3-40eb11f85398",
             "name": "18",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5467,7 +5467,7 @@
             "transceiver": null
           },
           {
-            "id": "93ccd52f-d8be-4b5f-ac87-a180dc0cbf4c",
+            "id": "a680a2b8-22ac-4d2e-9af8-e6c8f7004612",
             "name": "19",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5490,7 +5490,7 @@
             "transceiver": null
           },
           {
-            "id": "9a9fb83d-a8c0-4c8d-8473-a2f22e9e45f5",
+            "id": "68783780-8faa-4f1a-8b55-4b525ae33eee",
             "name": "20",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5513,7 +5513,7 @@
             "transceiver": null
           },
           {
-            "id": "0a33fa60-9f4b-4f3d-b4c9-be7feca26ef6",
+            "id": "db1f6e81-0873-4a8b-af1f-b86e434f1321",
             "name": "21",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5536,7 +5536,7 @@
             "transceiver": null
           },
           {
-            "id": "c5b9200f-e429-43b6-a12b-17e437043451",
+            "id": "42951cb2-d331-4c72-9de5-6b99b5c9460e",
             "name": "22",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5559,7 +5559,7 @@
             "transceiver": null
           },
           {
-            "id": "3db86b79-c3ea-4a62-bac7-7639b2c9de13",
+            "id": "1725d255-cb10-4217-ba08-bcfbcac776c2",
             "name": "23",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5582,7 +5582,7 @@
             "transceiver": null
           },
           {
-            "id": "88359e8a-7497-4600-ba0c-d55457dc248f",
+            "id": "21a40ef0-8980-4fa2-b28b-3479f290985e",
             "name": "24",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5627,7 +5627,7 @@
         "stp": "Unset"
       },
       {
-        "id": "771cfabe-f21e-4df7-a60c-7a72d4836164",
+        "id": "8a5a2d48-81fb-47b7-b2a5-3857a41079c7",
         "kind": "WallOutlet",
         "name": "WO-L1-01",
         "pos": {
@@ -5636,7 +5636,7 @@
         },
         "ports": [
           {
-            "id": "513b0594-5a34-4a68-98b7-2d00fb15eb7c",
+            "id": "cfd4f364-acf1-4dd0-8c1b-58e6087beea9",
             "name": "A",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5659,7 +5659,7 @@
             "transceiver": null
           },
           {
-            "id": "271e2059-74ff-4766-bde6-9a72d8e173b6",
+            "id": "adbefc11-50b6-4f15-b5b2-9e10228bffdf",
             "name": "B",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -5704,7 +5704,7 @@
         "stp": "Unset"
       },
       {
-        "id": "796e4bda-b8df-42b2-a9fe-32a7d5985db4",
+        "id": "f82748a9-9657-45ea-949b-4874d91e5605",
         "kind": "AccessPoint",
         "name": "AP-L2-01",
         "pos": {
@@ -5713,7 +5713,7 @@
         },
         "ports": [
           {
-            "id": "e5bc1ef3-91a6-49ad-84d0-0c8600087007",
+            "id": "d6f66cec-3079-482d-8eb3-ac87e92f4005",
             "name": "eth0",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -5743,7 +5743,7 @@
             "transceiver": null
           },
           {
-            "id": "d7b770c2-ac42-4f5a-a850-5bce9799bc2e",
+            "id": "bca79c23-a528-48c2-9eea-59b831d58799",
             "name": "radio0",
             "media": "Wireless",
             "speed_mbps": 1200,
@@ -5794,7 +5794,7 @@
         "stp": "Unset"
       },
       {
-        "id": "c9cc525b-0e03-4210-9528-325a3fa024ad",
+        "id": "7a73a6fa-5428-484a-b05c-12bb48525206",
         "kind": "Pc",
         "name": "PC-L2-01",
         "pos": {
@@ -5803,7 +5803,7 @@
         },
         "ports": [
           {
-            "id": "dbc75786-e080-4f7a-bbf3-d009d1c59ead",
+            "id": "345b28bc-406b-4511-bff6-09df27642b04",
             "name": "eth1",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -5853,7 +5853,7 @@
         "stp": "Unset"
       },
       {
-        "id": "ce313ccb-4011-4106-9f7b-55d54e25493a",
+        "id": "284567a9-6b5f-4ed6-8a0f-86a1536a97f4",
         "kind": "IpPhone",
         "name": "PH-L2-01",
         "pos": {
@@ -5862,7 +5862,7 @@
         },
         "ports": [
           {
-            "id": "8e82098b-c396-43da-a3e6-ef687de4433c",
+            "id": "6c44da20-51ec-4d65-9627-382d5e72d7d8",
             "name": "lan0",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -5887,7 +5887,7 @@
             "transceiver": null
           },
           {
-            "id": "be80fc31-9eec-4261-93d8-9f418d28acbc",
+            "id": "00bfbb61-12f5-4b7d-b8f8-9d7d0224285b",
             "name": "pc0",
             "media": "Rj45",
             "speed_mbps": 1000,
@@ -5932,7 +5932,7 @@
         "stp": "Unset"
       },
       {
-        "id": "bae0fe2c-75df-4749-96bc-caece613e406",
+        "id": "4c85e121-74c4-45be-903b-e4c4431e02ab",
         "kind": "IpCamera",
         "name": "CAM-L2-01",
         "pos": {
@@ -5941,7 +5941,7 @@
         },
         "ports": [
           {
-            "id": "cd952e66-55c3-44e4-98d8-8f5e2bb0db16",
+            "id": "4f273cf7-d578-4167-9463-85ffc407e35f",
             "name": "eth0",
             "media": "Rj45",
             "speed_mbps": 100,
@@ -5993,7 +5993,7 @@
         "stp": "Unset"
       },
       {
-        "id": "eeb24a70-9247-4610-8a8c-7432c4411d81",
+        "id": "7401c63f-409d-40fc-9cec-7bd54b60e3c7",
         "kind": "PatchPanel",
         "name": "PP-L2-01",
         "pos": {
@@ -6002,7 +6002,7 @@
         },
         "ports": [
           {
-            "id": "86897971-8a0b-4401-a163-cec71947b606",
+            "id": "923550e7-0af8-463f-abba-49a947017e97",
             "name": "1",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6025,7 +6025,7 @@
             "transceiver": null
           },
           {
-            "id": "02c0de0f-7c54-4e35-9834-ca218895b2ff",
+            "id": "dbc05455-6303-4e78-89ed-b470c0298889",
             "name": "2",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6048,7 +6048,7 @@
             "transceiver": null
           },
           {
-            "id": "250a2a04-1380-45cc-a5d6-dbb7931af54d",
+            "id": "55783143-4040-484d-a7aa-a73c6ea8f6d9",
             "name": "3",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6071,7 +6071,7 @@
             "transceiver": null
           },
           {
-            "id": "62df3c9c-94d8-4113-92e3-8c7ba520b07c",
+            "id": "a1869c82-f7e8-4152-abc9-8bfa9cdf97ef",
             "name": "4",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6094,7 +6094,7 @@
             "transceiver": null
           },
           {
-            "id": "6c0d380a-4a7c-4b9b-a518-ea97bd42e3e8",
+            "id": "3da90a6e-4774-443b-bd24-af5b25008f8c",
             "name": "5",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6117,7 +6117,7 @@
             "transceiver": null
           },
           {
-            "id": "558d9b84-92ea-4dd1-aab7-bf32a18d08ec",
+            "id": "ea8e53ae-bf53-48ee-84a2-c8896d9fdaf8",
             "name": "6",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6140,7 +6140,7 @@
             "transceiver": null
           },
           {
-            "id": "9add2d2f-4d18-48f6-b98b-669148c842a0",
+            "id": "344c0f7d-f6aa-426a-8943-4a173f76e13b",
             "name": "7",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6163,7 +6163,7 @@
             "transceiver": null
           },
           {
-            "id": "b9ef161c-bbb3-4906-acb4-b7dcfa5ee1d6",
+            "id": "16a036ae-4025-4482-9c15-d622fd2c6e1f",
             "name": "8",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6186,7 +6186,7 @@
             "transceiver": null
           },
           {
-            "id": "aa05e483-62a4-4606-ae21-029e1d8a7615",
+            "id": "83550ce8-ace6-423a-87cf-8551871e72d4",
             "name": "9",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6209,7 +6209,7 @@
             "transceiver": null
           },
           {
-            "id": "b01a0835-1dc9-439c-a828-87f0a64d60d7",
+            "id": "fd7f5506-8584-49bc-b745-bd148ff80e64",
             "name": "10",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6232,7 +6232,7 @@
             "transceiver": null
           },
           {
-            "id": "c1a362fa-c14d-4590-9734-63f30ce1986f",
+            "id": "4a77209e-8422-41dc-95b2-ed9d323b5045",
             "name": "11",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6255,7 +6255,7 @@
             "transceiver": null
           },
           {
-            "id": "b026aba5-9de5-4ccc-b73c-f2e22455f765",
+            "id": "4edfae6d-6844-4927-b47d-2dfd348c3570",
             "name": "12",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6278,7 +6278,7 @@
             "transceiver": null
           },
           {
-            "id": "c7b79086-b58d-4476-9707-54b63d5bfca6",
+            "id": "7e6c4503-5e80-43ee-9363-d46eb32b875f",
             "name": "13",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6301,7 +6301,7 @@
             "transceiver": null
           },
           {
-            "id": "3d2571b5-f517-4aac-a977-92738ce291a4",
+            "id": "f77ff7be-099e-4207-97e6-1ad8ec9970dd",
             "name": "14",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6324,7 +6324,7 @@
             "transceiver": null
           },
           {
-            "id": "3cffeeba-44df-4157-b9ef-923848104c07",
+            "id": "2ff6be67-50d6-4ffe-bd62-cad02643a2b2",
             "name": "15",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6347,7 +6347,7 @@
             "transceiver": null
           },
           {
-            "id": "c8fb62e9-4dc7-4858-9531-d9d7bbf903fb",
+            "id": "234aeb9d-3290-4aa4-b553-8bdcc4cdbffe",
             "name": "16",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6370,7 +6370,7 @@
             "transceiver": null
           },
           {
-            "id": "c9927497-2fe4-4b8c-bdd1-6a3850d49c4a",
+            "id": "928e58d3-49ab-49a1-9022-4ea5a00bfae5",
             "name": "17",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6393,7 +6393,7 @@
             "transceiver": null
           },
           {
-            "id": "2efceb91-3cdf-4ea4-88b3-9c61bc59e1f9",
+            "id": "c71b50d8-40e5-46de-8917-fb767cf932ca",
             "name": "18",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6416,7 +6416,7 @@
             "transceiver": null
           },
           {
-            "id": "64fe9c82-d6c5-4ba3-85c1-17b4fd2fe403",
+            "id": "0caaacda-0b23-49b1-a931-04b30ca14aff",
             "name": "19",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6439,7 +6439,7 @@
             "transceiver": null
           },
           {
-            "id": "697d96cb-e14d-4b88-aedb-b06ae715632f",
+            "id": "376cb0e8-fabd-4f08-b3b9-76c69ff41018",
             "name": "20",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6462,7 +6462,7 @@
             "transceiver": null
           },
           {
-            "id": "ef17f3bc-6e55-4bd6-aa9c-1acdf78ce0c3",
+            "id": "c4bc1974-66a1-430d-9567-526bade6120e",
             "name": "21",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6485,7 +6485,7 @@
             "transceiver": null
           },
           {
-            "id": "47f65c81-04af-4ccc-a062-a37465f7e411",
+            "id": "6ab7f88b-0c60-4830-a0f9-4747e30bc587",
             "name": "22",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6508,7 +6508,7 @@
             "transceiver": null
           },
           {
-            "id": "cf58f911-bf36-4142-9b3d-69d25d8c066c",
+            "id": "11e2dd13-5cb1-4aaf-802f-931769b8b67f",
             "name": "23",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6531,7 +6531,7 @@
             "transceiver": null
           },
           {
-            "id": "0773879d-aa41-4add-8187-ce2f9aaad59e",
+            "id": "3496ec7a-2b02-4873-8c56-c14764e131c9",
             "name": "24",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6576,7 +6576,7 @@
         "stp": "Unset"
       },
       {
-        "id": "d021322e-95db-4f33-b240-9d582be15d95",
+        "id": "e6f4466f-2c13-4751-8f7f-773a4ff4d908",
         "kind": "WallOutlet",
         "name": "WO-L2-01",
         "pos": {
@@ -6585,7 +6585,7 @@
         },
         "ports": [
           {
-            "id": "f51c6b74-4a69-4b92-9999-635ed62fe014",
+            "id": "2c348a06-a0f2-438d-836d-34b4846ba2fa",
             "name": "A",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6608,7 +6608,7 @@
             "transceiver": null
           },
           {
-            "id": "89336010-ba5d-48d4-a0d7-9495b7ab3666",
+            "id": "b86e5123-19e7-41b1-86aa-b4979dfe78db",
             "name": "B",
             "media": "Rj45",
             "speed_mbps": 10000,
@@ -6655,308 +6655,308 @@
     ],
     "links": [
       {
-        "id": "6cb0c30e-f0fc-4cfc-b6d8-68710d60711a",
+        "id": "6c120e82-4cb0-4140-b4fd-7668a37f8263",
         "a": {
-          "device": "17ffb7b5-bfe3-4172-adfd-e10f144eb08d",
-          "port": "193f0ba2-7ec8-47b5-98f0-4a708ee1e9a2"
+          "device": "ed6a2397-aef7-4bce-b980-c5d7e5a382b5",
+          "port": "6e53fcba-b1e1-4813-90bf-5bb6519e4ef6"
         },
         "b": {
-          "device": "e9448d61-c96a-4595-a2c0-3ced269ab4af",
-          "port": "86bbf9e5-556b-4dfa-ab14-f37dc9ab1273"
+          "device": "125c4899-ffca-4388-87e9-80df72bfe6cb",
+          "port": "5f66f594-9ca2-4910-92a2-1e8390e48811"
         },
         "cable": "Virtual",
         "length_m": null,
         "label": ""
       },
       {
-        "id": "0f25f6ac-4bd8-4579-a268-5d73ee29d97d",
+        "id": "998f5b28-9dc4-4153-918a-8f3b09163ce8",
         "a": {
-          "device": "e9448d61-c96a-4595-a2c0-3ced269ab4af",
-          "port": "e994743c-3cfa-42c2-bd72-881f8ffafaa3"
+          "device": "125c4899-ffca-4388-87e9-80df72bfe6cb",
+          "port": "37157c82-c955-4106-8ea5-9b2c1859393a"
         },
         "b": {
-          "device": "9c0e7859-1cc1-4d52-b9b1-75b78d3ecae1",
-          "port": "ea10929d-b6ed-4c57-868a-94c118b53e10"
+          "device": "4c46aaf2-8b29-499f-a108-a2c38f6109a4",
+          "port": "c669e9f0-ce4d-463d-9aac-b7ad10975bb9"
         },
         "cable": "Dac",
         "length_m": 1.0,
         "label": ""
       },
       {
-        "id": "a67f424a-6ef1-46c3-8495-3a8a1e4c762b",
+        "id": "1760acf6-94c9-47de-822e-6ae28b641c1e",
         "a": {
-          "device": "e9448d61-c96a-4595-a2c0-3ced269ab4af",
-          "port": "c15e8898-ce3f-46c9-8798-3462691b3668"
+          "device": "125c4899-ffca-4388-87e9-80df72bfe6cb",
+          "port": "d8b563fb-4740-4ef1-8de7-791f5bfc3c4e"
         },
         "b": {
-          "device": "09535fbd-25fa-42cf-96ff-c0d7a99e6613",
-          "port": "632fc079-4bcf-41a0-beb6-9f052176a4e5"
+          "device": "e9a3fb38-f293-4eb7-8545-af6e74b3b320",
+          "port": "71dc7eaa-b0e2-4671-aa89-6539c6829824"
         },
         "cable": "Om4",
         "length_m": 15.0,
         "label": ""
       },
       {
-        "id": "0900c94b-8455-4669-806a-d1c1b0972613",
+        "id": "ac526bdc-2a8a-407f-ba94-ad5c78a89e99",
         "a": {
-          "device": "9c0e7859-1cc1-4d52-b9b1-75b78d3ecae1",
-          "port": "47164093-d6ce-442e-9fc0-e8e5f2a910a5"
+          "device": "4c46aaf2-8b29-499f-a108-a2c38f6109a4",
+          "port": "19ede575-368e-4402-b770-d274b20e371d"
         },
         "b": {
-          "device": "df5700f7-216e-4a15-85d9-a5390498d94b",
-          "port": "628603aa-c01a-4295-98b8-9254a9420337"
+          "device": "83935e49-fd56-4ff6-ad09-aff2605b9712",
+          "port": "ff6780a2-433f-4d7c-90a0-61b4c333a0c4"
         },
         "cable": "Dac",
         "length_m": 2.0,
         "label": ""
       },
       {
-        "id": "2cbb57bb-9049-40ee-a141-d56615b54874",
+        "id": "17bca8ab-cdcc-45ec-9616-8fbb75322fcd",
         "a": {
-          "device": "9c0e7859-1cc1-4d52-b9b1-75b78d3ecae1",
-          "port": "e180a66f-8626-4003-b4b4-9f0ed519c580"
+          "device": "4c46aaf2-8b29-499f-a108-a2c38f6109a4",
+          "port": "d63af439-fc0e-4520-a50a-7de65c9d1633"
         },
         "b": {
-          "device": "004bbd91-48f3-4a5f-8595-5ac8aa44d6e3",
-          "port": "e2c192d1-812a-4935-8aa7-168d0e119770"
+          "device": "1f063a13-c3af-45e9-a5fd-d07cdb2310ff",
+          "port": "8624dd80-fe89-4203-ae9a-00a0d6cd2a19"
         },
         "cable": "Om4",
         "length_m": 45.0,
         "label": ""
       },
       {
-        "id": "5818ad36-7476-4c70-985e-2d623e3a29cf",
+        "id": "25860ef3-f1db-4328-ad1e-b1cf04df9e18",
         "a": {
-          "device": "9c0e7859-1cc1-4d52-b9b1-75b78d3ecae1",
-          "port": "6e4f5876-82b2-45e4-a09a-1c1aa2ec2616"
+          "device": "4c46aaf2-8b29-499f-a108-a2c38f6109a4",
+          "port": "9606709c-0db8-4bd8-a0d1-10ec15e8bd81"
         },
         "b": {
-          "device": "321a3e02-1067-4ae2-971b-bdb07878bb91",
-          "port": "960d4ea5-0bd0-49be-b44c-d8ccd8f59aa3"
+          "device": "fc515f09-d13c-456a-bcbd-402c145e2555",
+          "port": "88f27ddb-8463-45ed-bc98-5ed302c80927"
         },
         "cable": "Os2",
         "length_m": 2.0,
         "label": ""
       },
       {
-        "id": "144f9c6d-4367-4f65-ae4a-c754af6054a0",
+        "id": "2b6989a4-bd37-474d-9656-c3912b3342f6",
         "a": {
-          "device": "321a3e02-1067-4ae2-971b-bdb07878bb91",
-          "port": "960d4ea5-0bd0-49be-b44c-d8ccd8f59aa3"
+          "device": "fc515f09-d13c-456a-bcbd-402c145e2555",
+          "port": "88f27ddb-8463-45ed-bc98-5ed302c80927"
         },
         "b": {
-          "device": "b6592a7b-b484-45a3-99f6-d70015dcdd9e",
-          "port": "ee832372-5066-4ee5-ad22-18b856a4b976"
+          "device": "dccefa2a-d75d-43d1-a5f4-3de12b050790",
+          "port": "41e05a27-8223-42e7-a803-6cd75526f6e5"
         },
         "cable": "Os2",
         "length_m": 115.0,
         "label": ""
       },
       {
-        "id": "b72817a2-014e-4fc2-8363-d3104a197849",
+        "id": "f05cb985-6050-4537-aa08-1bb022c04d79",
         "a": {
-          "device": "b6592a7b-b484-45a3-99f6-d70015dcdd9e",
-          "port": "ee832372-5066-4ee5-ad22-18b856a4b976"
+          "device": "dccefa2a-d75d-43d1-a5f4-3de12b050790",
+          "port": "41e05a27-8223-42e7-a803-6cd75526f6e5"
         },
         "b": {
-          "device": "0a489bf4-46e0-4182-985a-43c64af244e7",
-          "port": "3f87e695-a738-4950-830e-70ce91839cd1"
+          "device": "3d4475ff-a04b-4ec2-81be-9bb67f9960e6",
+          "port": "d611d858-f365-4fa7-b032-e1ee27664452"
         },
         "cable": "Os2",
         "length_m": 3.0,
         "label": ""
       },
       {
-        "id": "3dd9788f-9c36-4574-80c0-067ea2bcf491",
+        "id": "d1423aba-f031-49d5-85ad-a3698e2810a3",
         "a": {
-          "device": "004bbd91-48f3-4a5f-8595-5ac8aa44d6e3",
-          "port": "c5d3f8ff-7c57-491e-9335-41a71b36c7a9"
+          "device": "1f063a13-c3af-45e9-a5fd-d07cdb2310ff",
+          "port": "f0e8bdd5-f212-440f-a913-571d2839bf1e"
         },
         "b": {
-          "device": "99fda29b-2082-4d0f-9f00-8939dbf645b2",
-          "port": "97cc7c49-3b6c-41a0-964a-b9c7e9bf05ca"
+          "device": "f5f8c19b-9c9a-4387-8d9a-60059eddbd35",
+          "port": "1513205d-013f-463a-8979-0765b1e791ac"
         },
         "cable": "Cat6A",
         "length_m": 32.0,
         "label": ""
       },
       {
-        "id": "e01cf097-32f9-4e6b-a493-7fa49631a866",
+        "id": "da3f8316-cc0f-4844-9c60-81019dd0fc7a",
         "a": {
-          "device": "004bbd91-48f3-4a5f-8595-5ac8aa44d6e3",
-          "port": "42079ddd-7f85-40e5-8134-c0e420f2125a"
+          "device": "1f063a13-c3af-45e9-a5fd-d07cdb2310ff",
+          "port": "d24d6a9c-e7a0-4c45-ab8c-8292bd680f1b"
         },
         "b": {
-          "device": "de99122c-bbc3-4b64-b427-e2d783049bb4",
-          "port": "121db30e-1a3c-41a2-a504-aad93b283e0f"
+          "device": "6c97ad89-fb89-4b9a-8088-29cd774924d7",
+          "port": "a45d4917-7556-465f-a21f-473317f75f3e"
         },
         "cable": "Cat6",
         "length_m": 1.0,
         "label": ""
       },
       {
-        "id": "3d8c1d64-6533-467d-9481-fdcede6ed33b",
+        "id": "52f17fb0-a0af-438f-8d16-a1a46087fcd3",
         "a": {
-          "device": "de99122c-bbc3-4b64-b427-e2d783049bb4",
-          "port": "121db30e-1a3c-41a2-a504-aad93b283e0f"
+          "device": "6c97ad89-fb89-4b9a-8088-29cd774924d7",
+          "port": "a45d4917-7556-465f-a21f-473317f75f3e"
         },
         "b": {
-          "device": "771cfabe-f21e-4df7-a60c-7a72d4836164",
-          "port": "513b0594-5a34-4a68-98b7-2d00fb15eb7c"
+          "device": "8a5a2d48-81fb-47b7-b2a5-3857a41079c7",
+          "port": "cfd4f364-acf1-4dd0-8c1b-58e6087beea9"
         },
         "cable": "Cat6A",
         "length_m": 42.0,
         "label": ""
       },
       {
-        "id": "7a40bfa2-6776-4981-b379-691a03f8606c",
+        "id": "0a35749e-1d0c-46b4-bc00-c0272e27f201",
         "a": {
-          "device": "771cfabe-f21e-4df7-a60c-7a72d4836164",
-          "port": "513b0594-5a34-4a68-98b7-2d00fb15eb7c"
+          "device": "8a5a2d48-81fb-47b7-b2a5-3857a41079c7",
+          "port": "cfd4f364-acf1-4dd0-8c1b-58e6087beea9"
         },
         "b": {
-          "device": "3c659aa5-cd5c-4f6a-ba7a-f7f724fe8e3f",
-          "port": "06c85cb9-f2d8-44fd-b199-5be9a9859b96"
+          "device": "bede667a-41aa-4c5f-bac0-0430acd3dec3",
+          "port": "d8756c75-83ac-4dbf-876b-8d1d5ba1f3d9"
         },
         "cable": "Cat6",
         "length_m": 3.0,
         "label": ""
       },
       {
-        "id": "2d1bc65b-8229-4c56-a397-95d6e5a3f7f0",
+        "id": "5ff0f003-d1b0-4b58-a5e2-eadeec4c270b",
         "a": {
-          "device": "de99122c-bbc3-4b64-b427-e2d783049bb4",
-          "port": "6b7baea8-9d85-47fd-84c0-f2d28b5bcaa5"
+          "device": "6c97ad89-fb89-4b9a-8088-29cd774924d7",
+          "port": "2de03785-7b3e-4ffa-899c-ebc7f827a5de"
         },
         "b": {
-          "device": "771cfabe-f21e-4df7-a60c-7a72d4836164",
-          "port": "271e2059-74ff-4766-bde6-9a72d8e173b6"
+          "device": "8a5a2d48-81fb-47b7-b2a5-3857a41079c7",
+          "port": "adbefc11-50b6-4f15-b5b2-9e10228bffdf"
         },
         "cable": "Cat6A",
         "length_m": 42.0,
         "label": ""
       },
       {
-        "id": "d14d7515-b87a-4c1b-9cae-e800d63fc601",
+        "id": "8bfc81fb-7d71-4251-a5b2-ec247ea713ed",
         "a": {
-          "device": "004bbd91-48f3-4a5f-8595-5ac8aa44d6e3",
-          "port": "adf418b5-9526-4edf-a5f3-e3f6217a48d8"
+          "device": "1f063a13-c3af-45e9-a5fd-d07cdb2310ff",
+          "port": "66b63c8e-cacd-4841-afd5-965683ca3d97"
         },
         "b": {
-          "device": "e477d9fc-1402-419d-ad1c-badd4b6967bb",
-          "port": "234c0b99-1570-44cb-acb2-ea7129efc68e"
+          "device": "54c1d57e-c456-44bd-b553-d4ab447c56c5",
+          "port": "37288841-2590-495f-a3ba-8548ca93fb67"
         },
         "cable": "Cat6",
         "length_m": null,
         "label": ""
       },
       {
-        "id": "9b868684-b150-44f5-b3ce-a124d34d11bc",
+        "id": "b5492327-affe-4bb1-b94f-49dfc2f06191",
         "a": {
-          "device": "004bbd91-48f3-4a5f-8595-5ac8aa44d6e3",
-          "port": "0f577d33-577a-41dd-91be-0ecfc92e7c96"
+          "device": "1f063a13-c3af-45e9-a5fd-d07cdb2310ff",
+          "port": "fb6eca04-6674-4d0f-bddc-7be64105f5b5"
         },
         "b": {
-          "device": "cbfabef3-de8f-4d5f-ae4c-9ebfabf29c54",
-          "port": "0b434aef-0c47-4067-8a24-bdb60e941e66"
+          "device": "dfd66822-0a69-452c-bf2f-89f1f1ddd8b8",
+          "port": "5f7b5ad6-c341-4369-82fc-59d633e22601"
         },
         "cable": "Cat6",
         "length_m": 60.0,
         "label": ""
       },
       {
-        "id": "00566f5e-3c4b-4738-8fdb-14b213b593bd",
+        "id": "080fa72d-08b0-4bc3-ac2c-b29c23ca96a4",
         "a": {
-          "device": "0a489bf4-46e0-4182-985a-43c64af244e7",
-          "port": "3ce0c0b0-a21d-4167-b43a-2ba5c18375de"
+          "device": "3d4475ff-a04b-4ec2-81be-9bb67f9960e6",
+          "port": "6889d222-ec85-4714-8277-7ac29e780f43"
         },
         "b": {
-          "device": "796e4bda-b8df-42b2-a9fe-32a7d5985db4",
-          "port": "e5bc1ef3-91a6-49ad-84d0-0c8600087007"
+          "device": "f82748a9-9657-45ea-949b-4874d91e5605",
+          "port": "d6f66cec-3079-482d-8eb3-ac87e92f4005"
         },
         "cable": "Cat6A",
         "length_m": 32.0,
         "label": ""
       },
       {
-        "id": "884fcdc1-4fae-4572-96e4-036a2c123bcb",
+        "id": "5c26658c-004d-4e87-804f-2a897e11a69b",
         "a": {
-          "device": "0a489bf4-46e0-4182-985a-43c64af244e7",
-          "port": "2ec92098-b70c-44e0-b18e-83b38a4bc0d4"
+          "device": "3d4475ff-a04b-4ec2-81be-9bb67f9960e6",
+          "port": "f3a34454-a084-4a6a-a19d-de0730cc4f4c"
         },
         "b": {
-          "device": "eeb24a70-9247-4610-8a8c-7432c4411d81",
-          "port": "86897971-8a0b-4401-a163-cec71947b606"
+          "device": "7401c63f-409d-40fc-9cec-7bd54b60e3c7",
+          "port": "923550e7-0af8-463f-abba-49a947017e97"
         },
         "cable": "Cat6",
         "length_m": 1.0,
         "label": ""
       },
       {
-        "id": "2631f101-4b44-43be-af82-5c669289f272",
+        "id": "df1538e8-6f55-4558-ab92-4c8873d63ff0",
         "a": {
-          "device": "eeb24a70-9247-4610-8a8c-7432c4411d81",
-          "port": "86897971-8a0b-4401-a163-cec71947b606"
+          "device": "7401c63f-409d-40fc-9cec-7bd54b60e3c7",
+          "port": "923550e7-0af8-463f-abba-49a947017e97"
         },
         "b": {
-          "device": "d021322e-95db-4f33-b240-9d582be15d95",
-          "port": "f51c6b74-4a69-4b92-9999-635ed62fe014"
+          "device": "e6f4466f-2c13-4751-8f7f-773a4ff4d908",
+          "port": "2c348a06-a0f2-438d-836d-34b4846ba2fa"
         },
         "cable": "Cat6A",
         "length_m": 42.0,
         "label": ""
       },
       {
-        "id": "e5764f1c-6e9f-4ec5-b424-fc5f45e3e170",
+        "id": "5f8524dc-408c-466b-afed-df6d97a52656",
         "a": {
-          "device": "d021322e-95db-4f33-b240-9d582be15d95",
-          "port": "f51c6b74-4a69-4b92-9999-635ed62fe014"
+          "device": "e6f4466f-2c13-4751-8f7f-773a4ff4d908",
+          "port": "2c348a06-a0f2-438d-836d-34b4846ba2fa"
         },
         "b": {
-          "device": "c9cc525b-0e03-4210-9528-325a3fa024ad",
-          "port": "dbc75786-e080-4f7a-bbf3-d009d1c59ead"
+          "device": "7a73a6fa-5428-484a-b05c-12bb48525206",
+          "port": "345b28bc-406b-4511-bff6-09df27642b04"
         },
         "cable": "Cat6",
         "length_m": 3.0,
         "label": ""
       },
       {
-        "id": "cd6092bc-7a1b-4675-be3e-03aa26d63efd",
+        "id": "8eee88b4-1ec7-4606-85b5-5bb5184b1e57",
         "a": {
-          "device": "eeb24a70-9247-4610-8a8c-7432c4411d81",
-          "port": "02c0de0f-7c54-4e35-9834-ca218895b2ff"
+          "device": "7401c63f-409d-40fc-9cec-7bd54b60e3c7",
+          "port": "dbc05455-6303-4e78-89ed-b470c0298889"
         },
         "b": {
-          "device": "d021322e-95db-4f33-b240-9d582be15d95",
-          "port": "89336010-ba5d-48d4-a0d7-9495b7ab3666"
+          "device": "e6f4466f-2c13-4751-8f7f-773a4ff4d908",
+          "port": "b86e5123-19e7-41b1-86aa-b4979dfe78db"
         },
         "cable": "Cat6A",
         "length_m": 42.0,
         "label": ""
       },
       {
-        "id": "a4213580-b9db-4761-befd-4c3a3dc2d5f1",
+        "id": "591ade38-1714-4d6c-8619-a4b6522bf3ff",
         "a": {
-          "device": "0a489bf4-46e0-4182-985a-43c64af244e7",
-          "port": "fc441355-5a74-4b03-b982-023e35b9f5a2"
+          "device": "3d4475ff-a04b-4ec2-81be-9bb67f9960e6",
+          "port": "497364cd-dea8-4c0e-a704-1559ef830de5"
         },
         "b": {
-          "device": "ce313ccb-4011-4106-9f7b-55d54e25493a",
-          "port": "8e82098b-c396-43da-a3e6-ef687de4433c"
+          "device": "284567a9-6b5f-4ed6-8a0f-86a1536a97f4",
+          "port": "6c44da20-51ec-4d65-9627-382d5e72d7d8"
         },
         "cable": "Cat6",
         "length_m": null,
         "label": ""
       },
       {
-        "id": "cca93047-3dfb-4598-831d-c29c75c8ca37",
+        "id": "0eb2d1fa-f46f-4392-829b-ec374f23f940",
         "a": {
-          "device": "0a489bf4-46e0-4182-985a-43c64af244e7",
-          "port": "8328bcdc-822e-4ab2-be08-68bbf2e9e396"
+          "device": "3d4475ff-a04b-4ec2-81be-9bb67f9960e6",
+          "port": "78cc53f0-ea42-4e02-abe8-75721d61cb3a"
         },
         "b": {
-          "device": "bae0fe2c-75df-4749-96bc-caece613e406",
-          "port": "cd952e66-55c3-44e4-98d8-8f5e2bb0db16"
+          "device": "4c85e121-74c4-45be-903b-e4c4431e02ab",
+          "port": "4f273cf7-d578-4167-9463-85ffc407e35f"
         },
         "cable": "Cat6",
         "length_m": 60.0,
@@ -6965,7 +6965,7 @@
     ],
     "areas": [
       {
-        "id": "3487f5f3-848c-4478-9f31-fb7fbac6dc9d",
+        "id": "82a0d01e-55dd-493d-9114-2ddb895fdff6",
         "kind": "Site",
         "name": "HQ — Singapore",
         "rect": {
@@ -6987,7 +6987,7 @@
         "rack_units": 42
       },
       {
-        "id": "f8b6e73c-95c8-4964-a5d1-7f515c3b50d8",
+        "id": "9f3543f8-b9fe-4f38-ac2a-97e0f51e793d",
         "kind": "Rack",
         "name": "MDF Rack A",
         "rect": {
@@ -7009,7 +7009,7 @@
         "rack_units": 42
       },
       {
-        "id": "cdc97d93-6fe5-46fb-a488-31937d53be77",
+        "id": "25ed9b5e-19f8-41bd-b831-846ea55074b9",
         "kind": "SecurityZone",
         "name": "DMZ",
         "rect": {
@@ -7031,7 +7031,7 @@
         "rack_units": 42
       },
       {
-        "id": "80bf1df9-f1c7-4ef1-b5d6-d464578f862f",
+        "id": "7cedf5ef-90bc-44c6-85f7-a5bb252cbd41",
         "kind": "Floor",
         "name": "Level 1",
         "rect": {
@@ -7053,7 +7053,7 @@
         "rack_units": 42
       },
       {
-        "id": "ce271ed8-f06e-419d-a9b0-e6923190ca32",
+        "id": "b5e6ce80-6e4a-4469-b696-91b0b98cbfad",
         "kind": "Floor",
         "name": "Level 2",
         "rect": {
@@ -7077,7 +7077,7 @@
     ],
     "vlans": [
       {
-        "id": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+        "id": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
         "tag": 10,
         "name": "Management",
         "purpose": "Network device and server management",
@@ -7089,7 +7089,7 @@
         "notes": ""
       },
       {
-        "id": "6a18d0d5-1c49-47b0-8f72-fad99023a8ce",
+        "id": "5cde5e44-3777-4e22-809e-005123bd2c06",
         "tag": 20,
         "name": "Staff",
         "purpose": "Wired and wireless staff clients",
@@ -7101,7 +7101,7 @@
         "notes": ""
       },
       {
-        "id": "72fec5e0-c9be-4e4b-ac33-a0a6b0a6b3dc",
+        "id": "fef9b16a-51ce-46db-822e-6c7c816bba8d",
         "tag": 30,
         "name": "Voice",
         "purpose": "IP phones",
@@ -7113,7 +7113,7 @@
         "notes": ""
       },
       {
-        "id": "4fad8bdd-44cd-4cf4-b15e-f04c4b6fee6b",
+        "id": "3cc2ea99-c34a-4b2e-a178-5a2689298745",
         "tag": 40,
         "name": "CCTV",
         "purpose": "IP cameras and NVR",
@@ -7125,7 +7125,7 @@
         "notes": ""
       },
       {
-        "id": "9619a2f6-db5c-4a6d-8858-c2d76d869c00",
+        "id": "11e2efd8-c2c6-424c-8e43-d5439f67f4e3",
         "tag": 50,
         "name": "Guest",
         "purpose": "Internet-only guest Wi-Fi",
@@ -7139,7 +7139,7 @@
     ],
     "subnets": [
       {
-        "id": "fc92b9d5-7060-4b66-a09a-634a59eaa89f",
+        "id": "93a56b48-a623-4759-82fd-877e0d22940c",
         "name": "HQ block",
         "net": "10.10.0.0/16",
         "vlan": null,
@@ -7149,7 +7149,7 @@
         "notes": ""
       },
       {
-        "id": "acad26cf-ae70-4fc8-8e1f-e30b88338f4e",
+        "id": "24707c8f-6c52-402d-aee1-79d93dd7b4ce",
         "name": "Core transit",
         "net": "10.10.0.0/30",
         "vlan": null,
@@ -7159,20 +7159,20 @@
         "notes": ""
       },
       {
-        "id": "75d9f023-5120-40d7-ac74-a74af2d193bb",
+        "id": "5ee594c5-8da3-4e83-80e8-a3928829cf57",
         "name": "Management",
         "net": "10.10.10.0/24",
-        "vlan": "3c6e8207-5eea-49c6-b6e2-0bcc311a268f",
+        "vlan": "b555b14b-4340-4294-8ae3-cce39dfb10f4",
         "gateway": "10.10.10.1",
         "dhcp": null,
         "reserved": [],
         "notes": ""
       },
       {
-        "id": "b247b10c-fb7d-46e6-9d0e-c1c4c46f0013",
+        "id": "9cc860a0-0dec-47f5-8acf-bb04866743b8",
         "name": "Staff",
         "net": "10.10.20.0/24",
-        "vlan": "6a18d0d5-1c49-47b0-8f72-fad99023a8ce",
+        "vlan": "5cde5e44-3777-4e22-809e-005123bd2c06",
         "gateway": "10.10.20.1",
         "dhcp": {
           "start": "10.10.20.128",
@@ -7185,10 +7185,10 @@
         "notes": ""
       },
       {
-        "id": "25e032e1-ed13-4bc3-80a4-612e7346aeaf",
+        "id": "f6875c0c-d7c2-428e-be2a-92dfdd8b223b",
         "name": "Voice",
         "net": "10.10.30.0/24",
-        "vlan": "72fec5e0-c9be-4e4b-ac33-a0a6b0a6b3dc",
+        "vlan": "fef9b16a-51ce-46db-822e-6c7c816bba8d",
         "gateway": "10.10.30.1",
         "dhcp": {
           "start": "10.10.30.128",
@@ -7201,20 +7201,20 @@
         "notes": ""
       },
       {
-        "id": "8e2eaa2f-3a85-4b35-a5d3-a88197c9be49",
+        "id": "50b788c9-5e4d-4f50-a4ea-10ad01e46839",
         "name": "CCTV",
         "net": "10.10.40.0/24",
-        "vlan": "4fad8bdd-44cd-4cf4-b15e-f04c4b6fee6b",
+        "vlan": "3cc2ea99-c34a-4b2e-a178-5a2689298745",
         "gateway": "10.10.40.1",
         "dhcp": null,
         "reserved": [],
         "notes": ""
       },
       {
-        "id": "1103fa34-9f0d-4bb2-a0f8-d79984914403",
+        "id": "653d159f-69ec-4bed-92f1-3c7cdd93ffb3",
         "name": "Guest",
         "net": "10.10.50.0/23",
-        "vlan": "9619a2f6-db5c-4a6d-8858-c2d76d869c00",
+        "vlan": "11e2efd8-c2c6-424c-8e43-d5439f67f4e3",
         "gateway": "10.10.50.1",
         "dhcp": {
           "start": "10.10.51.0",
@@ -7227,7 +7227,7 @@
         "notes": ""
       },
       {
-        "id": "ba150e7d-fcae-4077-afcf-ba5cbdb8b24f",
+        "id": "cdbc9631-3c85-4fce-8f9c-c1c603a8cba3",
         "name": "DMZ",
         "net": "172.16.99.0/28",
         "vlan": null,
@@ -7237,7 +7237,7 @@
         "notes": ""
       },
       {
-        "id": "38301885-e54f-43ed-a3ea-794839644deb",
+        "id": "181401a4-5cf5-449c-81c2-8506727058c0",
         "name": "ISP handoff",
         "net": "203.0.113.8/29",
         "vlan": null,
@@ -7249,9 +7249,9 @@
     ],
     "ssids": [
       {
-        "id": "44678ce0-7a0b-44b1-81b2-ed7433dd8636",
+        "id": "3b0630b8-4c45-44cb-afad-4984f0fa7f68",
         "name": "Corescale",
-        "vlan": "6a18d0d5-1c49-47b0-8f72-fad99023a8ce",
+        "vlan": "5cde5e44-3777-4e22-809e-005123bd2c06",
         "security": "Wpa3Enterprise",
         "bands": [
           "G5",
@@ -7261,9 +7261,9 @@
         "notes": ""
       },
       {
-        "id": "896b327a-5fc4-4b18-bce8-bfbdcd70a45a",
+        "id": "acb0cf5c-4152-4e99-ab6c-cc544f0782a6",
         "name": "Corescale-Guest",
-        "vlan": "9619a2f6-db5c-4a6d-8858-c2d76d869c00",
+        "vlan": "11e2efd8-c2c6-424c-8e43-d5439f67f4e3",
         "security": "Owe",
         "bands": [
           "G2_4",

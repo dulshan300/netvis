@@ -379,7 +379,7 @@ pub fn fibre(ui: &mut Ui, st: &mut State) {
     ui.horizontal(|ui| {
         ui.label("Assume");
         ui.add(DragValue::new(&mut t.project_connectors).range(0..=12));
-        ui.label("connector pairs per link and the margin above");
+        ui.label("connector pairs for direct cables; patched runs count one per panel port");
     });
     let rows = fibre::project_links(&st.doc.project, t.project_connectors, t.input.margin_db);
     if rows.is_empty() {

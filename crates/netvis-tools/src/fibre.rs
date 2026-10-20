@@ -108,34 +108,44 @@ pub fn max_length_m(i: &LossInput, limit_db: f32) -> Option<f32> {
     (left > 0.0).then(|| left / i.db_per_km * 1000.0)
 }
 
-/// A fibre link in the project with a known length and optic.
+/// A fibre run in the project (one cable, or several through patch panels).
 #[derive(Debug, Clone, PartialEq)]
 pub struct ProjectFibre {
+    /// First cable of the run (for selecting it).
     pub link: LinkId,
     pub label: String,
     pub cable: CableKind,
+    /// Total length, when every cable in the run has one.
     pub length_m: Option<f32>,
     pub optic: Option<&'static Transceiver>,
+    /// Mated connector pairs counted for the run.
+    pub connectors: u32,
     pub budget: Option<LossBudget>,
     pub limit_db: Option<f32>,
 }
 
-/// Loss budget for every fibre link, assuming `connectors` mated pairs and
-/// no splices (patch panel at each end = 2).
-pub fn project_links(p: &Project, connectors: u32, margin_db: f32) -> Vec<ProjectFibre> {
+/// Loss budget for every fibre run. Runs through patch panels count one
+/// mated pair per panel port crossed; direct cables use `direct_connectors`
+/// (2 = a patch panel at each end that isn't drawn).
+pub fn project_links(p: &Project, direct_connectors: u32, margin_db: f32) -> Vec<ProjectFibre> {
+    let name = |e: netvis_core::Endpoint| {
+        p.device(e.device)
+            .map(|d| format!("{}:{}", d.name, d.port(e.port).map(|x| x.name.as_str()).unwrap_or("?")))
+            .unwrap_or_else(|| "?".into())
+    };
     let mut out = Vec::new();
-    for l in p.links.iter().filter(|l| l.cable.is_fibre()) {
-        let name = |e: netvis_core::Endpoint| {
-            p.device(e.device)
-                .map(|d| format!("{}:{}", d.name, d.port(e.port).map(|x| x.name.as_str()).unwrap_or("?")))
-                .unwrap_or_else(|| "?".into())
-        };
-        let optic = [l.a, l.b].iter().find_map(|e| {
+    for c in p.circuits() {
+        let links: Vec<_> = c.links.iter().filter_map(|id| p.link(*id)).collect();
+        let Some(first) = links.iter().find(|l| l.cable.is_fibre()) else { continue };
+        let cable = first.cable;
+        let optic = [c.a, c.b].iter().find_map(|e| {
             let port = p.device(e.device)?.port(e.port)?;
             netvis_catalog::transceiver::transceiver(port.transceiver.as_deref()?)
         });
-        let limit_db = optic.and_then(|t| optic_limit_db(t, l.cable));
-        let budget = match (l.length_m, optic.and_then(|t| attenuation_db_per_km(l.cable, t.wavelength_nm))) {
+        let connectors = if c.via.is_empty() { direct_connectors } else { c.via.len() as u32 };
+        let length_m = c.length_m(p);
+        let limit_db = optic.and_then(|t| optic_limit_db(t, cable));
+        let budget = match (length_m, optic.and_then(|t| attenuation_db_per_km(cable, t.wavelength_nm))) {
             (Some(len), Some(att)) => Some(budget(&LossInput {
                 length_m: len,
                 db_per_km: att,
@@ -147,12 +157,14 @@ pub fn project_links(p: &Project, connectors: u32, margin_db: f32) -> Vec<Projec
             })),
             _ => None,
         };
+        let via = if c.via.is_empty() { String::new() } else { format!(" (via {})", c.via.iter().map(|e| name(*e)).collect::<Vec<_>>().join(", ")) };
         out.push(ProjectFibre {
-            link: l.id,
-            label: format!("{} ↔ {}", name(l.a), name(l.b)),
-            cable: l.cable,
-            length_m: l.length_m,
+            link: first.id,
+            label: format!("{} ↔ {}{via}", name(c.a), name(c.b)),
+            cable,
+            length_m,
             optic,
+            connectors,
             budget,
             limit_db,
         });
@@ -194,5 +206,43 @@ mod tests {
                 assert!(optic_limit_db(t, *c).is_some(), "{} on {c:?}", t.id);
             }
         }
+    }
+
+    #[test]
+    fn patched_runs_count_panel_connectors() {
+        use netvis_core::{DeviceKind, Endpoint, PortMedia, Pos};
+        let mut p = Project::default();
+        let mut add = |k| {
+            let (id, e) = p.add_device_edit(k, Pos::new(0.0, 0.0));
+            e.apply(&mut p);
+            id
+        };
+        let (a, f1, f2, b) = (add(DeviceKind::SwitchL3), add(DeviceKind::PatchPanel), add(DeviceKind::PatchPanel), add(DeviceKind::SwitchL2));
+        for f in [f1, f2] {
+            for port in &mut p.device_mut(f).unwrap().ports {
+                port.media = PortMedia::Lc;
+            }
+        }
+        let sfp = |p: &Project, d| p.device(d).unwrap().ports.iter().find(|x| x.media == PortMedia::SfpPlus).unwrap().id;
+        let first = |p: &Project, d: netvis_core::DeviceId| p.device(d).unwrap().ports[0].id;
+        let (pa, pb) = (sfp(&p, a), sfp(&p, b));
+        let (p1, p2) = (first(&p, f1), first(&p, f2));
+        for (x, y, len) in [((a, pa), (f1, p1), 2.0), ((f1, p1), (f2, p2), 300.0), ((f2, p2), (b, pb), 2.0)] {
+            let (_, e) = p.add_link_edit(Endpoint { device: x.0, port: x.1 }, Endpoint { device: y.0, port: y.1 }).unwrap();
+            e.apply(&mut p);
+            let l = p.links.last_mut().unwrap();
+            l.cable = CableKind::Os2;
+            l.length_m = Some(len);
+        }
+        for (d, port) in [(a, pa), (b, pb)] {
+            p.device_mut(d).unwrap().ports.iter_mut().find(|x| x.id == port).unwrap().transceiver = Some("sfpp-10g-lr".into());
+        }
+        let runs = project_links(&p, 2, 0.0);
+        assert_eq!(runs.len(), 1, "one run, not three cables");
+        let r = &runs[0];
+        assert_eq!((r.length_m, r.connectors), (Some(304.0), 2));
+        assert!(r.label.contains("via PP-01:1, PP-02:1"), "{}", r.label);
+        let b = r.budget.unwrap();
+        assert!((b.total_db() - (0.304 * 0.4 + 2.0 * CONNECTOR_DB)).abs() < 1e-4);
     }
 }

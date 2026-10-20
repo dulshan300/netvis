@@ -56,7 +56,14 @@ cargo test --workspace
 cargo clippy --workspace --all-targets
 ```
 
-`cargo run -p netvis-core --example sample` regenerates `samples/corescale-hq.netvis`.
+### Sample projects
+
+| File | What it is | Size |
+|---|---|---|
+| `samples/corescale-hq.netvis` | Small head office: firewall, core, two floors, DMZ, one rack, a fibre riser and patched desks | 23 devices, 21 cables |
+| `samples/corescale-campus.netvis` | Campus: data centre with dual ISPs, a core pair in a LAG, VM hosts and storage dual-homed to both cores, a DMZ; Building A (3 floors) and B (2 floors), each floor with an IDF rack, two access switches, copper and LC panels, eight desks on wall outlets, three APs, cameras and a printer; single-mode risers through fibre panels; every cable labelled | 176 devices, 326 cables, 156 runs, 63-page report |
+
+Both samples pass every design rule, and a test enforces it. Regenerate them with `cargo run -p netvis-core --example sample` and `cargo run -p netvis-core --example sample_campus`. The generators build the projects through the same edit and auto-assign code the app uses.
 
 ## Using the canvas
 

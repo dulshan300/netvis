@@ -7,11 +7,11 @@ fn main() {
     let path = std::env::args().nth(1).expect("usage: report <file.netvis>");
     let p = netvis_core::io::load(std::path::Path::new(&path)).expect("readable project");
 
-    println!("Fibre links (2 connector pairs, 1 dB margin):");
+    println!("Fibre runs (panel ports counted as connector pairs, 2 for direct cables, 1 dB margin):");
     for r in fibre::project_links(&p, 2, 1.0) {
         let loss = r.budget.map(|b| format!("{:.2} dB", b.total_db())).unwrap_or_else(|| "—".into());
         let limit = r.limit_db.map(|l| format!("{l:.2} dB")).unwrap_or_else(|| "—".into());
-        println!("  {:40} {:8} {:>7} m  {:14} loss {loss:>9} / allowed {limit}", r.label, r.cable.label(), r.length_m.unwrap_or(0.0), r.optic.map(|o| o.name).unwrap_or("—"));
+        println!("  {:68} {:8} {:>7} m  {}×  {:14} loss {loss:>9} / allowed {limit}", r.label, r.cable.label(), r.length_m.unwrap_or(0.0), r.connectors, r.optic.map(|o| o.name).unwrap_or("—"));
     }
 
     println!("\nOversubscription:");

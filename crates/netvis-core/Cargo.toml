@@ -16,3 +16,5 @@ thiserror.workspace = true
 [dev-dependencies]
 # Used by the sample generator to report remaining issues.
 netvis-validate.workspace = true
+# Used by the campus sample to label cables.
+netvis-tools.workspace = true
