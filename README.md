@@ -2,7 +2,7 @@
 
 Network planning tool for Windows, written in Rust (egui/eframe). It's built for Corescale.
 
-**Status:** Phases 0–2 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM and interface configuration.
+**Status:** Phases 0–3 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, and the physical layer (cables, optics, PoE, racks) with live validation.
 
 ## Build and run
 
@@ -82,19 +82,35 @@ When nothing is selected, the Inspector edits project details. With one item sel
 
 Deleting a VLAN clears every reference to it on ports, SVIs, subnets and SSIDs, in one step you can undo.
 
+## Physical layer
+
+- **Device models:** pick one under General → Hardware to set the port layout, rack height, power draw and PoE budget in one step. The library is vendor-neutral and lives in [crates/netvis-catalog/data/models.json](crates/netvis-catalog/data/models.json); edit that file to add your own models. Ports with the same name keep their cabling and configuration, and the inspector warns before any links would be removed.
+- **Transceivers:** each SFP/QSFP cage has a module picker (SX/LX/ZX, 10G SR/LR/ER, 25G, 40G SR4/LR4, 100G SR4/CWDM4/LR4, plus 1G and 10G copper SFP modules). Older modules work in newer cages (SFP in SFP+, QSFP+ in QSFP28).
+- **Cable checks:**
+  - **Media:** fibre into an RJ45 port, copper into an empty SFP cage, a DAC on an RJ45 port, a wireless link on a wired port.
+  - **Optics:** a module that doesn't fit its cage, mismatched optics (SR at one end, LR at the other), an optic on the wrong fibre type.
+  - **Speed:** mismatches between the two ends. Optics and DACs are errors because they don't auto-negotiate. On copper it's a warning between two network devices, a note when a switch port limits an AP or end device, and nothing when the end device is simply the slower side.
+  - **Length:** checked against the cable's rated length at the link speed (e.g. Cat6 at 10G is limited to 55 m) and against the optics' reach.
+  - **Duplex:** mismatches, and one end forced to full while the other auto-negotiates.
+- **PoE:** each switch's budget is the sum of what its PSE ports deliver to the devices they power. A device uses its measured draw if one is set, otherwise its class maximum, scaled up for worst-case cable loss. Over the budget is an error; over 90% is a warning. A device whose class is higher than its switch port provides gets a warning, as does a powered device on a port with no PoE. Patch panels count as passive and are skipped.
+- **Racks:** every Rack area on the canvas is a rack, and the Racks tab shows its elevation. Drag devices to move them (the outline turns green when the slot is free), right-click to remove one, and place unmounted devices with one click or **Auto-place** (network gear from the top; servers, storage and UPS from the bottom). It reports overlaps, devices that don't fit the rack, and devices drawn in a rack but not placed in it. Each rack shows its power load against its UPS capacity (warning above 80%, error above 100%).
+- **Issues tab:** every finding, filterable by severity. Click one to select and centre the item involved. The inspector also lists the findings for the selected item, and the canvas marks devices and links that have errors or warnings with red or amber badges.
+
 Autosave runs every 90 s while there are unsaved changes. If the app wasn't closed cleanly, it offers to recover the autosave on the next start.
 
 ## Workspace layout
 
 ```
 crates/
-  netvis-ip/     IPv4/IPv6 subnet math, VLSM, summarisation, next-free search — pure, unit-tested
-  netvis-core/   data model, VLANs/subnets/IPAM, undo/redo (Edit + History), .netvis file I/O — no UI, unit-tested
-  netvis-app/    eframe GUI: docking shell, canvas, panels, dialogs
+  netvis-ip/       IPv4/IPv6 subnet math, VLSM, summarisation, next-free search — pure, unit-tested
+  netvis-catalog/  physical-layer reference data: media, cable reach, transceivers, PoE, device models (JSON)
+  netvis-core/     data model, VLANs/subnets/IPAM, hardware/racks/PoE, undo/redo, .netvis file I/O — no UI
+  netvis-validate/ design-rule engine (cabling, power, racks) producing Issues
+  netvis-app/      eframe GUI: docking shell, canvas, panels, dialogs
 samples/         example project
 ```
 
-New crates are added in the phase that needs them (`netvis-validate`, `netvis-render`, `netvis-report`, …).
+New crates are added in the phase that needs them (`netvis-render`, `netvis-report`, …).
 
 ## File format
 
@@ -106,8 +122,8 @@ A `.netvis` file is pretty-printed JSON inside a small envelope: `{"format":"net
 |---|---|
 | 0–1 ✅ | Shell, docking layout, light/dark themes, device palette, canvas, save/load, undo/redo |
 | 2 ✅ | VLANs, subnets, IPAM, per-interface IP configuration, auto-assign |
-| 3 | Cable and transceiver catalogue, cable validation, PoE budget, racks |
-| 4 | Conflict engine and Issues panel with auto-fixes |
+| 3 ✅ | Cable and transceiver catalogue, cable validation, PoE budget, racks |
+| 4 | IP/VLAN/Wi-Fi conflict rules and one-click auto-fixes (the Issues panel and engine already exist) |
 | 5 | IT tools panel (calculators, OUI lookup, port reference, BOM) |
 | 6 | Patch schedule and port map |
 | 7 | PDF report (Corescale cover, TOC, vector diagrams, tables) |

@@ -224,9 +224,14 @@ impl Project {
         for d in &self.devices {
             if sel.devices.contains(&d.id) {
                 edits.push(Edit::Device { id: d.id, before: Some(d.clone()), after: None });
-            } else if !sel.vlans.is_empty() {
+            } else {
                 let mut after = d.clone();
-                if after.forget_vlans(&sel.vlans) {
+                let mut changed = !sel.vlans.is_empty() && after.forget_vlans(&sel.vlans);
+                if after.hw.rack.is_some_and(|m| sel.areas.contains(&m.rack)) {
+                    after.hw.rack = None;
+                    changed = true;
+                }
+                if changed {
                     edits.push(Edit::Device { id: d.id, before: Some(d.clone()), after: Some(after) });
                 }
             }

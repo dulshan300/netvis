@@ -57,6 +57,13 @@ pub struct Area {
     pub color: [u8; 3],
     #[serde(default)]
     pub notes: String,
+    /// Height of the rack in units (used when `kind` is `Rack`).
+    #[serde(default = "default_rack_units")]
+    pub rack_units: u8,
+}
+
+fn default_rack_units() -> u8 {
+    42
 }
 
 impl Area {
@@ -70,6 +77,7 @@ impl Area {
             rect,
             color: kind.default_color(),
             notes: String::new(),
+            rack_units: default_rack_units(),
         }
     }
 }

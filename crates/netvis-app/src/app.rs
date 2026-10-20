@@ -13,7 +13,7 @@ use crate::state::{Action, Document, Settings, State};
 use crate::theme::{self, APP_NAME, BRAND_NAME, ThemeChoice};
 
 const SETTINGS_KEY: &str = "netvis.settings";
-const DOCK_KEY: &str = "netvis.dock.v2";
+const DOCK_KEY: &str = "netvis.dock.v3";
 const AUTOSAVE_SECS: f64 = 90.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -25,6 +25,7 @@ pub enum Tab {
     Issues,
     IpPlan,
     Vlans,
+    Racks,
 }
 
 impl Tab {
@@ -37,6 +38,7 @@ impl Tab {
             Tab::Issues => (icons::LIST_CHECKS, "Issues"),
             Tab::IpPlan => (icons::TREE_STRUCTURE, "IP Plan"),
             Tab::Vlans => (icons::TAG, "VLANs & Wi-Fi"),
+            Tab::Racks => (icons::GRID_NINE, "Racks"),
         };
         format!("{icon}  {name}")
     }
@@ -47,7 +49,7 @@ fn default_layout() -> DockState<Tab> {
     let surface = dock.main_surface_mut();
     let [canvas, _inspector] = surface.split_right(NodeIndex::root(), 0.77, vec![Tab::Inspector]);
     let [canvas, _left] = surface.split_left(canvas, 0.22, vec![Tab::Toolbox, Tab::Outline]);
-    surface.split_below(canvas, 0.68, vec![Tab::IpPlan, Tab::Vlans, Tab::Issues]);
+    surface.split_below(canvas, 0.68, vec![Tab::Issues, Tab::IpPlan, Tab::Vlans, Tab::Racks]);
     dock
 }
 
@@ -146,6 +148,8 @@ impl NetVisApp {
             let want = match tab.as_str() {
                 "vlans" => Some(Tab::Vlans),
                 "issues" => Some(Tab::Issues),
+                "racks" => Some(Tab::Racks),
+                "ipplan" => Some(Tab::IpPlan),
                 _ => None,
             };
             if let Some(t) = want
@@ -707,6 +711,22 @@ impl egui_dock::TabViewer for Tabs<'_> {
     }
 
     fn title(&mut self, tab: &mut Tab) -> egui::WidgetText {
+        if *tab == Tab::Issues {
+            let [e, w, _] = self.st.issue_counts();
+            if e + w > 0 {
+                let mut job = egui::text::LayoutJob::default();
+                let font = egui::TextStyle::Button.resolve(&egui::Style::default());
+                let plain = egui::TextFormat { font_id: font.clone(), color: egui::Color32::GRAY, ..Default::default() };
+                job.append(&tab.title(), 0.0, plain);
+                for (n, c) in [(e, crate::widgets::ERROR), (w, crate::widgets::WARN)] {
+                    if n > 0 {
+                        let f = egui::TextFormat { font_id: font.clone(), color: c, ..Default::default() };
+                        job.append(&format!("  {n}"), 0.0, f);
+                    }
+                }
+                return job.into();
+            }
+        }
         tab.title().into()
     }
 
@@ -721,6 +741,7 @@ impl egui_dock::TabViewer for Tabs<'_> {
             Tab::Inspector => panels::inspector(ui, self.st),
             Tab::Issues => panels::issues(ui, self.st),
             Tab::IpPlan => panels::ip_plan(ui, self.st),
+            Tab::Racks => panels::racks(ui, self.st),
             Tab::Vlans => panels::vlans(ui, self.st),
             Tab::Canvas => unreachable!(),
         });
@@ -753,6 +774,7 @@ impl eframe::App for NetVisApp {
         }
 
         self.shortcuts(&ctx);
+        self.st.refresh_issues();
 
         egui::Panel::top("menu").show(ui, |ui| self.menu_bar(ui));
         egui::Panel::top("toolbar").show(ui, |ui| self.toolbar(ui));

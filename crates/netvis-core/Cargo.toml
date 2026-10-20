@@ -7,7 +7,12 @@ license.workspace = true
 
 [dependencies]
 netvis-ip.workspace = true
+netvis-catalog.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 uuid.workspace = true
 thiserror.workspace = true
+
+[dev-dependencies]
+# Used by the sample generator to report remaining issues.
+netvis-validate.workspace = true

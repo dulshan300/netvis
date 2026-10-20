@@ -7,6 +7,7 @@ pub mod area;
 pub mod device;
 pub mod edit;
 pub mod geom;
+pub mod hardware;
 pub mod iface;
 pub mod ids;
 pub mod io;
@@ -25,6 +26,8 @@ pub use area::{Area, AreaKind};
 pub use device::{Device, DeviceCategory, DeviceKind};
 pub use edit::{Edit, History};
 pub use geom::{Pos, Rect};
+pub use hardware::{Hardware, Mounted, PoeLoad, PoeReport, RackMount, RackPower};
+pub use netvis_catalog as catalog;
 pub use iface::{
     AddrKind, AllowedVlans, Duplex, IfAddr, IfaceKey, InterfaceConfig, L3Config, LogicalInterface, LogicalKind,
     RadioConfig, SwitchportMode, WifiStandard,

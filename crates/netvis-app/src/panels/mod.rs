@@ -2,6 +2,7 @@
 
 mod inspector;
 mod ipplan;
+mod racks;
 mod vlans;
 pub mod vlsm;
 
@@ -9,6 +10,7 @@ pub mod vlsm;
 pub use inspector::debug_set_device_tab;
 pub use inspector::inspector;
 pub use ipplan::ip_plan;
+pub use racks::racks;
 pub use vlans::vlans;
 
 use egui::{Color32, RichText, Sense, Ui, vec2};
@@ -177,18 +179,69 @@ pub fn outline(ui: &mut Ui, st: &mut State) {
 
 // ---- issues --------------------------------------------------------------
 
-pub fn issues(ui: &mut Ui, _st: &mut State) {
-    ui.add_space(6.0);
+pub fn issues(ui: &mut Ui, st: &mut State) {
+    use netvis_validate::Severity;
+    let filt_id = crate::widgets::temp_id("issues.filter", ());
+    let mut show: [bool; 3] = ui.data(|d| d.get_temp(filt_id)).unwrap_or([true, true, true]);
+    let counts = st.issue_counts();
     ui.horizontal(|ui| {
-        ui.label(RichText::new(icons::LIST_CHECKS).size(18.0).weak());
-        ui.label(RichText::new("Validation engine not enabled yet").weak());
+        for (i, (sev, color)) in [
+            (Severity::Error, crate::widgets::ERROR),
+            (Severity::Warning, crate::widgets::WARN),
+            (Severity::Info, ui.visuals().weak_text_color()),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let text = RichText::new(format!("{} {} {}", severity_icon(sev), counts[i], sev.label())).color(color);
+            ui.toggle_value(&mut show[i], text);
+        }
+        if st.issues.is_empty() {
+            ui.label(RichText::new(format!("{} No problems found", icons::CHECK_CIRCLE)).color(Color32::from_rgb(22, 163, 74)));
+        }
     });
-    ui.label(
-        RichText::new(
-            "IP conflicts, VLAN mismatches, cable and PoE checks will be listed here, \
-             each linked to the device or cable involved.",
-        )
-        .small()
-        .weak(),
-    );
+    ui.data_mut(|d| d.insert_temp(filt_id, show));
+    ui.separator();
+
+    let mut reveal = None;
+    egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| {
+        for issue in &st.issues {
+            let idx = issue.severity as usize;
+            if !show[idx] {
+                continue;
+            }
+            let color = match issue.severity {
+                Severity::Error => crate::widgets::ERROR,
+                Severity::Warning => crate::widgets::WARN,
+                Severity::Info => ui.visuals().weak_text_color(),
+            };
+            let selected = issue.items.first().is_some_and(|i| st.sel.contains(*i));
+            let resp = ui
+                .horizontal(|ui| {
+                    ui.label(RichText::new(severity_icon(issue.severity)).color(color));
+                    ui.add(egui::Label::new(RichText::new(&issue.message)).sense(Sense::click()).truncate())
+                })
+                .inner;
+            let resp = resp.on_hover_text(format!("{}  ·  {}", issue.message, issue.code));
+            if selected {
+                ui.painter().rect_stroke(resp.rect.expand(2.0), 3.0, egui::Stroke::new(1.0, color), egui::StrokeKind::Outside);
+            }
+            if resp.clicked()
+                && let Some(item) = issue.items.first()
+            {
+                reveal = Some(*item);
+            }
+        }
+    });
+    if let Some(item) = reveal {
+        st.reveal(item);
+    }
+}
+
+pub fn severity_icon(s: netvis_validate::Severity) -> &'static str {
+    match s {
+        netvis_validate::Severity::Error => icons::X_CIRCLE,
+        netvis_validate::Severity::Warning => icons::WARNING,
+        netvis_validate::Severity::Info => icons::INFO,
+    }
 }

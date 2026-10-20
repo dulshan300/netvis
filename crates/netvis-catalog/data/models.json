@@ -1,0 +1,290 @@
+[
+  {
+    "id": "sw-compact-8p-poe",
+    "name": "Compact 8-port PoE+ switch (120 W, desktop)",
+    "kind": "SwitchL2",
+    "ports": [
+      { "prefix": "ge", "count": 8, "media": "Rj45", "poe": { "pse": "At" } },
+      { "prefix": "sfp", "count": 2, "media": "Sfp" }
+    ],
+    "rack_units": 0,
+    "poe_budget_w": 120,
+    "power_w": 15
+  },
+  {
+    "id": "sw-access-24p-poe",
+    "name": "24-port PoE+ access switch, 4×SFP+ (370 W)",
+    "kind": "SwitchL2",
+    "ports": [
+      { "prefix": "ge", "count": 24, "media": "Rj45", "poe": { "pse": "At" } },
+      { "prefix": "xe", "count": 4, "media": "SfpPlus" }
+    ],
+    "rack_units": 1,
+    "poe_budget_w": 370,
+    "power_w": 45
+  },
+  {
+    "id": "sw-access-48p-poe",
+    "name": "48-port PoE+ access switch, 4×SFP+ (740 W)",
+    "kind": "SwitchL2",
+    "ports": [
+      { "prefix": "ge", "count": 48, "media": "Rj45", "poe": { "pse": "At" } },
+      { "prefix": "xe", "count": 4, "media": "SfpPlus" }
+    ],
+    "rack_units": 1,
+    "poe_budget_w": 740,
+    "power_w": 60
+  },
+  {
+    "id": "sw-access-24p-mgig-bt",
+    "name": "24-port 2.5G PoE++ (802.3bt) switch, 4×SFP28 (1440 W)",
+    "kind": "SwitchL2",
+    "ports": [
+      { "prefix": "mg", "count": 24, "media": "Rj45", "speed": 2500, "poe": { "pse": "BtType3" } },
+      { "prefix": "tf", "count": 4, "media": "Sfp28" }
+    ],
+    "rack_units": 1,
+    "poe_budget_w": 1440,
+    "power_w": 90
+  },
+  {
+    "id": "sw-access-48p",
+    "name": "48-port non-PoE access switch, 4×SFP+",
+    "kind": "SwitchL2",
+    "ports": [
+      { "prefix": "ge", "count": 48, "media": "Rj45" },
+      { "prefix": "xe", "count": 4, "media": "SfpPlus" }
+    ],
+    "rack_units": 1,
+    "power_w": 40
+  },
+  {
+    "id": "sw-dist-24x10g",
+    "name": "Distribution switch 24×SFP+, 4×QSFP+",
+    "kind": "SwitchL3",
+    "ports": [
+      { "prefix": "xe", "count": 24, "media": "SfpPlus" },
+      { "prefix": "et", "count": 4, "media": "QsfpPlus" }
+    ],
+    "rack_units": 1,
+    "power_w": 150
+  },
+  {
+    "id": "sw-core-48x25g",
+    "name": "Core switch 48×SFP28, 6×QSFP28",
+    "kind": "SwitchL3",
+    "ports": [
+      { "prefix": "tf", "count": 48, "media": "Sfp28" },
+      { "prefix": "hu", "count": 6, "media": "Qsfp28" }
+    ],
+    "rack_units": 1,
+    "power_w": 350
+  },
+  {
+    "id": "sw-l3-48p-poe",
+    "name": "48-port PoE+ L3 switch, 4×SFP+ (740 W)",
+    "kind": "SwitchL3",
+    "ports": [
+      { "prefix": "ge", "count": 48, "media": "Rj45", "poe": { "pse": "At" } },
+      { "prefix": "xe", "count": 4, "media": "SfpPlus" }
+    ],
+    "rack_units": 1,
+    "poe_budget_w": 740,
+    "power_w": 75
+  },
+  {
+    "id": "rtr-branch",
+    "name": "Branch router 4×1G, 2×SFP",
+    "kind": "Router",
+    "ports": [
+      { "prefix": "ge", "count": 4, "media": "Rj45" },
+      { "prefix": "sfp", "count": 2, "media": "Sfp" }
+    ],
+    "rack_units": 1,
+    "power_w": 40
+  },
+  {
+    "id": "rtr-edge-10g",
+    "name": "Edge router 8×1G, 4×SFP+",
+    "kind": "Router",
+    "ports": [
+      { "prefix": "ge", "count": 8, "media": "Rj45" },
+      { "prefix": "xe", "count": 4, "media": "SfpPlus" }
+    ],
+    "rack_units": 1,
+    "power_w": 120
+  },
+  {
+    "id": "fw-branch",
+    "name": "Branch firewall 8×1G, 2×SFP",
+    "kind": "Firewall",
+    "ports": [
+      { "prefix": "port", "count": 8, "media": "Rj45" },
+      { "prefix": "x", "count": 2, "media": "Sfp" }
+    ],
+    "rack_units": 1,
+    "power_w": 35
+  },
+  {
+    "id": "fw-campus",
+    "name": "Campus firewall 16×1G, 8×SFP+, 2×QSFP28",
+    "kind": "Firewall",
+    "ports": [
+      { "prefix": "port", "count": 16, "media": "Rj45" },
+      { "prefix": "x", "count": 8, "media": "SfpPlus" },
+      { "prefix": "hu", "count": 2, "media": "Qsfp28" }
+    ],
+    "rack_units": 1,
+    "power_w": 250
+  },
+  {
+    "id": "ap-wifi6-2x2",
+    "name": "Wi-Fi 6 AP 2×2, 1G uplink (PoE+)",
+    "kind": "AccessPoint",
+    "ports": [
+      { "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "poe": { "pd": "At" } },
+      { "prefix": "radio", "start": 0, "count": 1, "media": "Wireless" }
+    ],
+    "pd_draw_w": 14,
+    "wifi": "Wifi6"
+  },
+  {
+    "id": "ap-wifi6e-4x4",
+    "name": "Wi-Fi 6E AP 4×4, 5G uplink (802.3bt)",
+    "kind": "AccessPoint",
+    "ports": [
+      { "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "speed": 5000, "poe": { "pd": "BtType3" } },
+      { "prefix": "radio", "start": 0, "count": 1, "media": "Wireless" }
+    ],
+    "pd_draw_w": 32,
+    "wifi": "Wifi6E"
+  },
+  {
+    "id": "ap-wifi7",
+    "name": "Wi-Fi 7 tri-band AP, 10G uplink (802.3bt)",
+    "kind": "AccessPoint",
+    "ports": [
+      { "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "speed": 10000, "poe": { "pd": "BtType3" } },
+      { "prefix": "radio", "start": 0, "count": 1, "media": "Wireless" }
+    ],
+    "pd_draw_w": 40,
+    "wifi": "Wifi7"
+  },
+  {
+    "id": "cam-dome",
+    "name": "Fixed dome camera (802.3af)",
+    "kind": "IpCamera",
+    "ports": [{ "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "speed": 100, "poe": { "pd": "Af" } }],
+    "pd_draw_w": 6
+  },
+  {
+    "id": "cam-ptz",
+    "name": "PTZ camera with heater (802.3bt)",
+    "kind": "IpCamera",
+    "ports": [{ "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "poe": { "pd": "BtType3" } }],
+    "pd_draw_w": 45
+  },
+  {
+    "id": "phone-desk",
+    "name": "Desk IP phone with PC passthrough (802.3af)",
+    "kind": "IpPhone",
+    "ports": [
+      { "prefix": "lan", "start": 0, "count": 1, "media": "Rj45", "poe": { "pd": "Af" } },
+      { "prefix": "pc", "start": 0, "count": 1, "media": "Rj45" }
+    ],
+    "pd_draw_w": 5
+  },
+  {
+    "id": "phone-video",
+    "name": "Video IP phone (802.3at)",
+    "kind": "IpPhone",
+    "ports": [
+      { "prefix": "lan", "start": 0, "count": 1, "media": "Rj45", "poe": { "pd": "At" } },
+      { "prefix": "pc", "start": 0, "count": 1, "media": "Rj45" }
+    ],
+    "pd_draw_w": 13
+  },
+  {
+    "id": "srv-1u",
+    "name": "1U server, 2×1G + 2×25G",
+    "kind": "Server",
+    "ports": [
+      { "prefix": "eno", "count": 2, "media": "Rj45" },
+      { "prefix": "ens", "count": 2, "media": "Sfp28" }
+    ],
+    "rack_units": 1,
+    "power_w": 350
+  },
+  {
+    "id": "srv-2u",
+    "name": "2U server, 4×1G + 2×25G + iDRAC/iLO",
+    "kind": "Server",
+    "ports": [
+      { "prefix": "mgmt", "start": 0, "count": 1, "media": "Rj45" },
+      { "prefix": "eno", "count": 4, "media": "Rj45" },
+      { "prefix": "ens", "count": 2, "media": "Sfp28" }
+    ],
+    "rack_units": 2,
+    "power_w": 600
+  },
+  {
+    "id": "hv-2u",
+    "name": "2U virtualisation host, 4×25G",
+    "kind": "VmHost",
+    "ports": [
+      { "prefix": "mgmt", "start": 0, "count": 1, "media": "Rj45" },
+      { "prefix": "ens", "count": 4, "media": "Sfp28" }
+    ],
+    "rack_units": 2,
+    "power_w": 800
+  },
+  {
+    "id": "nas-2u-12bay",
+    "name": "12-bay NAS, 4×1G + 2×10G",
+    "kind": "Storage",
+    "ports": [
+      { "prefix": "eth", "count": 4, "media": "Rj45" },
+      { "prefix": "xe", "count": 2, "media": "SfpPlus" }
+    ],
+    "rack_units": 2,
+    "power_w": 250
+  },
+  {
+    "id": "pp-24-cat6a",
+    "name": "24-port Cat6A patch panel",
+    "kind": "PatchPanel",
+    "ports": [{ "prefix": "", "count": 24, "media": "Rj45", "speed": 10000 }],
+    "rack_units": 1
+  },
+  {
+    "id": "pp-48-cat6a",
+    "name": "48-port Cat6A patch panel",
+    "kind": "PatchPanel",
+    "ports": [{ "prefix": "", "count": 48, "media": "Rj45", "speed": 10000 }],
+    "rack_units": 2
+  },
+  {
+    "id": "ups-1500",
+    "name": "Line-interactive UPS 1500 VA / 1000 W",
+    "kind": "Ups",
+    "ports": [{ "prefix": "mgmt", "start": 0, "count": 1, "media": "Rj45", "speed": 100 }],
+    "rack_units": 2,
+    "capacity_w": 1000
+  },
+  {
+    "id": "ups-3000",
+    "name": "Online UPS 3000 VA / 2700 W",
+    "kind": "Ups",
+    "ports": [{ "prefix": "mgmt", "start": 0, "count": 1, "media": "Rj45", "speed": 100 }],
+    "rack_units": 2,
+    "capacity_w": 2700
+  },
+  {
+    "id": "pdu-1u-metered",
+    "name": "Metered 1U PDU, 16 A",
+    "kind": "Pdu",
+    "ports": [{ "prefix": "mgmt", "start": 0, "count": 1, "media": "Rj45", "speed": 100 }],
+    "rack_units": 1,
+    "capacity_w": 3680
+  }
+]

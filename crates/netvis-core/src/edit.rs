@@ -20,6 +20,9 @@ macro_rules! edits {
         entities { $($ev:ident($eid:ty, $ety:ty) => $setter:ident),* $(,)? }
         singletons { $($sv:ident($sty:ty) => $field:ident),* $(,)? }
     ) => {
+        // Edits hold whole entities by value; history is bounded (500 steps),
+        // so the size gap between variants is not worth boxing every one.
+        #[allow(clippy::large_enum_variant)]
         #[derive(Debug, Clone, PartialEq)]
         pub enum Edit {
             $($ev { id: $eid, before: Option<$ety>, after: Option<$ety> },)*

@@ -5,6 +5,7 @@ use std::net::IpAddr;
 use crate::geom::{Pos, Rect};
 use crate::iface::{IfaceKey, L3Config, LogicalInterface, LogicalKind};
 use crate::ids::{DeviceId, LogicalId, PortId, VlanId};
+use crate::hardware::Hardware;
 use crate::routing::Routing;
 use crate::port::{PoeRole, PoeStandard, Port, PortMedia};
 
@@ -270,6 +271,8 @@ pub struct Device {
     pub dns: Vec<IpAddr>,
     #[serde(default)]
     pub routing: Routing,
+    #[serde(default)]
+    pub hw: Hardware,
 }
 
 /// Borrowed view of any addressable interface.
@@ -305,6 +308,7 @@ impl Device {
             logical: Vec::new(),
             dns: Vec::new(),
             routing: Routing::default(),
+            hw: kind.default_hardware(),
         }
     }
 
@@ -416,6 +420,7 @@ impl Device {
         d.id = DeviceId::new();
         d.name = name;
         d.pos = pos;
+        d.hw.rack = None;
         let mut remap = std::collections::HashMap::new();
         for p in &mut d.ports {
             let new = PortId::new();

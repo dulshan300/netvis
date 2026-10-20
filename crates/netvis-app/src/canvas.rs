@@ -290,6 +290,7 @@ pub fn show(ui: &mut Ui, st: &mut State) {
         let selected = st.sel.contains(Item::Device(d.id));
         draw_device(&painter, &cam, origin, p, d, selected, hover_port, st.settings.show_addresses, &pal);
     }
+    draw_issue_badges(&painter, &cam, origin, p, &st.issues);
     if let (Drag::Marquee { start, .. }, Some(ptr)) = (&st.canvas.drag, pointer) {
         let r = Rect::from_two_pos(*start, ptr);
         painter.rect_filled(r, 2.0, pal.accent.gamma_multiply(0.08));
@@ -870,6 +871,49 @@ fn draw_device(
                 painter.rect_filled(pr, cr, fill);
                 painter.rect_stroke(pr, cr, stroke, StrokeKind::Inside);
             }
+        }
+    }
+}
+
+/// Red/amber dots on the devices and links that are the subject of an error
+/// or warning (info-level findings stay in the Issues panel).
+fn draw_issue_badges(painter: &egui::Painter, cam: &Camera, origin: Pos2, p: &Project, issues: &[netvis_validate::Issue]) {
+    use netvis_validate::Severity;
+    let mut worst: std::collections::HashMap<Item, Severity> = std::collections::HashMap::new();
+    for i in issues.iter().filter(|i| i.severity != Severity::Info) {
+        if let Some(item) = i.items.first() {
+            let e = worst.entry(*item).or_insert(i.severity);
+            *e = (*e).min(i.severity);
+        }
+    }
+    let r = (6.5 * cam.zoom).clamp(4.5, 9.0);
+    let badge = |at: Pos2, sev: Severity| {
+        let c = if sev == Severity::Error { crate::widgets::ERROR } else { crate::widgets::WARN };
+        painter.circle_filled(at, r + 1.5, Color32::WHITE);
+        painter.circle_filled(at, r, c);
+        painter.text(at, Align2::CENTER_CENTER, "!", FontId::proportional(r * 1.5), Color32::WHITE);
+    };
+    for (item, sev) in worst {
+        match item {
+            Item::Device(id) => {
+                if let Some(d) = p.device(id) {
+                    let rect = cam.rect_to_screen(origin, d.rect());
+                    badge(rect.right_top() + vec2(-2.0, 2.0), sev);
+                }
+            }
+            Item::Link(id) => {
+                if let Some((a, b)) = p.link(id).and_then(|l| link_points(p, l)) {
+                    let (sa, sb) = (cam.to_screen(origin, a), cam.to_screen(origin, b));
+                    badge(sa + (sb - sa) * 0.35, sev);
+                }
+            }
+            Item::Area(id) => {
+                if let Some(a) = p.area(id) {
+                    let rect = cam.rect_to_screen(origin, a.rect);
+                    badge(rect.right_top() + vec2(-10.0, 10.0), sev);
+                }
+            }
+            _ => {}
         }
     }
 }

@@ -14,6 +14,7 @@ use netvis_core::{
 
 use crate::icons;
 use crate::state::{Align, Axis, State};
+use netvis_core::DeviceKind;
 use crate::theme;
 use crate::widgets::{self, ERROR, Salt, WARN, rgb, section, temp_id};
 
@@ -39,6 +40,29 @@ fn heading(ui: &mut Ui, icon: &str, title: &str, subtitle: &str) {
         });
     });
     ui.separator();
+}
+
+/// Validation findings that involve `item`, shown under the heading.
+fn item_issues(ui: &mut Ui, issues: &[netvis_validate::Issue], item: Item) {
+    let mine: Vec<_> = issues.iter().filter(|i| i.involves(item)).collect();
+    if mine.is_empty() {
+        return;
+    }
+    egui::Frame::new().inner_margin(6.0).corner_radius(6.0).fill(ui.visuals().faint_bg_color).show(ui, |ui| {
+        ui.set_width(ui.available_width());
+        for i in mine {
+            let color = match i.severity {
+                netvis_validate::Severity::Error => ERROR,
+                netvis_validate::Severity::Warning => WARN,
+                netvis_validate::Severity::Info => ui.visuals().weak_text_color(),
+            };
+            ui.horizontal_wrapped(|ui| {
+                ui.label(RichText::new(super::severity_icon(i.severity)).color(color));
+                ui.label(RichText::new(&i.message).small());
+            });
+        }
+    });
+    ui.add_space(4.0);
 }
 
 fn form_grid(ui: &mut Ui, id: impl Salt, add: impl FnOnce(&mut Ui)) {
@@ -165,6 +189,7 @@ fn device_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::DeviceId) {
         None => format!("{} · {}", d.kind.label(), d.kind.category().label()),
     };
     heading(ui, icons::device(d.kind), &before.name, &sub);
+    item_issues(ui, &st.issues, Item::Device(id));
 
     let tab_id = temp_id("devtab", ());
     let mut tab: DevTab = ui.data(|m| m.get_temp(tab_id)).unwrap_or_default();
@@ -181,8 +206,12 @@ fn device_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::DeviceId) {
     ui.separator();
 
     let p = &st.doc.project;
+    let mut model_req: Option<String> = None;
     match tab {
-        DevTab::General => general_section(ui, &mut d, &mut field),
+        DevTab::General => {
+            general_section(ui, &mut d, &mut field);
+            hardware_section(ui, p, &mut d, &mut field, &mut model_req);
+        }
         DevTab::Ports => {
             if let Some(key) = ports_section(ui, p, &mut d, &mut field) {
                 ui.data_mut(|m| m.insert_temp(temp_id("iface", id), key));
@@ -194,6 +223,13 @@ fn device_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::DeviceId) {
     }
     ui.data_mut(|m| m.insert_temp(tab_id, tab));
 
+    if let Some(model) = model_req
+        && let Some((edit, removed)) = st.doc.project.apply_model_edit(id, &model)
+    {
+        st.apply(edit, "Apply device model");
+        st.set_status(if removed > 0 { format!("Model applied; {removed} link(s) on removed ports were deleted") } else { "Model applied".to_owned() });
+        return;
+    }
     if let Some(f) = field {
         let key = format!("{id:?}.{f}");
         st.apply_coalescing(Edit::Device { id, before: Some(before), after: Some(d) }, "Edit device", key);
@@ -229,6 +265,158 @@ fn general_section(ui: &mut Ui, d: &mut netvis_core::Device, field: &mut Option<
             for (name, net) in addrs {
                 ui.label(RichText::new(name).weak());
                 ui.label(RichText::new(net.to_string()).monospace());
+                ui.end_row();
+            }
+        });
+    }
+}
+
+fn cable_rating(c: CableKind) -> String {
+    use netvis_core::catalog::format_speed;
+    let steps: Vec<String> = c
+        .reach_table()
+        .iter()
+        .filter(|(s, _)| *s != u32::MAX)
+        .map(|(s, m)| if *m >= 1000.0 { format!("{} {:.0} km", format_speed(*s), m / 1000.0) } else { format!("{} {m:.0} m", format_speed(*s)) })
+        .collect();
+    match c {
+        CableKind::Wireless | CableKind::Virtual => "No length limit".into(),
+        CableKind::Unspecified => "Set a cable type to check reach".into(),
+        CableKind::Os1 | CableKind::Os2 => "Reach set by the optics (10 km LR assumed)".into(),
+        CableKind::Console => "RS-232, about 15 m".into(),
+        _ if steps.is_empty() => "—".into(),
+        _ => steps.join(" · "),
+    }
+}
+
+fn opt_watts(ui: &mut Ui, salt: impl Salt, v: &mut Option<f32>, hint: &str) -> bool {
+    ui.horizontal(|ui| {
+        let changed = widgets::parsed_opt(ui, salt, v, 70.0, hint);
+        ui.label(RichText::new("W").weak());
+        changed
+    })
+    .inner
+}
+
+/// Model, rack placement and power. Sets `model_req` when the user applies a model.
+fn hardware_section(
+    ui: &mut Ui,
+    p: &Project,
+    d: &mut netvis_core::Device,
+    field: &mut Option<String>,
+    model_req: &mut Option<String>,
+) {
+    section(ui, "Hardware");
+    let models: Vec<_> = d.kind.models().collect();
+    let pick_id = temp_id("model-pick", d.id);
+    let mut pick: Option<String> = ui.data(|m| m.get_temp(pick_id)).or_else(|| d.hw.model.clone());
+    if !models.is_empty() {
+        ui.horizontal(|ui| {
+            let label = pick.as_deref().and_then(netvis_core::catalog::models::model).map(|m| m.name.clone()).unwrap_or("Choose a model…".into());
+            egui::ComboBox::from_id_salt(("model", d.id)).width(230.0).selected_text(label).show_ui(ui, |ui| {
+                for m in &models {
+                    ui.selectable_value(&mut pick, Some(m.id.clone()), &m.name);
+                }
+            });
+            let differs = pick.is_some() && pick != d.hw.model;
+            if ui.add_enabled(differs, egui::Button::new("Apply")).on_hover_text("Replace ports, rack size and power figures with the model's").clicked() {
+                *model_req = pick.clone();
+            }
+        });
+        if let Some(id) = pick.as_deref()
+            && pick != d.hw.model
+            && let Some((_, removed)) = p.apply_model_edit(d.id, id)
+            && removed > 0
+        {
+            ui.label(RichText::new(format!("{} Applying removes {removed} link(s) on ports the model doesn't have", icons::WARNING)).small().color(WARN));
+        }
+    }
+    if let Some(id) = &pick {
+        ui.data_mut(|m| m.insert_temp(pick_id, id.clone()));
+    }
+
+    let has_pse = d.ports.iter().any(|x| matches!(x.poe, PoeRole::Source(_)));
+    let has_pd = d.ports.iter().any(|x| matches!(x.poe, PoeRole::Powered(_)));
+    let racks: Vec<_> = p.racks().map(|r| (r.id, r.name.clone(), r.rack_units)).collect();
+    let id = d.id;
+    let kind = d.kind;
+    let hw = &mut d.hw;
+    form_grid(ui, ("hw", id), |ui| {
+        ui.label("Rack height");
+        if ui.add(DragValue::new(&mut hw.rack_units).range(0..=48).suffix(" U")).on_hover_text("0 = not rack-mounted").changed() {
+            mark(field, "hw.units");
+        }
+        ui.end_row();
+        ui.label("Power draw");
+        if opt_watts(ui, ("pw", id), &mut hw.power_w, "typical") { mark(field, "hw.power") }
+        ui.end_row();
+        if has_pse {
+            ui.label("PoE budget");
+            if opt_watts(ui, ("budget", id), &mut hw.poe_budget_w, "total") { mark(field, "hw.budget") }
+            ui.end_row();
+        }
+        if has_pd {
+            ui.label("PoE draw");
+            if opt_watts(ui, ("pd", id), &mut hw.pd_draw_w, "class max") { mark(field, "hw.pd") }
+            ui.end_row();
+        }
+        if matches!(kind, DeviceKind::Ups | DeviceKind::Pdu) {
+            ui.label("Capacity");
+            if opt_watts(ui, ("cap", id), &mut hw.capacity_w, "output") { mark(field, "hw.cap") }
+            ui.end_row();
+        }
+        if hw.rack_units > 0 {
+            ui.label("Rack");
+            ui.horizontal(|ui| {
+                let current = hw.rack.and_then(|m| racks.iter().find(|r| r.0 == m.rack)).map(|r| r.1.clone()).unwrap_or("— not racked —".into());
+                let mut rack = hw.rack.map(|m| m.rack);
+                egui::ComboBox::from_id_salt(("rack", id)).width(120.0).selected_text(current).show_ui(ui, |ui| {
+                    ui.selectable_value(&mut rack, None, "— not racked —");
+                    for (rid, name, _) in &racks {
+                        ui.selectable_value(&mut rack, Some(*rid), name);
+                    }
+                    if racks.is_empty() {
+                        ui.label(RichText::new("Add a Rack area first").small().weak());
+                    }
+                });
+                if rack != hw.rack.map(|m| m.rack) {
+                    hw.rack = rack.map(|r| {
+                        let u = p.rack_free_slot(r, hw.rack_units, true, Some(id)).unwrap_or(1);
+                        netvis_core::RackMount { rack: r, u }
+                    });
+                    mark(field, "hw.rack");
+                }
+                if let Some(m) = &mut hw.rack {
+                    let units = racks.iter().find(|r| r.0 == m.rack).map_or(42, |r| r.2);
+                    if ui.add(DragValue::new(&mut m.u).range(1..=units).prefix("U")).on_hover_text("Lowest unit occupied").changed() {
+                        mark(field, "hw.rack");
+                    }
+                }
+            });
+            ui.end_row();
+        }
+    });
+
+    if has_pse {
+        let r = p.poe_report(id);
+        section(ui, &format!("PoE · {} of {} ports powering devices", r.loads.len(), r.pse_ports));
+        if let Some(b) = r.budget_w {
+            let frac = (r.demand_w / b).min(1.0);
+            let color = if r.demand_w > b { ERROR } else if frac > 0.9 { WARN } else { egui::Color32::from_rgb(22, 163, 74) };
+            ui.horizontal(|ui| {
+                ui.add(egui::ProgressBar::new(frac).fill(color).desired_width(160.0).desired_height(10.0));
+                ui.label(RichText::new(format!("{:.0} / {:.0} W  ({:.0}%)", r.demand_w, b, r.demand_w / b * 100.0)).small());
+            });
+        } else {
+            ui.label(RichText::new(format!("{:.0} W demanded · no budget set", r.demand_w)).small().color(WARN));
+        }
+        egui::Grid::new(("poe", id)).num_columns(3).spacing([10.0, 2.0]).show(ui, |ui| {
+            for l in &r.loads {
+                let port = d.port(l.pse_port).map(|x| x.name.clone()).unwrap_or_default();
+                let pd = p.device(l.pd.device).map(|x| x.name.clone()).unwrap_or_default();
+                ui.label(RichText::new(port).small().monospace());
+                ui.label(RichText::new(format!("{pd}  ({})", l.pd_class.short())).small());
+                ui.label(RichText::new(format!("{:.1} W", l.demand_w)).small().monospace());
                 ui.end_row();
             }
         });
@@ -450,6 +638,24 @@ fn port_detail(ui: &mut Ui, p: &Project, d: &mut netvis_core::Device, pid: netvi
             });
         });
         ui.end_row();
+        if port.media.is_optical_cage() {
+            ui.label("Transceiver");
+            let current = port.transceiver.as_deref().and_then(netvis_core::catalog::transceiver::transceiver);
+            let text = match (&port.transceiver, current) {
+                (None, _) => "— none / DAC —".to_owned(),
+                (Some(_), Some(t)) => t.name.to_owned(),
+                (Some(id), None) => format!("unknown: {id}"),
+            };
+            egui::ComboBox::from_id_salt(("tx", pid)).width(170.0).selected_text(text).show_ui(ui, |ui| {
+                if ui.selectable_value(&mut port.transceiver, None, "— none / DAC —").changed() { mark(field, f("tx")) }
+                for t in netvis_core::catalog::transceiver::for_cage(port.media) {
+                    if ui.selectable_value(&mut port.transceiver, Some(t.id.to_owned()), t.name).on_hover_text(t.summary()).changed() {
+                        mark(field, f("tx"));
+                    }
+                }
+            });
+            ui.end_row();
+        }
         ui.label("MTU");
         if widgets::parsed_opt(ui, ("mtu", pid), &mut port.cfg.mtu, 70.0, "1500") { mark(field, f("mtu")) }
         ui.end_row();
@@ -968,6 +1174,7 @@ fn link_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::LinkId) {
     let (a, b) = (end(l.a), end(l.b));
 
     heading(ui, icons::LINK, "Link", l.cable.label());
+    item_issues(ui, &st.issues, Item::Link(id));
     form_grid(ui, "link", |ui| {
         ui.label("End A");
         ui.label(a);
@@ -1002,6 +1209,18 @@ fn link_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::LinkId) {
         if text_row(ui, "Label", &mut l.label) {
             mark(&mut field, "label");
         }
+        ui.label("Rated");
+        ui.label(RichText::new(cable_rating(l.cable)).small());
+        ui.end_row();
+        for (end, ep) in [("Module A", l.a), ("Module B", l.b)] {
+            let tx = p.device(ep.device).and_then(|d| d.port(ep.port)).and_then(|x| x.transceiver.as_deref());
+            if let Some(tx) = tx {
+                ui.label(end);
+                let t = netvis_core::catalog::transceiver::transceiver(tx);
+                ui.label(RichText::new(t.map(|t| format!("{} — {}", t.name, t.summary())).unwrap_or_else(|| tx.to_owned())).small());
+                ui.end_row();
+            }
+        }
         // VLANs carried, derived from the two port configs.
         let modes: Vec<String> = [l.a, l.b]
             .iter()
@@ -1029,6 +1248,8 @@ fn area_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::AreaId) {
     let mut a = before.clone();
     let mut field = None;
     heading(ui, icons::area(a.kind), &before.name, a.kind.label());
+    item_issues(ui, &st.issues, Item::Area(id));
+    let mut auto_place = false;
     form_grid(ui, "area", |ui| {
         if text_row(ui, "Name", &mut a.name) {
             mark(&mut field, "name");
@@ -1060,12 +1281,27 @@ fn area_inspector(ui: &mut Ui, st: &mut State, id: netvis_core::AreaId) {
             if ui.add(DragValue::new(&mut a.rect.size.y).prefix("h ").range(min)).changed() { mark(&mut field, "rect") }
         });
         ui.end_row();
+        if a.kind == AreaKind::Rack {
+            ui.label("Rack height");
+            ui.horizontal(|ui| {
+                if ui.add(DragValue::new(&mut a.rack_units).range(1..=60).suffix(" U")).changed() { mark(&mut field, "units") }
+                if ui.button("Auto-place devices").on_hover_text("Place rack-mountable devices drawn inside this area").clicked() {
+                    auto_place = true;
+                }
+            });
+            ui.end_row();
+        }
     });
     if notes(ui, &mut a.notes) {
         mark(&mut field, "notes");
     }
     if let Some(f) = field {
         st.apply_coalescing(Edit::Area { id, before: Some(before), after: Some(a) }, "Edit area", format!("{id:?}.{f}"));
+    }
+    if auto_place {
+        let (edit, n, no_room) = st.doc.project.auto_mount_edit(id);
+        st.apply(edit, "Auto-place in rack");
+        st.set_status(if no_room.is_empty() { format!("Placed {n} device(s)") } else { format!("Placed {n}; no room for {}", no_room.join(", ")) });
     }
 }
 

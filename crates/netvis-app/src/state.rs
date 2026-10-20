@@ -115,6 +115,9 @@ pub struct State {
     pub vlsm: Option<crate::panels::vlsm::VlsmPlanner>,
     /// Report from the most recent auto-assign run.
     pub last_assign: Option<(Vec<String>, Vec<String>)>,
+    /// Validation results for `issues_rev`.
+    pub issues: Vec<netvis_validate::Issue>,
+    issues_rev: Option<u64>,
 }
 
 impl State {
@@ -129,13 +132,50 @@ impl State {
             now: 0.0,
             vlsm: None,
             last_assign: None,
+            issues: Vec::new(),
+            issues_rev: None,
         }
     }
 
     pub fn replace_document(&mut self, doc: Document) {
         self.doc = doc;
+        self.issues_rev = None;
         self.sel.clear();
         self.canvas.request_fit();
+    }
+
+    /// Re-run validation if the project changed since the last run.
+    pub fn refresh_issues(&mut self) {
+        let rev = self.doc.history.revision();
+        if self.issues_rev != Some(rev) && !self.canvas.is_dragging() {
+            self.issues = netvis_validate::validate(&self.doc.project);
+            self.issues_rev = Some(rev);
+        }
+    }
+
+    pub fn issue_counts(&self) -> [usize; 3] {
+        use netvis_validate::Severity::*;
+        let n = |s| self.issues.iter().filter(|i| i.severity == s).count();
+        [n(Error), n(Warning), n(Info)]
+    }
+
+    /// Select an item and centre the canvas on it.
+    pub fn reveal(&mut self, item: Item) {
+        self.doc.history.break_coalescing();
+        self.sel.set_single(item);
+        let p = &self.doc.project;
+        let at = match item {
+            Item::Device(id) => p.device(id).map(|d| d.rect()),
+            Item::Area(id) => p.area(id).map(|a| a.rect),
+            Item::Link(id) => p.link(id).and_then(|l| {
+                let (a, b) = (p.device(l.a.device)?.rect(), p.device(l.b.device)?.rect());
+                Some(a.union(&b))
+            }),
+            _ => None,
+        };
+        if let Some(r) = at {
+            self.canvas.focus(r.min.offset(r.size.x / 2.0, r.size.y / 2.0));
+        }
     }
 
     pub fn set_status(&mut self, msg: impl Into<String>) {

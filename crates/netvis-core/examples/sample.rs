@@ -72,6 +72,16 @@ impl Builder {
         f(&mut dev.ports.iter_mut().find(|p| p.id == port).unwrap().cfg);
     }
 
+    fn model(&mut self, d: DeviceId, model: &str) {
+        let (e, _) = self.p.apply_model_edit(d, model).expect("known model");
+        self.h.apply(&mut self.p, e, "model");
+    }
+
+    fn tx(&mut self, d: DeviceId, port: PortId, id: &str) {
+        let dev = self.p.device_mut(d).unwrap();
+        dev.ports.iter_mut().find(|p| p.id == port).unwrap().transceiver = Some(id.to_owned());
+    }
+
     fn svi(&mut self, d: DeviceId, tag: u16, vlan: VlanId) {
         let l = LogicalInterface::new(format!("Vlan{tag}"), LogicalKind::Svi { vlan: Some(vlan) });
         self.p.device_mut(d).unwrap().logical.push(l);
@@ -123,13 +133,38 @@ fn main() {
     let web = b.device(Server, "SRV-WEB-01", 1080.0, 220.0);
     let sw1 = b.device(SwitchL2, "SW-L1-01", 260.0, 580.0);
     let sw2 = b.device(SwitchL2, "SW-L2-01", 1000.0, 580.0);
+    let pp = b.device(PatchPanel, "PP-MDF-01", 730.0, 190.0);
+    let ups = b.device(Ups, "UPS-MDF-01", 730.0, 360.0);
+
+    b.model(fw, "fw-campus");
+    b.model(core, "sw-dist-24x10g");
+    b.model(srv, "srv-2u");
+    b.model(web, "srv-1u");
+    b.model(sw1, "sw-access-24p-poe");
+    b.model(sw2, "sw-access-24p-poe");
+    b.model(pp, "pp-24-cat6a");
+    b.model(ups, "ups-1500");
+    // 25G server NICs run at 10G towards the 10G core.
+    for d in [srv, web] {
+        for p in &mut b.p.device_mut(d).unwrap().ports {
+            if p.media == Sfp28 {
+                p.speed_mbps = 10_000;
+            }
+        }
+    }
 
     let (_, fw_wan) = b.link(inet, None, fw, Some(Rj45), Some(CableKind::Virtual), None);
     let (fw_in, core_up) = b.link(fw, Some(SfpPlus), core, Some(SfpPlus), Some(CableKind::Dac), Some(1.0));
-    let (fw_dmz, web_nic) = b.link(fw, Some(SfpPlus), web, Some(SfpPlus), Some(CableKind::Om4), Some(15.0));
-    let (core_srv, _) = b.link(core, Some(SfpPlus), srv, Some(SfpPlus), Some(CableKind::Dac), Some(2.0));
+    let (fw_dmz, web_nic) = b.link(fw, Some(SfpPlus), web, Some(Sfp28), Some(CableKind::Om4), Some(15.0));
+    let (core_srv, _) = b.link(core, Some(SfpPlus), srv, Some(Sfp28), Some(CableKind::Dac), Some(2.0));
     let (core_l1, sw1_up) = b.link(core, Some(SfpPlus), sw1, Some(SfpPlus), Some(CableKind::Om4), Some(45.0));
     let (core_l2, sw2_up) = b.link(core, Some(SfpPlus), sw2, Some(SfpPlus), Some(CableKind::Os2), Some(120.0));
+    for (d, p) in [(fw, fw_dmz), (web, web_nic), (core, core_l1), (sw1, sw1_up)] {
+        b.tx(d, p, "sfpp-10g-sr");
+    }
+    for (d, p) in [(core, core_l2), (sw2, sw2_up)] {
+        b.tx(d, p, "sfpp-10g-lr");
+    }
 
     // Firewall: WAN, routed transit to the core, DMZ gateway, default route and PAT.
     b.cfg(fw, fw_wan, |c| {
@@ -183,6 +218,9 @@ fn main() {
         let pc = b.device(Pc, &format!("PC-{floor}-01"), x0 + 160.0, 740.0);
         let ph = b.device(IpPhone, &format!("PH-{floor}-01"), x0 + 320.0, 740.0);
         let cam = b.device(IpCamera, &format!("CAM-{floor}-01"), x0 + 480.0, 740.0);
+        b.model(ap, "ap-wifi6-2x2");
+        b.model(ph, "phone-desk");
+        b.model(cam, "cam-dome");
         let (sp, _) = b.link(sw, Some(Rj45), ap, Some(Rj45), Some(CableKind::Cat6A), Some(32.0));
         b.cfg(sw, sp, |c| c.mode = SwitchportMode::Trunk { native: Some(mgmt), allowed: AllowedVlans::List(vec![mgmt, staff, guest]) });
         let radio = b.p.device(ap).unwrap().ports[1].id;
@@ -212,6 +250,11 @@ fn main() {
         b.h.apply(&mut b.p, Edit::Ssid { id: s.id, before: None, after: Some(s) }, "ssid");
     }
 
+    let mdf = b.p.racks().next().map(|r| r.id).unwrap();
+    let (e, placed, _) = b.p.auto_mount_edit(mdf);
+    b.h.apply(&mut b.p, e, "rack");
+    println!("  racked {placed} device(s) in MDF Rack A");
+
     let run = b.p.auto_assign_edit(None);
     for line in &run.assigned {
         println!("  assigned {line}");
@@ -220,6 +263,10 @@ fn main() {
         println!("  skipped  {line}");
     }
     b.h.apply(&mut b.p, run.edit, "auto-assign");
+
+    for i in netvis_validate::validate(&b.p) {
+        println!("  {:<7} {:<16} {}", i.severity.label(), i.code, i.message);
+    }
 
     let out = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../samples/corescale-hq.netvis");
     std::fs::create_dir_all(out.parent().unwrap()).unwrap();
