@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/netvis-core", "crates/netvis-ip", "crates/netvis-catalog", "crates/netvis-validate", "crates/netvis-app"]
+members = ["crates/netvis-core", "crates/netvis-ip", "crates/netvis-catalog", "crates/netvis-validate", "crates/netvis-tools", "crates/netvis-app"]
 
 [workspace.package]
 version = "0.1.0"
@@ -13,6 +13,7 @@ netvis-core = { path = "crates/netvis-core" }
 netvis-ip = { path = "crates/netvis-ip" }
 netvis-catalog = { path = "crates/netvis-catalog" }
 netvis-validate = { path = "crates/netvis-validate" }
+netvis-tools = { path = "crates/netvis-tools" }
 ipnet = { version = "2.12", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

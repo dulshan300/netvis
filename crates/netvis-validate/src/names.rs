@@ -43,15 +43,7 @@ fn hostnames(p: &Project, out: &mut Sink) {
 
 /// Normalise `aa:bb:cc:dd:ee:ff`, `aa-bb-…`, `aabb.ccdd.eeff` or bare hex.
 pub(crate) fn parse_mac(s: &str) -> Option<[u8; 6]> {
-    let hex: String = s.chars().filter(|c| !matches!(c, ':' | '-' | '.' | ' ')).collect();
-    if hex.len() != 12 || !hex.chars().all(|c| c.is_ascii_hexdigit()) {
-        return None;
-    }
-    let mut out = [0u8; 6];
-    for (i, b) in out.iter_mut().enumerate() {
-        *b = u8::from_str_radix(&hex[i * 2..i * 2 + 2], 16).ok()?;
-    }
-    Some(out)
+    netvis_core::ip::Mac::parse(s).map(|m| m.0)
 }
 
 fn macs(p: &Project, out: &mut Sink) {

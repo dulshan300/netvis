@@ -25,6 +25,17 @@ pub fn native(_purpose: PathPurpose, _suggested_name: &str) -> Option<Option<Pat
     None
 }
 
+/// Save dialog for a CSV export; same contract as [`native`].
+#[cfg(windows)]
+pub fn save_csv(suggested_name: &str) -> Option<Option<PathBuf>> {
+    Some(rfd::FileDialog::new().add_filter("CSV", &["csv"]).set_file_name(suggested_name).save_file())
+}
+
+#[cfg(not(windows))]
+pub fn save_csv(_suggested_name: &str) -> Option<Option<PathBuf>> {
+    None
+}
+
 /// Ensure the path carries the `.netvis` extension.
 pub fn with_extension(mut path: PathBuf) -> PathBuf {
     let ext = netvis_core::io::FILE_EXTENSION;

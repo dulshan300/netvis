@@ -1337,6 +1337,7 @@ dependencies = [
  "egui-phosphor",
  "egui_dock",
  "netvis-core",
+ "netvis-tools",
  "netvis-validate",
  "rfd",
  "serde",
@@ -1370,6 +1371,14 @@ version = "0.1.0"
 dependencies = [
  "ipnet",
  "thiserror 2.0.21",
+]
+
+[[package]]
+name = "netvis-tools"
+version = "0.1.0"
+dependencies = [
+ "netvis-catalog",
+ "netvis-core",
 ]
 
 [[package]]

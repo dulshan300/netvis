@@ -1,10 +1,13 @@
 //! Physical-layer reference data: port media, cable reach, transceivers,
-//! PoE power levels and vendor-neutral device models.
+//! PoE power levels, vendor-neutral device models, the MAC vendor registry and
+//! well-known ports.
 
 pub mod cable;
 pub mod media;
 pub mod models;
+pub mod oui;
 pub mod poe;
+pub mod ports;
 pub mod transceiver;
 
 pub use cable::{CableFamily, CableKind, Reach};

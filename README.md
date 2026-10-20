@@ -2,7 +2,7 @@
 
 Network planning tool for Windows, written in Rust (egui/eframe). It's built for Corescale.
 
-**Status:** Phases 0–4 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), and a live conflict engine with one-click fixes.
+**Status:** Phases 0–5 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), a live conflict engine with one-click fixes, and an IT tools panel.
 
 ## Build and run
 
@@ -114,16 +114,41 @@ Validation runs live after every change. Findings appear in the Issues tab, in t
 
 **Command line:** `cargo run -p netvis-validate --example check -- file.netvis [--fix]` prints every issue, and with `--fix` also what remains after the fixes. It exits non-zero if errors remain, so it can run in CI.
 
+## IT tools
+
+The **IT Tools** tab sits next to Topology (also *View → IT tools*). Every tool works on its own; most also read the open project. Click any result value to copy it.
+
+| Tool | What it does | Uses the project |
+|---|---|---|
+| Subnet calculator | Network, mask, wildcard, broadcast, usable range, binary; split into smaller prefixes; route summarisation and single supernet | *Add to project* (blocked if it overlaps) |
+| VLSM | `Name, hosts` per line → right-sized subnets, largest first; copy as a table | *Create in project…* opens the VLSM planner pre-filled |
+| IPv4 / IPv6 notation | Compressed/expanded IPv6, integer, hex, binary, reverse-DNS (PTR) name, scope; SLAAC/EUI-64 address from a prefix and MAC | — |
+| MAC vendor lookup | Any MAC notation, an OUI prefix or a vendor name; all four notations, unicast/multicast and local/global bits | Lists every MAC recorded on a port with its vendor |
+| Transfer time | Time to move data at a link speed, with TCP/Ethernet overhead for 1500 or 9000 MTU; the same transfer on 100M–400G; line rate needed for a backup window | — |
+| Oversubscription | Edge vs uplink capacity for any port mix, against 20:1 / 4:1 / 1:1 guidance | Ratio for every switch, all ports and cabled ports |
+| Fibre loss budget | Fibre, connector, splice and margin loss vs the optic's limit; headroom and longest run | Loss for every fibre link with a length and an optic |
+| PoE budget | Power reserved by class vs expected draw including cable loss, against a PSE budget | *Load from switch* fills the rows from a switch's PoE devices |
+| Port reference | ~100 well-known TCP/UDP ports and IP protocol numbers, searchable, with clear-text/risky services flagged | — |
+| Bill of materials | Hardware by model, optics, cable by type with ordered length (+ slack), racks; rack space and power | Built from the project; copy or save as CSV |
+
+**Data sources and assumptions:**
+- **MAC vendors:** the IEEE MA-L registry, bundled as [crates/netvis-catalog/data/oui.tsv](crates/netvis-catalog/data/oui.tsv). To update it, regenerate the file from `https://standards-oui.ieee.org/oui/oui.csv` as sorted `HEX6<TAB>Organisation` lines. MA-M/MA-S sub-blocks are not included.
+- **Fibre loss limits:** the IEEE 802.3 maximum channel insertion loss per standard (1000BASE-ZX, which isn't an IEEE standard, uses a typical module budget). Connector and splice defaults are the TIA-568.3 maxima. All values can be edited, and the datasheet wins for marginal links.
+- **PoE cable loss:** scales the standard's 100 m allowance by length and by the square of the load. Treat it as a planning estimate.
+
+`cargo run -p netvis-tools --example report -- file.netvis` prints the fibre, oversubscription and BOM reports for a project.
+
 Autosave runs every 90 s while there are unsaved changes. If the app wasn't closed cleanly, it offers to recover the autosave on the next start.
 
 ## Workspace layout
 
 ```
 crates/
-  netvis-ip/       IPv4/IPv6 subnet math, VLSM, summarisation, next-free search — pure, unit-tested
-  netvis-catalog/  physical-layer reference data: media, cable reach, transceivers, PoE, device models (JSON)
+  netvis-ip/       IPv4/IPv6 subnet math, VLSM, summarisation, next-free search, MAC and address notation — pure, unit-tested
+  netvis-catalog/  reference data: media, cable reach, transceivers, PoE, device models (JSON), IEEE OUI registry, well-known ports
   netvis-core/     data model, VLANs/subnets/IPAM, hardware/racks/PoE, undo/redo, .netvis file I/O — no UI
   netvis-validate/ design-rule engine (addressing, VLANs, Wi-Fi, names, topology, cabling, power, racks) with fixes
+  netvis-tools/    IT calculators: transfer time, oversubscription, fibre loss, PoE budget, bill of materials
   netvis-app/      eframe GUI: docking shell, canvas, panels, dialogs
 samples/         example project
 ```
@@ -142,7 +167,7 @@ A `.netvis` file is pretty-printed JSON inside a small envelope: `{"format":"net
 | 2 ✅ | VLANs, subnets, IPAM, per-interface IP configuration, auto-assign |
 | 3 ✅ | Cable and transceiver catalogue, cable validation, PoE budget, racks |
 | 4 ✅ | IP/VLAN/Wi-Fi/name/loop conflict rules and one-click fixes |
-| 5 | IT tools panel (calculators, OUI lookup, port reference, BOM) |
+| 5 ✅ | IT tools panel (calculators, OUI lookup, port reference, BOM) |
 | 6 | Patch schedule and port map |
 | 7 | PDF report (Corescale cover, TOC, vector diagrams, tables) |
 | 8 | Auto-layout, polish, installer |

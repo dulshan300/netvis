@@ -86,6 +86,9 @@ pub enum Action {
     Quit,
     About,
     ResetLayout,
+    ShowTools,
+    /// Bring the topology tab to the front (after revealing an item).
+    ShowCanvas,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -113,6 +116,7 @@ pub struct State {
     status: Option<(String, f64)>,
     pub now: f64,
     pub vlsm: Option<crate::panels::vlsm::VlsmPlanner>,
+    pub tools: crate::panels::tools::ToolsState,
     /// Report from the most recent auto-assign run.
     pub last_assign: Option<(Vec<String>, Vec<String>)>,
     /// Validation results for `issues_rev`.
@@ -131,6 +135,7 @@ impl State {
             status: None,
             now: 0.0,
             vlsm: None,
+            tools: Default::default(),
             last_assign: None,
             issues: Vec::new(),
             issues_rev: None,

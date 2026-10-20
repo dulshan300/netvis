@@ -42,6 +42,18 @@ impl VlsmPlanner {
     }
 }
 
+impl VlsmPlanner {
+    /// Pre-filled from the VLSM calculator: `(name, hosts, vlan tag or 0)`.
+    pub fn with_rows(parent: IpNet, rows: Vec<(String, u32, u16)>) -> Self {
+        Self {
+            parent,
+            rows: rows.into_iter().map(|(name, hosts, tag)| Row { name, hosts, tag }).collect(),
+            gateway_first: true,
+            dhcp: true,
+        }
+    }
+}
+
 /// Draw the planner if open. Closes itself on Create/Cancel.
 pub fn show(ctx: &egui::Context, st: &mut State) {
     let Some(mut planner) = st.vlsm.take() else { return };

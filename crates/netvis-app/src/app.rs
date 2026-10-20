@@ -13,7 +13,7 @@ use crate::state::{Action, Document, Settings, State};
 use crate::theme::{self, APP_NAME, BRAND_NAME, ThemeChoice};
 
 const SETTINGS_KEY: &str = "netvis.settings";
-const DOCK_KEY: &str = "netvis.dock.v3";
+const DOCK_KEY: &str = "netvis.dock.v4";
 const AUTOSAVE_SECS: f64 = 90.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -26,6 +26,7 @@ pub enum Tab {
     IpPlan,
     Vlans,
     Racks,
+    Tools,
 }
 
 impl Tab {
@@ -39,13 +40,14 @@ impl Tab {
             Tab::IpPlan => (icons::TREE_STRUCTURE, "IP Plan"),
             Tab::Vlans => (icons::TAG, "VLANs & Wi-Fi"),
             Tab::Racks => (icons::GRID_NINE, "Racks"),
+            Tab::Tools => (icons::WRENCH, "IT Tools"),
         };
         format!("{icon}  {name}")
     }
 }
 
 fn default_layout() -> DockState<Tab> {
-    let mut dock = DockState::new(vec![Tab::Canvas]);
+    let mut dock = DockState::new(vec![Tab::Canvas, Tab::Tools]);
     let surface = dock.main_surface_mut();
     let [canvas, _inspector] = surface.split_right(NodeIndex::root(), 0.77, vec![Tab::Inspector]);
     let [canvas, _left] = surface.split_left(canvas, 0.22, vec![Tab::Toolbox, Tab::Outline]);
@@ -144,12 +146,16 @@ impl NetVisApp {
         if let Ok(tab) = std::env::var("NETVIS_DEVTAB") {
             panels::debug_set_device_tab(ctx, &tab);
         }
+        if let Some(t) = std::env::var("NETVIS_TOOL").ok().and_then(|k| panels::tools::Tool::from_key(&k)) {
+            self.st.tools.tool = t;
+        }
         if let Ok(tab) = std::env::var("NETVIS_BOTTOM") {
             let want = match tab.as_str() {
                 "vlans" => Some(Tab::Vlans),
                 "issues" => Some(Tab::Issues),
                 "racks" => Some(Tab::Racks),
                 "ipplan" => Some(Tab::IpPlan),
+                "tools" => Some(Tab::Tools),
                 _ => None,
             };
             if let Some(t) = want
@@ -304,6 +310,17 @@ impl NetVisApp {
             }
             Action::About => self.dialog = Some(Dialog::About),
             Action::ResetLayout => self.dock = default_layout(),
+            Action::ShowTools => self.show_tab(Tab::Tools),
+            Action::ShowCanvas => self.show_tab(Tab::Canvas),
+        }
+    }
+
+    fn show_tab(&mut self, tab: Tab) {
+        match self.dock.find_tab(&tab) {
+            Some(path) => {
+                let _ = self.dock.set_active_tab(path);
+            }
+            None => self.dock.push_to_focused_leaf(tab),
         }
     }
 
@@ -460,6 +477,9 @@ impl NetVisApp {
                         ui.radio_value(&mut st.settings.theme, t, t.label());
                     }
                 });
+                if ui.button(format!("{}  IT tools", icons::WRENCH)).clicked() {
+                    st.actions.push(Action::ShowTools);
+                }
                 if ui.button(format!("{}  Reset panel layout", icons::LAYOUT)).clicked() {
                     st.actions.push(Action::ResetLayout);
                 }
@@ -735,6 +755,11 @@ impl egui_dock::TabViewer for Tabs<'_> {
             canvas::show(ui, self.st);
             return;
         }
+        if *tab == Tab::Tools {
+            // Has its own side navigation and scroll area.
+            egui::Frame::new().inner_margin(8.0).show(ui, |ui| panels::tools(ui, self.st));
+            return;
+        }
         egui::Frame::new().inner_margin(8.0).show(ui, |ui| match tab {
             Tab::Toolbox => panels::toolbox(ui, self.st),
             Tab::Outline => panels::outline(ui, self.st),
@@ -743,6 +768,7 @@ impl egui_dock::TabViewer for Tabs<'_> {
             Tab::IpPlan => panels::ip_plan(ui, self.st),
             Tab::Racks => panels::racks(ui, self.st),
             Tab::Vlans => panels::vlans(ui, self.st),
+            Tab::Tools => {}
             Tab::Canvas => unreachable!(),
         });
     }

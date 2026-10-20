@@ -41,6 +41,14 @@ impl ThemeChoice {
 pub fn install(ctx: &egui::Context, choice: ThemeChoice) {
     let mut fonts = FontDefinitions::default();
     egui_phosphor::add_to_fonts(&mut fonts, egui_phosphor::Variant::Regular);
+    // The default UI font has no arrows (→ ↔); fall back to the bundled
+    // monospace font, which does.
+    let mono = fonts.families.get(&egui::FontFamily::Monospace).and_then(|f| f.first().cloned());
+    if let (Some(mono), Some(prop)) = (mono, fonts.families.get_mut(&egui::FontFamily::Proportional))
+        && !prop.contains(&mono)
+    {
+        prop.push(mono);
+    }
     ctx.set_fonts(fonts);
 
     ctx.set_visuals_of(Theme::Light, visuals(false));

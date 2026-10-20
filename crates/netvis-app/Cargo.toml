@@ -12,6 +12,7 @@ path = "src/main.rs"
 [dependencies]
 netvis-core.workspace = true
 netvis-validate.workspace = true
+netvis-tools.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 eframe.workspace = true

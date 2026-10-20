@@ -2,9 +2,13 @@
 //!
 //! All arithmetic is done on `u128` so the same code serves both families.
 
+pub mod mac;
+pub mod repr;
+
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 pub use ipnet::{IpNet, Ipv4Net, Ipv6Net};
+pub use mac::{Mac, MacStyle};
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]

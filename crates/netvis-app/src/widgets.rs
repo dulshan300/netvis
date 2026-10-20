@@ -15,6 +15,7 @@ impl<T: std::hash::Hash + std::fmt::Debug> Salt for T {}
 
 pub const WARN: Color32 = Color32::from_rgb(217, 119, 6);
 pub const ERROR: Color32 = Color32::from_rgb(220, 38, 38);
+pub const OK: Color32 = Color32::from_rgb(22, 163, 74);
 
 /// Text field bound to a typed value. The text is kept in temp memory while it
 /// does not parse, so the user can type freely; the value only changes when

@@ -3,6 +3,7 @@
 mod inspector;
 mod ipplan;
 mod racks;
+pub mod tools;
 mod vlans;
 pub mod vlsm;
 
@@ -11,6 +12,7 @@ pub use inspector::debug_set_device_tab;
 pub use inspector::inspector;
 pub use ipplan::ip_plan;
 pub use racks::racks;
+pub use tools::tools;
 pub use vlans::vlans;
 
 use egui::{Color32, RichText, Sense, Ui, vec2};
