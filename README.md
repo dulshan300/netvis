@@ -17,6 +17,16 @@ cargo run --release -p netvis-app -- samples\corescale-hq.netvis
 
 The executable is written to `target\release\netvis.exe`. It's a single portable file.
 
+**Building the Windows `.exe` from WSL** (no Visual Studio needed):
+
+```bash
+sudo apt install mingw-w64
+rustup target add x86_64-pc-windows-gnu
+cargo build --release -p netvis-app --target x86_64-pc-windows-gnu
+```
+
+The output is `target/x86_64-pc-windows-gnu/release/netvis.exe`. It uses only system DLLs, so copy it anywhere and run it.
+
 ### WSL / Linux (development)
 
 ```bash
@@ -175,15 +185,39 @@ A `.netvis` file is pretty-printed JSON inside a small envelope: `{"format":"net
 
 ## Roadmap
 
-| Phase | Scope |
-|---|---|
-| 0–1 ✅ | Shell, docking layout, light/dark themes, device palette, canvas, save/load, undo/redo |
-| 2 ✅ | VLANs, subnets, IPAM, per-interface IP configuration, auto-assign |
-| 3 ✅ | Cable and transceiver catalogue, cable validation, PoE budget, racks |
-| 4 ✅ | IP/VLAN/Wi-Fi/name/loop conflict rules and one-click fixes |
-| 5 ✅ | IT tools panel (calculators, OUI lookup, port reference, BOM) |
-| 6 ✅ | Patch schedule and port map |
-| 7 | PDF report (Corescale cover, TOC, vector diagrams, tables) |
-| 8 | Auto-layout, polish, installer |
+| Phase | Status | Scope |
+|---|---|---|
+| 0–1 | ✅ Done | Shell, docking layout, light/dark themes, device palette, canvas, save/load, undo/redo, autosave and recovery |
+| 2 | ✅ Done | VLANs, subnets, IPAM, per-interface IP configuration, auto-assign, VLSM planner |
+| 3 | ✅ Done | Cable and transceiver catalogue, device models, cable validation, PoE budgets, racks and UPS load |
+| 4 | ✅ Done | IP, VLAN, Wi-Fi, name and loop conflict rules, one-click fixes and Fix all, CLI checker |
+| 5 | ✅ Done | IT tools panel: subnet/VLSM calculators, IPv4/IPv6 notation, MAC vendor lookup, transfer time, oversubscription, fibre loss, PoE budget, port reference, bill of materials |
+| 6 | ✅ Done | Patch panels and wall outlets traced end to end, patch schedule with auto-labelling, port maps, CSV exports |
+| 7 | 🚧 In progress | PDF design report — see below |
+| 8 | Planned | Auto-layout, polish, Windows installer |
 
-Live network tools and vendor-specific config generation are out of scope for now.
+**Phase 7 progress:**
+- Done (in the `netvis-report` crate):
+  - Corescale-branded cover with a topology preview.
+  - Contents page with page numbers and clickable entries, plus PDF bookmarks.
+  - Running header and footer with page *n* of *N*.
+  - Vector topology diagram and rack elevation drawings.
+  - Sections: summary, devices, IP addressing, VLANs and Wi-Fi, routing and services, racks and power, patch schedule, port maps, bill of materials and design check.
+  - Fonts are bundled (DejaVu) and embedded as subsets.
+  - Try it with `cargo run -p netvis-report --example report -- in.netvis out.pdf`.
+- Remaining:
+  - **File → Export PDF report…** in the app, with a choice of sections.
+  - SVG export of the topology diagram.
+  - Report tests on larger projects.
+
+**Phase 8 plan:**
+- Automatic layout of the topology (hierarchical: WAN, core, distribution, access, endpoints) and tidy-up of crossing links.
+- UI polish from hands-on use.
+- A Windows installer with Start-menu shortcut and `.netvis` file association.
+
+**Fixes since Phase 6:**
+- Resizing a rack below mounted devices no longer crashes the app.
+- Selected devices are drawn on top of overlapping ones.
+- Distribute now spreads stacked devices.
+
+**Out of scope for now:** live network tools (ping, scans, SNMP discovery) and vendor-specific configuration generation.
