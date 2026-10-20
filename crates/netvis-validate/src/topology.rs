@@ -12,23 +12,28 @@ pub fn check(p: &Project, out: &mut Sink) {
 }
 
 fn port_reuse(p: &Project, out: &mut Sink) {
-    let mut uses: HashMap<netvis_core::PortId, Vec<netvis_core::LinkId>> = HashMap::new();
-    for l in &p.links {
+    // (position in the link list, link) so reports come out in a stable order.
+    let mut uses: HashMap<netvis_core::PortId, Vec<(usize, netvis_core::LinkId)>> = HashMap::new();
+    for (i, l) in p.links.iter().enumerate() {
         if l.a.device == l.b.device {
             let name = p.device(l.a.device).map(|d| d.name.as_str()).unwrap_or("?");
             out.warn("topo.self-link", format!("{name} is cabled to itself"), vec![Item::Link(l.id)]);
         }
         for e in [l.a, l.b] {
-            uses.entry(e.port).or_default().push(l.id);
+            uses.entry(e.port).or_default().push((i, l.id));
         }
     }
-    for (port, links) in uses.into_iter().filter(|(_, v)| v.len() > 1) {
-        let who = p
-            .devices
-            .iter()
-            .find_map(|d| d.port(port).map(|x| format!("{}:{}", d.name, x.name)))
-            .unwrap_or_else(|| "a port".into());
-        out.error("topo.port-reuse", format!("{who} is used by {} links", links.len()), links.into_iter().map(Item::Link).collect());
+    let mut reused: Vec<_> = uses.into_iter().filter(|(_, v)| v.len() > 1).collect();
+    reused.sort_by_key(|(_, v)| v[0].0);
+    for (port, links) in reused {
+        let Some(d) = p.devices.iter().find(|d| d.port(port).is_some()) else { continue };
+        let who = format!("{}:{}", d.name, d.port(port).map(|x| x.name.as_str()).unwrap_or("?"));
+        // Patch-panel ports take a front and a rear cable.
+        let cap = if d.kind.is_passthrough() { 2 } else { 1 };
+        if links.len() > cap {
+            let what = if cap == 2 { " — a panel port takes one front and one rear cable" } else { "" };
+            out.error("topo.port-reuse", format!("{who} is used by {} links{what}", links.len()), links.into_iter().map(|(_, l)| Item::Link(l)).collect());
+        }
     }
 }
 
@@ -52,8 +57,9 @@ fn loops(p: &Project, out: &mut Sink) {
 
     let mut seen_lag: HashSet<(DeviceId, DeviceId, u16)> = HashSet::new();
     let mut looped_roots: Vec<DeviceId> = Vec::new();
-    for l in &p.links {
-        let ends = [l.a, l.b].map(|e| p.device(e.device).and_then(|d| Some((d, d.port(e.port)?))));
+    // Runs through patch panels join switches just like direct cables.
+    for c in p.circuits() {
+        let ends = [c.a, c.b].map(|e| p.device(e.device).and_then(|d| Some((d, d.port(e.port)?))));
         let [Some((da, pa)), Some((db, pb))] = ends else { continue };
         if da.id == db.id || !bridges(da.kind) || !bridges(db.kind) {
             continue;

@@ -83,12 +83,14 @@ fn trunk_set(p: &Project, native: Option<VlanId>, allowed: &AllowedVlans) -> BTr
     s
 }
 
+/// Switchport settings must agree across each run (through any patch panels).
 fn links(p: &Project, out: &mut Sink) {
-    for l in &p.links {
-        let ends = [l.a, l.b].map(|e| p.device(e.device).and_then(|d| Some((d, d.port(e.port)?))));
+    for c in p.circuits().into_iter().filter(|c| c.is_terminated(p)) {
+        let ends = [c.a, c.b].map(|e| p.device(e.device).and_then(|d| Some((d, d.port(e.port)?))));
         let [Some((da, pa)), Some((db, pb))] = ends else { continue };
         let pair = format!("{}:{} ↔ {}:{}", da.name, pa.name, db.name, pb.name);
-        let items = vec![Item::Link(l.id), Item::Device(da.id), Item::Device(db.id)];
+        let mut items: Vec<Item> = c.links.iter().map(|l| Item::Link(*l)).collect();
+        items.extend([Item::Device(da.id), Item::Device(db.id)]);
         use SwitchportMode::*;
         match (&pa.cfg.mode, &pb.cfg.mode) {
             (Access { vlan: va }, Access { vlan: vb }) if va != vb => {
@@ -143,8 +145,7 @@ fn carrying_trunks(p: &Project, d: &netvis_core::Device, v: VlanId) -> (Vec<Port
     let mut good = Vec::new();
     let mut fixable = Vec::new();
     for port in d.ports.iter().filter(|x| matches!(x.cfg.mode, SwitchportMode::Trunk { .. })) {
-        let Some(link) = p.port_link(port.id) else { continue };
-        let far = if link.a.port == port.id { link.b } else { link.a };
+        let Some(far) = p.peer(netvis_core::Endpoint { device: d.id, port: port.id }) else { continue };
         let Some(fd) = p.device(far.device) else { continue };
         if !is_switch(fd.kind) {
             continue;
@@ -172,10 +173,7 @@ fn carried(p: &Project, out: &mut Sink) {
     }
     for d in p.devices.iter().filter(|d| is_switch(d.kind)) {
         let has_uplink = d.ports.iter().any(|x| {
-            p.port_link(x.id).is_some_and(|l| {
-                let far = if l.a.port == x.id { l.b } else { l.a };
-                p.device(far.device).is_some_and(|fd| is_switch(fd.kind))
-            })
+            p.peer(netvis_core::Endpoint { device: d.id, port: x.id }).and_then(|far| p.device(far.device)).is_some_and(|fd| is_switch(fd.kind))
         });
         if !has_uplink {
             continue;

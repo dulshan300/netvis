@@ -166,8 +166,17 @@ impl CanvasState {
 
 // ---- hit testing ---------------------------------------------------------
 
-fn hit_test(p: &Project, w: Pos, zoom: f32) -> Hit {
-    for d in p.devices.iter().rev() {
+/// Devices bottom to top: selected devices are raised above the rest so an
+/// overlapped card is fully visible while it is being worked on. Hit-testing
+/// uses the same order, so a click goes to what is drawn on top.
+fn paint_order<'a>(p: &'a Project, sel: &netvis_core::Selection) -> Vec<&'a netvis_core::Device> {
+    let (mut top, mut rest): (Vec<_>, Vec<_>) = p.devices.iter().partition(|d| sel.contains(Item::Device(d.id)));
+    rest.append(&mut top);
+    rest
+}
+
+fn hit_test(p: &Project, sel: &netvis_core::Selection, w: Pos, zoom: f32) -> Hit {
+    for d in paint_order(p, sel).into_iter().rev() {
         if !d.rect().contains(w) {
             continue;
         }
@@ -259,7 +268,7 @@ pub fn show(ui: &mut Ui, st: &mut State) {
     let cam = st.canvas.camera;
     let pointer = response.hover_pos();
     st.canvas.cursor_world = pointer.map(|p| cam.to_world(origin, p));
-    let hit = st.canvas.cursor_world.map_or(Hit::None, |w| hit_test(&st.doc.project, w, cam.zoom));
+    let hit = st.canvas.cursor_world.map_or(Hit::None, |w| hit_test(&st.doc.project, &st.sel, w, cam.zoom));
     let shift = ui.input(|i| i.modifiers.shift);
     let space = ui.input(|i| i.key_down(egui::Key::Space));
 
@@ -286,7 +295,7 @@ pub fn show(ui: &mut Ui, st: &mut State) {
         Hit::Port(ep) => Some(ep),
         _ => None,
     };
-    for d in &p.devices {
+    for d in paint_order(p, &st.sel) {
         let selected = st.sel.contains(Item::Device(d.id));
         draw_device(&painter, &cam, origin, p, d, selected, hover_port, st.settings.show_addresses, &pal);
     }
@@ -372,7 +381,7 @@ fn handle_primary_drag(ui: &Ui, response: &egui::Response, st: &mut State, space
     if response.drag_started_by(PointerButton::Primary) && !space {
         let Some(press) = ui.input(|i| i.pointer.press_origin()) else { return };
         let w = cam.to_world(origin, press);
-        let hit = hit_test(&st.doc.project, w, cam.zoom);
+        let hit = hit_test(&st.doc.project, &st.sel, w, cam.zoom);
         st.doc.history.break_coalescing();
         st.canvas.drag = match hit {
             Hit::Port(ep) => Drag::Link { from: ep },
@@ -522,7 +531,7 @@ fn finish_move(st: &mut State, devices: &[(DeviceId, Pos)], areas: &[(AreaId, ne
 
 fn finish_link(st: &mut State, from: Endpoint, w: Pos) {
     let p = &st.doc.project;
-    let target = match hit_test(p, w, st.canvas.camera.zoom) {
+    let target = match hit_test(p, &st.sel, w, st.canvas.camera.zoom) {
         Hit::Port(ep) => Some(ep),
         Hit::Device(id) if id != from.device => {
             let media = p.endpoint_media(from);
@@ -645,12 +654,14 @@ fn port_tooltip(p: &Project, ep: Endpoint) -> Option<String> {
         PoeRole::Powered(std) => s.push_str(&format!("\nPoE powered · {}", std.label())),
         PoeRole::None => {}
     }
-    match p.port_link(ep.port) {
-        Some(l) => {
-            let far = if l.a.port == ep.port { l.b } else { l.a };
-            if let Some(fd) = p.device(far.device) {
-                let fp = fd.port(far.port).map(|x| x.name.as_str()).unwrap_or("?");
-                s.push_str(&format!("\n→ {}:{}  ({})", fd.name, fp, l.cable.label()));
+    match crate::widgets::run_summary(p, ep) {
+        Some(r) => {
+            s.push_str(&format!("\n→ {}  ({})", r.far, r.cables));
+            if !r.via.is_empty() {
+                s.push_str(&format!("\nvia {}", r.via));
+            }
+            if p.is_passthrough(ep) && p.port_links(ep.port).count() < 2 {
+                s.push_str("\nOne side free — drag to another port to patch");
             }
         }
         None => s.push_str("\nFree — drag to another port to connect"),

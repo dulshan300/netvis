@@ -9,6 +9,20 @@ use crate::{Fix, Sink};
 pub fn check(p: &Project, out: &mut Sink) {
     hostnames(p, out);
     macs(p, out);
+    cable_labels(p, out);
+}
+
+/// Cable labels must be unique so a label identifies one cable.
+fn cable_labels(p: &Project, out: &mut Sink) {
+    let mut by_label: HashMap<String, Vec<netvis_core::LinkId>> = HashMap::new();
+    for l in p.links.iter().filter(|l| !l.label.trim().is_empty()) {
+        by_label.entry(l.label.trim().to_ascii_uppercase()).or_default().push(l.id);
+    }
+    let mut dups: Vec<_> = by_label.into_iter().filter(|(_, v)| v.len() > 1).collect();
+    dups.sort();
+    for (label, links) in dups {
+        out.warn("cable.label-dup", format!("Cable label {label} is used on {} cables", links.len()), links.into_iter().map(Item::Link).collect());
+    }
 }
 
 /// RFC 1123 label: letters, digits and hyphens, 1–63 chars, no leading/trailing hyphen.

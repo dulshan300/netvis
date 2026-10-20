@@ -13,6 +13,7 @@ pub mod ids;
 pub mod io;
 pub mod ipam;
 pub mod link;
+pub mod patching;
 pub mod port;
 pub mod project;
 pub mod routing;
@@ -34,6 +35,7 @@ pub use iface::{
 };
 pub use ids::{AreaId, DeviceId, LinkId, LogicalId, PortId, SsidId, SubnetId, VlanId};
 pub use link::{CableKind, Endpoint, Link};
+pub use patching::Circuit;
 pub use port::{PoeRole, PoeStandard, Port, PortMedia};
 pub use project::{Project, ProjectMeta};
 pub use routing::{NatKind, NatRule, Routing, Services, StaticRoute};

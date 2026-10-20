@@ -48,6 +48,20 @@ impl Builder {
         (ea.port, eb.port)
     }
 
+    /// Cable from a specific port (e.g. the rear of a panel port) to the
+    /// first free port on `b`; returns (port on a, port on b).
+    fn link_ports(&mut self, a: (DeviceId, PortId), b: DeviceId, mb: Option<PortMedia>, cable: CableKind, len: Option<f32>) -> (PortId, PortId) {
+        let ea = Endpoint { device: a.0, port: a.1 };
+        let eb = Endpoint { device: b, port: self.p.first_free_port(b, mb).expect("free port") };
+        let (_, mut edit) = self.p.add_link_edit(ea, eb).expect("valid link");
+        if let Edit::Link { after: Some(l), .. } = &mut edit {
+            l.cable = cable;
+            l.length_m = len;
+        }
+        self.h.apply(&mut self.p, edit, "link");
+        (ea.port, eb.port)
+    }
+
     fn area(&mut self, kind: AreaKind, name: &str, rect: Rect) {
         let a = Area::new(kind, name, rect);
         self.h.apply(&mut self.p, Edit::Area { id: a.id, before: None, after: Some(a) }, "area");
@@ -104,11 +118,11 @@ fn main() {
     use DeviceKind::*;
     use PortMedia::*;
 
-    b.area(AreaKind::Site, "HQ — Singapore", Rect::new(0.0, 0.0, 1500.0, 900.0));
+    b.area(AreaKind::Site, "HQ — Singapore", Rect::new(0.0, 0.0, 1500.0, 960.0));
     b.area(AreaKind::Rack, "MDF Rack A", Rect::new(500.0, 160.0, 400.0, 300.0));
     b.area(AreaKind::SecurityZone, "DMZ", Rect::new(1020.0, 160.0, 400.0, 220.0));
-    b.area(AreaKind::Floor, "Level 1", Rect::new(40.0, 520.0, 680.0, 340.0));
-    b.area(AreaKind::Floor, "Level 2", Rect::new(780.0, 520.0, 680.0, 340.0));
+    b.area(AreaKind::Floor, "Level 1", Rect::new(40.0, 520.0, 680.0, 400.0));
+    b.area(AreaKind::Floor, "Level 2", Rect::new(780.0, 520.0, 680.0, 400.0));
 
     // ---- VLANs and subnets ----
     let mgmt = b.vlan(10, "Management", "Network device and server management");
@@ -135,7 +149,10 @@ fn main() {
     let sw1 = b.device(SwitchL2, "SW-L1-01", 260.0, 580.0);
     let sw2 = b.device(SwitchL2, "SW-L2-01", 1000.0, 580.0);
     let pp = b.device(PatchPanel, "PP-MDF-01", 730.0, 190.0);
-    let ups = b.device(Ups, "UPS-MDF-01", 730.0, 360.0);
+    let ups = b.device(Ups, "UPS-MDF-01", 730.0, 385.0);
+    // Fibre riser to Level 2: LC panels in the MDF rack and on the floor.
+    let fpp = b.device(PatchPanel, "FPP-MDF-01", 730.0, 290.0);
+    let fpp2 = b.device(PatchPanel, "FPP-L2-01", 1310.0, 560.0);
 
     b.model(fw, "fw-campus");
     b.model(core, "sw-dist-24x10g");
@@ -145,6 +162,8 @@ fn main() {
     b.model(sw2, "sw-access-24p-poe");
     b.model(pp, "pp-24-cat6a");
     b.model(ups, "ups-1500");
+    b.model(fpp, "pp-12-lc");
+    b.model(fpp2, "pp-12-lc");
     // 25G server NICs run at 10G towards the 10G core.
     for d in [srv, web] {
         for p in &mut b.p.device_mut(d).unwrap().ports {
@@ -159,7 +178,10 @@ fn main() {
     let (fw_dmz, web_nic) = b.link(fw, Some(SfpPlus), web, Some(Sfp28), Some(CableKind::Om4), Some(15.0));
     let (core_srv, _) = b.link(core, Some(SfpPlus), srv, Some(Sfp28), Some(CableKind::Dac), Some(2.0));
     let (core_l1, sw1_up) = b.link(core, Some(SfpPlus), sw1, Some(SfpPlus), Some(CableKind::Om4), Some(45.0));
-    let (core_l2, sw2_up) = b.link(core, Some(SfpPlus), sw2, Some(SfpPlus), Some(CableKind::Os2), Some(120.0));
+    // Core → MDF fibre panel → riser → Level 2 fibre panel → SW-L2-01.
+    let (core_l2, fpp_1) = b.link(core, Some(SfpPlus), fpp, None, Some(CableKind::Os2), Some(2.0));
+    let (_, fpp2_1) = b.link_ports((fpp, fpp_1), fpp2, None, CableKind::Os2, Some(115.0));
+    let (_, sw2_up) = b.link_ports((fpp2, fpp2_1), sw2, Some(SfpPlus), CableKind::Os2, Some(3.0));
     for (d, p) in [(fw, fw_dmz), (web, web_nic), (core, core_l1), (sw1, sw1_up)] {
         b.tx(d, p, "sfpp-10g-sr");
     }
@@ -230,8 +252,16 @@ fn main() {
                 r.channel = channel;
             }
         });
-        let (sp, _) = b.link(sw, Some(Rj45), pc, Some(Rj45), None, Some(18.0));
+        // The desk PC is patched: switch → floor patch panel → wall outlet → PC.
+        let fpp = b.device(PatchPanel, &format!("PP-{floor}-01"), x0 + 330.0, 560.0);
+        let wo = b.device(WallOutlet, &format!("WO-{floor}-01"), x0 + 160.0, 830.0);
+        b.model(fpp, "pp-24-cat6a");
+        let (sp, panel) = b.link(sw, Some(Rj45), fpp, None, Some(CableKind::Cat6), Some(1.0));
+        let (_, outlet) = b.link_ports((fpp, panel), wo, None, CableKind::Cat6A, Some(42.0));
+        b.link_ports((wo, outlet), pc, Some(Rj45), CableKind::Cat6, Some(3.0));
         b.cfg(sw, sp, |c| c.mode = SwitchportMode::Access { vlan: Some(staff) });
+        // Second outlet socket: cabled back to the panel, not patched (spare).
+        b.link(fpp, None, wo, None, Some(CableKind::Cat6A), Some(42.0));
         let (sp, php) = b.link(sw, Some(Rj45), ph, Some(Rj45), None, None);
         b.cfg(sw, sp, |c| c.mode = SwitchportMode::Access { vlan: Some(voice) });
         b.cfg(ph, php, |c| c.l3.dhcp_client = true);

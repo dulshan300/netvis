@@ -190,8 +190,7 @@ fn ssids(p: &Project, out: &mut Sink) {
         // Each AP's switch port must carry the SSID's VLAN.
         for ap in p.devices.iter().filter(|d| d.kind == DeviceKind::AccessPoint) {
             for port in ap.ports.iter().filter(|x| x.cfg.radio.is_none()) {
-                let Some(l) = p.port_link(port.id) else { continue };
-                let far = if l.a.port == port.id { l.b } else { l.a };
+                let Some(far) = p.peer(netvis_core::Endpoint { device: ap.id, port: port.id }) else { continue };
                 let Some(fd) = p.device(far.device) else { continue };
                 let Some(fp) = fd.port(far.port) else { continue };
                 if fp.cfg.mode == SwitchportMode::Unset || fp.cfg.mode.carries(v) {

@@ -74,7 +74,7 @@ pub fn bom(ui: &mut Ui, st: &mut State) {
             st.set_status("Bill of materials copied as CSV");
         }
         if ui.button(format!("{} Save CSV…", icons::DOWNLOAD_SIMPLE)).clicked() {
-            save_csv(st, &bom::to_csv(&lines));
+            crate::panels::save_csv(st, "bom", &bom::to_csv(&lines));
         }
     });
     ui.add_space(4.0);
@@ -123,20 +123,5 @@ pub fn bom(ui: &mut Ui, st: &mut State) {
                 ui.end_row();
             }
         });
-    }
-}
-
-fn save_csv(st: &mut State, csv: &str) {
-    let stem = format!("{}-bom", crate::file_dialog::file_stem_for(&st.doc.project.meta.name));
-    let path = match crate::file_dialog::save_csv(&format!("{stem}.csv")) {
-        Some(Some(p)) => p,
-        Some(None) => return,
-        // No native dialog (Linux/WSL dev builds): save next to the project.
-        None => st.doc.path.as_ref().and_then(|p| p.parent()).map(|d| d.to_path_buf()).unwrap_or_else(crate::file_dialog::default_dir).join(format!("{stem}.csv")),
-    };
-    // Byte-order mark so Excel reads the file as UTF-8 (×, ·, accents).
-    match std::fs::write(&path, format!("\u{feff}{csv}")) {
-        Ok(()) => st.set_status(format!("Saved {}", path.display())),
-        Err(e) => st.set_status(format!("Could not save {}: {e}", path.display())),
     }
 }

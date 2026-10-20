@@ -208,3 +208,31 @@ pub fn section(ui: &mut Ui, text: &str) {
 pub fn temp_id(name: &str, salt: impl Salt) -> Id {
     Id::new(("netvis", name)).with(salt)
 }
+
+/// What a port reaches, traced through patch panels: the far end, the panel
+/// ports in between, and the cables (`Cat6 + Cat6A`). A panel port in the
+/// middle of a run shows both ends.
+pub struct RunSummary {
+    pub far: String,
+    pub via: String,
+    pub cables: String,
+    pub cable: netvis_core::CableKind,
+}
+
+pub fn run_summary(p: &netvis_core::Project, ep: netvis_core::Endpoint) -> Option<RunSummary> {
+    let c = p.circuit_from(ep)?;
+    let name = |e: netvis_core::Endpoint| {
+        p.device(e.device)
+            .map(|d| format!("{}:{}", d.name, d.port(e.port).map(|x| x.name.as_str()).unwrap_or("?")))
+            .unwrap_or_else(|| "?".into())
+    };
+    let links: Vec<&netvis_core::Link> = c.links.iter().filter_map(|id| p.link(*id)).collect();
+    let far = if c.a == ep { name(c.b) } else { format!("{} ↔ {}", name(c.a), name(c.b)) };
+    let far = if c.a == ep && p.is_passthrough(c.b) { format!("{far} (not patched through)") } else { far };
+    Some(RunSummary {
+        far,
+        via: c.via.iter().filter(|e| **e != ep).map(|e| name(*e)).collect::<Vec<_>>().join(", "),
+        cables: links.iter().map(|l| l.cable.label()).collect::<Vec<_>>().join(" + "),
+        cable: links.first().map(|l| l.cable)?,
+    })
+}

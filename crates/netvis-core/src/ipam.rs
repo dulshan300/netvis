@@ -10,6 +10,7 @@ use crate::device::{DeviceCategory, DeviceKind};
 use crate::edit::Edit;
 use crate::iface::{AddrKind, IfAddr, IfaceKey, LogicalKind};
 use crate::ids::{DeviceId, PortId, SubnetId, VlanId};
+use crate::link::Endpoint;
 use crate::port::PortMedia;
 use crate::project::Project;
 use crate::subnet::Subnet;
@@ -153,8 +154,7 @@ impl Project {
         if let Some(v) = own.cfg.mode.untagged_vlan() {
             return Some(v);
         }
-        let link = self.port_link(port)?;
-        let far = if link.a.port == port { link.b } else { link.a };
+        let far = self.peer(Endpoint { device, port })?;
         self.device(far.device)?.port(far.port)?.cfg.mode.untagged_vlan()
     }
 
@@ -268,7 +268,12 @@ fn host_net(a: IpAddr, s: &Subnet) -> ip::IpNet {
 fn assigns_host_ports(kind: DeviceKind) -> bool {
     !matches!(
         kind,
-        DeviceKind::SwitchL2 | DeviceKind::SwitchL3 | DeviceKind::PatchPanel | DeviceKind::PoeInjector | DeviceKind::MediaConverter
+        DeviceKind::SwitchL2
+            | DeviceKind::SwitchL3
+            | DeviceKind::PatchPanel
+            | DeviceKind::WallOutlet
+            | DeviceKind::PoeInjector
+            | DeviceKind::MediaConverter
     ) && kind.category() != DeviceCategory::CloudWan
 }
 

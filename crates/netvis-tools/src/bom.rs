@@ -143,10 +143,13 @@ pub fn build(p: &Project, opts: BomOptions) -> Vec<BomLine> {
 }
 
 /// RFC 4180 CSV with a header row.
+/// One RFC 4180 field, quoted when needed.
+pub fn csv_field(s: &str) -> String {
+    if s.contains([',', '"', '\n', '\r']) { format!("\"{}\"", s.replace('"', "\"\"")) } else { s.to_owned() }
+}
+
 pub fn to_csv(lines: &[BomLine]) -> String {
-    fn field(s: &str) -> String {
-        if s.contains([',', '"', '\n', '\r']) { format!("\"{}\"", s.replace('"', "\"\"")) } else { s.to_owned() }
-    }
+    let field = csv_field;
     let mut out = String::from("Section,Item,Qty,Length (m),Notes\r\n");
     for l in lines {
         let len = l.length_m.map(|m| format!("{m:.0}")).unwrap_or_default();

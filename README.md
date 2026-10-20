@@ -2,7 +2,7 @@
 
 Network planning tool for Windows, written in Rust (egui/eframe). It's built for Corescale.
 
-**Status:** Phases 0–5 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), a live conflict engine with one-click fixes, and an IT tools panel.
+**Status:** Phases 0–6 are done: the app shell, topology canvas, save/load, undo/redo, VLANs, subnets, IPAM, interface configuration, the physical layer (cables, optics, PoE, racks), a live conflict engine with one-click fixes, an IT tools panel, and patching (patch schedule and port maps).
 
 ## Build and run
 
@@ -96,6 +96,20 @@ Deleting a VLAN clears every reference to it on ports, SVIs, subnets and SSIDs, 
 - **Racks:** every Rack area on the canvas is a rack, and the Racks tab shows its elevation. Drag devices to move them (the outline turns green when the slot is free), right-click to remove one, and place unmounted devices with one click or **Auto-place** (network gear from the top; servers, storage and UPS from the bottom). It reports overlaps, devices that don't fit the rack, and devices drawn in a rack but not placed in it. Each rack shows its power load against its UPS capacity (warning above 80%, error above 100%).
 - **Issues tab:** every finding, filterable by severity. Click one to select and centre the item involved. The inspector also lists the findings for the selected item, and the canvas marks devices and links that have errors or warnings with red or amber badges.
 
+## Patching
+
+**Patch panels** and **wall outlets** are pass-through devices. Each port takes two cables, a patch cord on one side and the permanent run on the other. NetVis traces every run end to end, for example `SW-L1-01:ge2 → PP-L1-01:1 → WO-L1-01:A → PC-L1-01`, and every rule uses the traced ends:
+- **VLANs and PoE:** a host behind an outlet inherits the VLAN of the switch port at the far end, and PoE is delivered and budgeted through the panel.
+- **Switch-to-switch checks:** VLAN agreement, trunk carriage and loop detection work across patched links between switches.
+- **Run checks:** copper and fibre runs are checked as a whole channel: total length against the 100 m (or optic) limit, every cable rated for the run's speed, no multimode/single-mode mix, and the optics at the two ends. A DAC can't pass through a panel, and copper can't go into an LC adapter.
+- **Unpatched runs:** a host whose run stops at an unpatched panel port gets a warning. A spare permanent link with nothing patched at either end is normal and isn't flagged.
+
+For fibre panels, choose a model with **LC** (or MPO) adapters, such as *12/24-port duplex LC fibre patch panel*.
+
+**Patch schedule** (bottom tab): one row per run with its ID (C-001…), both ends, the panel ports in between, the cables and total length, and the VLAN or trunk on the network side. Expand a run to edit each cable's label and length. **Auto-label** numbers every cable from its run (C-004.1, C-004.2…), and **Copy CSV** / **Save CSV…** export one line per cable for installers. Duplicate cable labels are flagged.
+
+**Port map** (bottom tab): a faceplate of the selected device. Port colour shows state (connected, patched but going nowhere, one side only, shut down), with a bar for the access VLAN colour, stripes for trunks and ⚡ for PoE. Below it is a table of every port with its mode, the far end traced through panels, the cables and labels. Click a port to jump to the device at the other end.
+
 ## Conflict checks and fixes
 
 Validation runs live after every change. Findings appear in the Issues tab, in the inspector for the selected item, and as badges on the canvas.
@@ -168,7 +182,7 @@ A `.netvis` file is pretty-printed JSON inside a small envelope: `{"format":"net
 | 3 ✅ | Cable and transceiver catalogue, cable validation, PoE budget, racks |
 | 4 ✅ | IP/VLAN/Wi-Fi/name/loop conflict rules and one-click fixes |
 | 5 ✅ | IT tools panel (calculators, OUI lookup, port reference, BOM) |
-| 6 | Patch schedule and port map |
+| 6 ✅ | Patch schedule and port map |
 | 7 | PDF report (Corescale cover, TOC, vector diagrams, tables) |
 | 8 | Auto-layout, polish, installer |
 

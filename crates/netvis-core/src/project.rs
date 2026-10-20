@@ -137,6 +137,8 @@ impl Project {
         set_entity(&mut self.areas, |a| a.id == id, value);
     }
 
+    /// The (first) cable on a port. Patch-panel ports can have two; see
+    /// [`Project::port_links`] and [`Project::peer`].
     pub fn port_link(&self, port: PortId) -> Option<&Link> {
         self.links.iter().find(|l| l.touches_port(port))
     }
@@ -152,11 +154,13 @@ impl Project {
     /// First unconnected port on `device`, preferring `prefer` media if given.
     pub fn first_free_port(&self, device: DeviceId, prefer: Option<PortMedia>) -> Option<PortId> {
         let d = self.device(device)?;
-        let free = |p: &&crate::port::Port| self.port_link(p.id).is_none();
-        prefer
-            .and_then(|m| d.ports.iter().filter(free).find(|p| p.media == m))
-            .or_else(|| d.ports.iter().find(free))
-            .map(|p| p.id)
+        // Unused ports first; then, on patch panels, ports with only one side cabled.
+        let cap = if d.kind.is_passthrough() { 2 } else { 1 };
+        let pick = |limit: usize| {
+            let free = |p: &&crate::port::Port| self.port_links(p.id).count() < limit;
+            prefer.and_then(|m| d.ports.iter().filter(free).find(|p| p.media == m)).or_else(|| d.ports.iter().find(free))
+        };
+        pick(1).or_else(|| pick(cap)).map(|p| p.id)
     }
 
     pub fn check_link(&self, a: Endpoint, b: Endpoint) -> Result<(), LinkError> {
@@ -168,7 +172,7 @@ impl Project {
             return Err(LinkError::SamePort);
         }
         for (ep, port) in [(a, pa), (b, pb)] {
-            if self.port_link(ep.port).is_some() {
+            if self.port_links(ep.port).count() >= self.port_capacity(ep) {
                 let dev = self.device(ep.device).map(|d| d.name.as_str()).unwrap_or("?");
                 return Err(LinkError::PortInUse(format!("{dev}:{}", port.name)));
             }

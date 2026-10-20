@@ -511,17 +511,13 @@ fn ports_section(ui: &mut Ui, p: &Project, d: &mut netvis_core::Device, field: &
             if ui.add(mode).on_hover_text("Configure switchport and addressing").clicked() {
                 open = Some(IfaceKey::Port(pid));
             }
-            match p.port_link(pid) {
-                Some(l) => {
-                    let far = if l.a.port == pid { l.b } else { l.a };
-                    let name = p
-                        .device(far.device)
-                        .map(|fd| format!("{}:{}", fd.name, fd.port(far.port).map(|x| x.name.as_str()).unwrap_or("?")))
-                        .unwrap_or_default();
-                    let text = RichText::new(&name).color(theme::cable_color(l.cable.family()));
+            match crate::widgets::run_summary(p, netvis_core::Endpoint { device: d.id, port: pid }) {
+                Some(r) => {
+                    let text = RichText::new(&r.far).color(theme::cable_color(r.cable.family()));
                     let w = ui.available_width().max(60.0);
+                    let via = if r.via.is_empty() { String::new() } else { format!("\nvia {}", r.via) };
                     ui.add_sized([w, 18.0], egui::Label::new(text).truncate())
-                        .on_hover_text(format!("{name}\n{}", l.cable.label()));
+                        .on_hover_text(format!("{}{via}\n{}", r.far, r.cables));
                 }
                 None => {
                     ui.horizontal(|ui| {

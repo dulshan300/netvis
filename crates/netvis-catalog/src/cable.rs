@@ -107,6 +107,7 @@ impl CableKind {
             (Wireless, _) | (_, Wireless) => CableKind::Wireless,
             (Console, _) | (_, Console) => CableKind::Console,
             (Coax, _) | (_, Coax) => CableKind::Coax,
+            (Lc | Mpo, Lc | Mpo) => CableKind::Os2,
             (Rj45, Rj45) => CableKind::Cat6,
             (Rj45, _) | (_, Rj45) => CableKind::Cat6A,
             (Sfp, Sfp) => CableKind::Om3,

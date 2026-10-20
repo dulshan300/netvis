@@ -2,6 +2,7 @@
 
 mod inspector;
 mod ipplan;
+mod patching;
 mod racks;
 pub mod tools;
 mod vlans;
@@ -11,6 +12,7 @@ pub mod vlsm;
 pub use inspector::debug_set_device_tab;
 pub use inspector::inspector;
 pub use ipplan::ip_plan;
+pub use patching::{patch_schedule, port_map};
 pub use racks::racks;
 pub use tools::tools;
 pub use vlans::vlans;
@@ -268,5 +270,30 @@ pub fn severity_icon(s: netvis_validate::Severity) -> &'static str {
         netvis_validate::Severity::Error => icons::X_CIRCLE,
         netvis_validate::Severity::Warning => icons::WARNING,
         netvis_validate::Severity::Info => icons::INFO,
+    }
+}
+
+// ---- CSV export -------------------------------------------------------------
+
+/// Save `csv` as `<project>-<suffix>.csv`: a native dialog on Windows, next to
+/// the project (or in Documents) elsewhere.
+pub(crate) fn save_csv(st: &mut State, suffix: &str, csv: &str) {
+    let stem = format!("{}-{suffix}", crate::file_dialog::file_stem_for(&st.doc.project.meta.name));
+    let path = match crate::file_dialog::save_csv(&format!("{stem}.csv")) {
+        Some(Some(p)) => p,
+        Some(None) => return,
+        None => st
+            .doc
+            .path
+            .as_ref()
+            .and_then(|p| p.parent())
+            .map(|d| d.to_path_buf())
+            .unwrap_or_else(crate::file_dialog::default_dir)
+            .join(format!("{stem}.csv")),
+    };
+    // Byte-order mark so Excel reads the file as UTF-8 (×, ·, ↔).
+    match std::fs::write(&path, format!("\u{feff}{csv}")) {
+        Ok(()) => st.set_status(format!("Saved {}", path.display())),
+        Err(e) => st.set_status(format!("Could not save {}: {e}", path.display())),
     }
 }

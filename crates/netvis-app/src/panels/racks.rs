@@ -63,7 +63,8 @@ fn rack_column(ui: &mut Ui, st: &State, rid: AreaId, actions: &mut Vec<Action>) 
     let Some(rack) = p.area(rid) else { return };
     let units = rack.rack_units.max(1);
     let contents = p.rack_contents(rid);
-    let used: u32 = contents.iter().map(|m| m.height as u32).sum();
+    // Units actually occupied inside the rack (devices left above a shortened rack don't count).
+    let used: u32 = contents.iter().map(|m| (m.top().min(units) as u32 + 1).saturating_sub(m.bottom.max(1) as u32).min(m.height as u32)).sum();
     let power = p.rack_power(rid);
 
     ui.horizontal(|ui| {
@@ -90,7 +91,8 @@ fn rack_column(ui: &mut Ui, st: &State, rid: AreaId, actions: &mut Vec<Action>) 
     let pal = theme::Palette::new(ui.visuals().dark_mode);
     let painter = ui.painter_at(rect.expand(2.0));
     let body = egui::Rect::from_min_size(rect.min + vec2(GUTTER, 4.0), vec2(WIDTH - GUTTER, units as f32 * UNIT_H));
-    let y_of = |u: u8| body.top() + (units - u) as f32 * UNIT_H; // top edge of unit u
+    // Top edge of unit u. Signed: a device can sit above a rack that was made shorter.
+    let y_of = |u: u8| body.top() + (units as i32 - u as i32) as f32 * UNIT_H;
 
     // Frame and unit grid.
     painter.rect_filled(body.expand(3.0), 4.0, pal.card_border);
@@ -109,8 +111,10 @@ fn rack_column(ui: &mut Ui, st: &State, rid: AreaId, actions: &mut Vec<Action>) 
     for m in &contents {
         let d = m.device;
         let h = m.height.max(1);
-        let top_u = (m.bottom as u16 + h as u16 - 1).min(units as u16) as u8;
-        let r = egui::Rect::from_min_max(pos2(body.left() + 2.0, y_of(top_u) + 1.0), pos2(body.right() - 2.0, y_of(m.bottom.max(1)) + UNIT_H - 1.0));
+        // Clamp into the rack so out-of-range devices stay visible (outlined red).
+        let bottom_u = m.bottom.clamp(1, units);
+        let top_u = (m.bottom as u16 + h as u16 - 1).clamp(bottom_u as u16, units as u16) as u8;
+        let r = egui::Rect::from_min_max(pos2(body.left() + 2.0, y_of(top_u) + 1.0), pos2(body.right() - 2.0, y_of(bottom_u) + UNIT_H - 1.0));
         let cat = theme::category_color(d.kind.category());
         let selected = st.sel.contains(Item::Device(d.id));
         let out_of_range = m.bottom == 0 || m.bottom as u16 + h as u16 - 1 > units as u16;

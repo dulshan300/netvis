@@ -257,6 +257,20 @@
     "rack_units": 1
   },
   {
+    "id": "pp-12-lc",
+    "name": "12-port duplex LC fibre patch panel",
+    "kind": "PatchPanel",
+    "ports": [{ "prefix": "", "count": 12, "media": "Lc" }],
+    "rack_units": 1
+  },
+  {
+    "id": "pp-24-lc",
+    "name": "24-port duplex LC fibre patch panel",
+    "kind": "PatchPanel",
+    "ports": [{ "prefix": "", "count": 24, "media": "Lc" }],
+    "rack_units": 1
+  },
+  {
     "id": "pp-48-cat6a",
     "name": "48-port Cat6A patch panel",
     "kind": "PatchPanel",

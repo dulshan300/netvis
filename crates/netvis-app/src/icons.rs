@@ -27,6 +27,7 @@ pub fn device(kind: DeviceKind) -> &'static str {
         SmartTv => ic::TELEVISION,
         Pos => ic::CASH_REGISTER,
         PatchPanel => ic::DOTS_NINE,
+        WallOutlet => ic::PLUG,
         Ups => ic::BATTERY_CHARGING,
         Pdu => ic::PLUGS,
         PoeInjector => ic::LIGHTNING,

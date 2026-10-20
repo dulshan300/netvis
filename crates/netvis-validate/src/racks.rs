@@ -22,11 +22,14 @@ pub fn check(p: &Project, out: &mut Sink) {
         }
         let top = m.u as u16 + d.hw.rack_units as u16 - 1;
         if m.u == 0 || top > rack.rack_units as u16 {
+            // Typically after the rack was made shorter: offer the highest free slot.
+            let fix = p.rack_free_slot(rack.id, d.hw.rack_units, true, Some(d.id)).map(|u| crate::Fix::MoveInRack { device: d.id, rack: rack.id, u });
             out.error(
                 "rack.range",
                 format!("{} at U{}–U{top} does not fit {} ({}U)", d.name, m.u, rack.name, rack.rack_units),
                 items,
-            );
+            )
+            .with_fix(fix);
         }
     }
 
@@ -90,5 +93,14 @@ mod tests {
         t.p.device_mut(a).unwrap().hw.rack = Some(RackMount { rack: rid, u: 10 });
         let codes = t.codes();
         assert!(codes.contains(&"rack.range"), "{codes:?}");
+
+        // Shrinking the rack strands devices above the new top; the fix moves them down.
+        t.p.device_mut(a).unwrap().hw.rack = Some(RackMount { rack: rid, u: 1 });
+        t.p.area_mut(rid).unwrap().rack_units = 6;
+        assert!(t.codes().contains(&"rack.range"));
+        t.fix("rack.range");
+        let u = t.p.device(b).unwrap().hw.rack.unwrap().u;
+        assert!(u + t.p.device(b).unwrap().hw.rack_units - 1 <= 6, "moved to U{u}");
+        assert!(!t.codes().contains(&"rack.range"));
     }
 }

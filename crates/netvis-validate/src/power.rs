@@ -41,13 +41,16 @@ fn poe_budgets(p: &Project, out: &mut Sink) {
     }
 }
 
+/// Every powered device needs PoE from the far end of its run (patch panels
+/// pass power through).
 fn poe_delivery(p: &Project, out: &mut Sink) {
-    for l in &p.links {
-        for (pd_end, pse_end) in [(l.a, l.b), (l.b, l.a)] {
+    for c in p.circuits().into_iter().filter(|c| c.is_terminated(p)) {
+        for (pd_end, pse_end) in [(c.a, c.b), (c.b, c.a)] {
             let (Some(pd_dev), Some(pse_dev)) = (p.device(pd_end.device), p.device(pse_end.device)) else { continue };
             let (Some(pd_port), Some(pse_port)) = (pd_dev.port(pd_end.port), pse_dev.port(pse_end.port)) else { continue };
             let PoeRole::Powered(need) = pd_port.poe else { continue };
-            let items = vec![Item::Device(pd_dev.id), Item::Link(l.id), Item::Device(pse_dev.id)];
+            let mut items = vec![Item::Device(pd_dev.id), Item::Device(pse_dev.id)];
+            items.extend(c.links.iter().map(|l| Item::Link(*l)));
             let (pd, pse) = (format!("{}:{}", pd_dev.name, pd_port.name), format!("{}:{}", pse_dev.name, pse_port.name));
             match pse_port.poe {
                 PoeRole::Source(have) if have < need => {
@@ -58,8 +61,8 @@ fn poe_delivery(p: &Project, out: &mut Sink) {
                     );
                 }
                 PoeRole::Source(_) => {}
-                // Patch panels and media converters are passive in this model.
-                _ if matches!(pse_dev.kind, DeviceKind::PatchPanel | DeviceKind::MediaConverter) => {}
+                // Media converters are not modelled as PoE sources or sinks.
+                _ if pse_dev.kind == DeviceKind::MediaConverter => {}
                 _ => {
                     out.warn("poe.missing", format!("{pd} expects PoE but {pse} provides none — add PoE or a local power supply"), items);
                 }
@@ -119,7 +122,7 @@ mod tests {
     }
 
     #[test]
-    fn pd_without_power_warns_except_through_patch_panels() {
+    fn pd_power_is_traced_through_patch_panels() {
         let mut t = T::new();
         let router = t.dev(DeviceKind::Router);
         let cam = t.dev(DeviceKind::IpCamera);
@@ -127,11 +130,16 @@ mod tests {
         t.link((router, a), (cam, b), CableKind::Cat6, None);
         assert_eq!(t.codes(), vec!["poe.missing"]);
 
-        let pp = t.dev(DeviceKind::PatchPanel);
-        let cam2 = t.dev(DeviceKind::IpCamera);
-        let (a, b) = (t.port(pp, PortMedia::Rj45), t.port(cam2, PortMedia::Rj45));
-        t.link((pp, a), (cam2, b), CableKind::Cat6, None);
-        assert_eq!(t.codes(), vec!["poe.missing"], "patch panel is passive");
+        // Camera → panel → PoE switch: powered, and counted in the budget.
+        let (pp, cam2, sw) = (t.dev(DeviceKind::PatchPanel), t.dev(DeviceKind::IpCamera), t.dev(DeviceKind::SwitchL2));
+        let pp_port = t.port(pp, PortMedia::Rj45);
+        let cam_port = t.port(cam2, PortMedia::Rj45);
+        t.link((pp, pp_port), (cam2, cam_port), CableKind::Cat6, Some(60.0));
+        assert_eq!(t.codes(), vec!["patch.unterminated", "poe.missing"], "unpatched outlet");
+        let sw_port = t.port(sw, PortMedia::Rj45);
+        t.link((sw, sw_port), (pp, pp_port), CableKind::Cat6, Some(2.0));
+        assert_eq!(t.codes(), vec!["poe.missing"], "the router-fed camera still has no power");
+        assert_eq!(t.p.poe_report(sw).loads.len(), 1);
     }
 
     #[test]

@@ -12,12 +12,16 @@ pub enum PortMedia {
     Wireless,
     Coax,
     Console,
+    /// Duplex LC fibre adapter (fibre patch panels).
+    Lc,
+    /// MPO/MTP trunk adapter (fibre patch panels).
+    Mpo,
     /// Logical attachment point for cloud/WAN objects.
     Virtual,
 }
 
 impl PortMedia {
-    pub const ALL: [PortMedia; 10] = [
+    pub const ALL: [PortMedia; 12] = [
         PortMedia::Rj45,
         PortMedia::Sfp,
         PortMedia::SfpPlus,
@@ -27,6 +31,8 @@ impl PortMedia {
         PortMedia::Wireless,
         PortMedia::Coax,
         PortMedia::Console,
+        PortMedia::Lc,
+        PortMedia::Mpo,
         PortMedia::Virtual,
     ];
 
@@ -41,6 +47,8 @@ impl PortMedia {
             PortMedia::Wireless => "Wireless",
             PortMedia::Coax => "Coax",
             PortMedia::Console => "Console",
+            PortMedia::Lc => "LC",
+            PortMedia::Mpo => "MPO",
             PortMedia::Virtual => "Virtual",
         }
     }
@@ -56,8 +64,15 @@ impl PortMedia {
             PortMedia::Wireless => 1_200,
             PortMedia::Coax => 1_000,
             PortMedia::Console => 0,
+            // Passive adapters don't limit speed.
+            PortMedia::Lc | PortMedia::Mpo => 400_000,
             PortMedia::Virtual => 1_000,
         }
+    }
+
+    /// Passive fibre adapter on a patch panel.
+    pub fn is_fibre_adapter(self) -> bool {
+        matches!(self, PortMedia::Lc | PortMedia::Mpo)
     }
 
     pub fn is_optical_cage(self) -> bool {

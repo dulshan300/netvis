@@ -61,6 +61,8 @@ pub enum DeviceKind {
     Pos,
     // Infrastructure
     PatchPanel,
+    /// Wall or floor outlet: the user end of a horizontal cable run.
+    WallOutlet,
     Ups,
     Pdu,
     PoeInjector,
@@ -75,7 +77,7 @@ pub enum DeviceKind {
 }
 
 impl DeviceKind {
-    pub const ALL: [DeviceKind; 31] = [
+    pub const ALL: [DeviceKind; 32] = [
         DeviceKind::Router,
         DeviceKind::SwitchL2,
         DeviceKind::SwitchL3,
@@ -97,6 +99,7 @@ impl DeviceKind {
         DeviceKind::SmartTv,
         DeviceKind::Pos,
         DeviceKind::PatchPanel,
+        DeviceKind::WallOutlet,
         DeviceKind::Ups,
         DeviceKind::Pdu,
         DeviceKind::PoeInjector,
@@ -116,7 +119,7 @@ impl DeviceKind {
             | LoadBalancer | Modem | VpnGateway => DeviceCategory::Network,
             Pc | Laptop | Server | VmHost | Storage | Printer | IpPhone | IpCamera | IoT
             | SmartTv | Pos => DeviceCategory::EndDevice,
-            PatchPanel | Ups | Pdu | PoeInjector | MediaConverter => DeviceCategory::Infrastructure,
+            PatchPanel | WallOutlet | Ups | Pdu | PoeInjector | MediaConverter => DeviceCategory::Infrastructure,
             Internet | Isp | Mpls | SdWan | VpnTunnel | CloudVpc => DeviceCategory::CloudWan,
         }
     }
@@ -145,6 +148,7 @@ impl DeviceKind {
             SmartTv => "Smart TV",
             Pos => "POS Terminal",
             PatchPanel => "Patch Panel",
+            WallOutlet => "Wall Outlet",
             Ups => "UPS",
             Pdu => "PDU",
             PoeInjector => "PoE Injector",
@@ -183,6 +187,7 @@ impl DeviceKind {
             SmartTv => "TV",
             Pos => "POS",
             PatchPanel => "PP",
+            WallOutlet => "WO",
             Ups => "UPS",
             Pdu => "PDU",
             PoeInjector => "INJ",
@@ -194,6 +199,12 @@ impl DeviceKind {
             VpnTunnel => "TUN",
             CloudVpc => "VPC",
         }
+    }
+
+    /// Passive patching: each port joins a front cable to a rear cable, so a
+    /// run can be traced through it (see [`crate::patching`]).
+    pub fn is_passthrough(self) -> bool {
+        matches!(self, DeviceKind::PatchPanel | DeviceKind::WallOutlet)
     }
 
     /// Default port layout for a freshly placed device.
@@ -236,6 +247,7 @@ impl DeviceKind {
             IpCamera => vec![pd("eth0", 100, PoeStandard::Af)],
             IoT => vec![Port::new("wlan0", PortMedia::Wireless)],
             PatchPanel => rj45("", 24),
+            WallOutlet => vec![Port::new("A", PortMedia::Rj45).with_speed(10_000), Port::new("B", PortMedia::Rj45).with_speed(10_000)],
             Ups | Pdu => vec![Port::new("mgmt", PortMedia::Rj45).with_speed(100)],
             PoeInjector => vec![
                 Port::new("data-in", PortMedia::Rj45),

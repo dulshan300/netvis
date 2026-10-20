@@ -23,6 +23,8 @@ pub enum Fix {
     SetCable { link: LinkId, cable: CableKind },
     SetTransceivers(Vec<(DeviceId, PortId, String)>),
     MountInRack { rack: AreaId },
+    /// Move a device to another position in its rack.
+    MoveInRack { device: DeviceId, rack: AreaId, u: u8 },
     EnableStp { devices: Vec<DeviceId> },
 }
 
@@ -56,6 +58,7 @@ impl Fix {
                 None => "Fit transceivers".into(),
             },
             Fix::MountInRack { .. } => "Auto-place in rack".into(),
+            Fix::MoveInRack { u, .. } => format!("Move to U{u}"),
             Fix::EnableStp { devices } => format!("Enable RSTP on {} switch(es)", devices.len()),
         }
     }
@@ -139,6 +142,9 @@ impl Fix {
                 Some(Edit::Batch(edits))
             }
             Fix::MountInRack { rack } => Some(p.auto_mount_edit(*rack).0),
+            Fix::MoveInRack { device, rack, u } => {
+                with_device(*device, &|d| d.hw.rack = Some(netvis_core::RackMount { rack: *rack, u: *u }))
+            }
             Fix::EnableStp { devices } => {
                 Some(Edit::Batch(devices.iter().filter_map(|d| with_device(*d, &|dev| dev.stp = StpMode::Rstp)).collect()))
             }

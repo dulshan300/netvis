@@ -124,7 +124,7 @@ pub struct Mounted<'a> {
 
 impl Mounted<'_> {
     pub fn top(&self) -> u8 {
-        self.bottom + self.height.max(1) - 1
+        self.bottom.saturating_add(self.height.max(1) - 1)
     }
 }
 
@@ -209,8 +209,8 @@ impl Project {
         for port in &d.ports {
             let PoeRole::Source(pse_class) = port.poe else { continue };
             r.pse_ports += 1;
-            let Some(link) = self.port_link(port.id) else { continue };
-            let far = if link.a.port == port.id { link.b } else { link.a };
+            // Through any patch panels to the powered device.
+            let Some(far) = self.peer(Endpoint { device, port: port.id }) else { continue };
             let Some(fd) = self.device(far.device) else { continue };
             let Some(PoeRole::Powered(pd_class)) = fd.port(far.port).map(|p| p.poe) else { continue };
             // The port can't deliver more than the lower of the two classes.

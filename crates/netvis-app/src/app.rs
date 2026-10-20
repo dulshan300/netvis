@@ -13,7 +13,7 @@ use crate::state::{Action, Document, Settings, State};
 use crate::theme::{self, APP_NAME, BRAND_NAME, ThemeChoice};
 
 const SETTINGS_KEY: &str = "netvis.settings";
-const DOCK_KEY: &str = "netvis.dock.v4";
+const DOCK_KEY: &str = "netvis.dock.v5";
 const AUTOSAVE_SECS: f64 = 90.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -27,6 +27,8 @@ pub enum Tab {
     Vlans,
     Racks,
     Tools,
+    Patching,
+    PortMap,
 }
 
 impl Tab {
@@ -41,6 +43,8 @@ impl Tab {
             Tab::Vlans => (icons::TAG, "VLANs & Wi-Fi"),
             Tab::Racks => (icons::GRID_NINE, "Racks"),
             Tab::Tools => (icons::WRENCH, "IT Tools"),
+            Tab::Patching => (icons::PLUGS_CONNECTED, "Patch schedule"),
+            Tab::PortMap => (icons::DOTS_NINE, "Port map"),
         };
         format!("{icon}  {name}")
     }
@@ -51,7 +55,7 @@ fn default_layout() -> DockState<Tab> {
     let surface = dock.main_surface_mut();
     let [canvas, _inspector] = surface.split_right(NodeIndex::root(), 0.77, vec![Tab::Inspector]);
     let [canvas, _left] = surface.split_left(canvas, 0.22, vec![Tab::Toolbox, Tab::Outline]);
-    surface.split_below(canvas, 0.68, vec![Tab::Issues, Tab::IpPlan, Tab::Vlans, Tab::Racks]);
+    surface.split_below(canvas, 0.68, vec![Tab::Issues, Tab::IpPlan, Tab::Vlans, Tab::Racks, Tab::Patching, Tab::PortMap]);
     dock
 }
 
@@ -156,6 +160,8 @@ impl NetVisApp {
                 "racks" => Some(Tab::Racks),
                 "ipplan" => Some(Tab::IpPlan),
                 "tools" => Some(Tab::Tools),
+                "patching" => Some(Tab::Patching),
+                "portmap" => Some(Tab::PortMap),
                 _ => None,
             };
             if let Some(t) = want
@@ -768,6 +774,8 @@ impl egui_dock::TabViewer for Tabs<'_> {
             Tab::IpPlan => panels::ip_plan(ui, self.st),
             Tab::Racks => panels::racks(ui, self.st),
             Tab::Vlans => panels::vlans(ui, self.st),
+            Tab::Patching => panels::patch_schedule(ui, self.st),
+            Tab::PortMap => panels::port_map(ui, self.st),
             Tab::Tools => {}
             Tab::Canvas => unreachable!(),
         });

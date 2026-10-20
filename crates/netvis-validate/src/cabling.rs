@@ -1,76 +1,154 @@
-//! Physical-layer checks on every link: media vs cable, optics, speed, reach
-//! and duplex.
+//! Physical-layer checks. Each cable must suit its two ports; each run
+//! (through any patch panels) is checked end to end for optics, speed,
+//! channel length and duplex.
 
 use netvis_core::catalog::{CableFamily, Reach, TxMedium};
 use netvis_core::catalog::format_speed;
-use netvis_core::{CableKind, Duplex, Item, Link, PortMedia, Project};
+use std::collections::{BTreeSet, HashSet};
+
+
+use netvis_core::{CableKind, Circuit, Duplex, Item, Link, LinkId, PortMedia, Project};
 
 use crate::{End, Fix, Sink};
 
 pub fn check(p: &Project, out: &mut Sink) {
+    modules(p, out);
+    let mut bad: HashSet<LinkId> = HashSet::new();
     for l in &p.links {
-        check_link(p, l, out);
+        if !check_segment(p, l, out) {
+            bad.insert(l.id);
+        }
+    }
+    for c in p.circuits() {
+        if c.links.iter().all(|id| !bad.contains(id)) {
+            check_circuit(p, &c, out);
+        }
     }
 }
 
-fn check_link(p: &Project, l: &Link, out: &mut Sink) {
-    let (Some(a), Some(b)) = (End::resolve(p, l.a), End::resolve(p, l.b)) else {
-        out.error("link.dangling", "Link points at a device or port that no longer exists", vec![Item::Link(l.id)]);
-        return;
-    };
-    let items = || vec![Item::Link(l.id), Item::Device(a.dev.id), Item::Device(b.dev.id)];
-    let pair = format!("{} ↔ {}", a.label(), b.label());
-
-    // Module sanity per end.
-    for e in [&a, &b] {
-        match (&e.port.transceiver, e.tx) {
-            (Some(id), None) => {
-                out.warn("tx.unknown", format!("{}: unknown transceiver “{id}”", e.label()), items());
+/// Fitted modules must be known and fit their cage (cabled ports only).
+fn modules(p: &Project, out: &mut Sink) {
+    for d in &p.devices {
+        for port in d.ports.iter().filter(|x| x.transceiver.is_some()) {
+            let Some(link) = p.port_link(port.id) else { continue };
+            let Some(e) = End::resolve(p, netvis_core::Endpoint { device: d.id, port: port.id }) else { continue };
+            let items = vec![Item::Link(link.id), Item::Device(d.id)];
+            match (&e.port.transceiver, e.tx) {
+                (Some(id), None) => {
+                    out.warn("tx.unknown", format!("{}: unknown transceiver “{id}”", e.label()), items);
+                }
+                (Some(_), Some(t)) if !e.port.media.is_optical_cage() => {
+                    out.warn("tx.no-cage", format!("{}: {} fitted to a {} port", e.label(), t.name, e.port.media.label()), items);
+                }
+                (Some(_), Some(t)) if !t.fits(e.port.media) => {
+                    out.error(
+                        "tx.form-factor",
+                        format!("{}: {} ({}) does not fit a {} cage", e.label(), t.name, t.form.label(), e.port.media.label()),
+                        items,
+                    );
+                }
+                _ => {}
             }
-            (Some(_), Some(t)) if !e.port.media.is_optical_cage() => {
-                out.warn("tx.no-cage", format!("{}: {} fitted to a {} port", e.label(), t.name, e.port.media.label()), items());
-            }
-            (Some(_), Some(t)) if !t.fits(e.port.media) => {
-                out.error(
-                    "tx.form-factor",
-                    format!("{}: {} ({}) does not fit a {} cage", e.label(), t.name, t.form.label(), e.port.media.label()),
-                    items(),
-                );
-            }
-            _ => {}
         }
     }
+}
 
-    // Media compatibility. Later checks are meaningless if this fails.
-    let mut media_ok = true;
+/// Per-cable checks: the cable must suit the ports at both of its ends.
+/// Returns false when the run-level checks would be meaningless.
+fn check_segment(p: &Project, l: &Link, out: &mut Sink) -> bool {
+    let (Some(a), Some(b)) = (End::resolve(p, l.a), End::resolve(p, l.b)) else {
+        out.error("link.dangling", "Link points at a device or port that no longer exists", vec![Item::Link(l.id)]);
+        return false;
+    };
+    let items = || vec![Item::Link(l.id), Item::Device(a.dev.id), Item::Device(b.dev.id)];
+    let mut ok = true;
     for e in [&a, &b] {
         if let Some(msg) = media_problem(l.cable, e) {
             out.error("cable.media", msg, items());
-            media_ok = false;
+            ok = false;
         }
     }
-    if !media_ok {
+    if l.cable.family() == CableFamily::DirectAttach && (a.dev.kind.is_passthrough() || b.dev.kind.is_passthrough()) {
+        out.error("cable.media", format!("{} ↔ {}: {} cables have fixed ends and can't be patched through a panel", a.label(), b.label(), l.cable.label()), items());
+        ok = false;
+    }
+    if ok && l.cable == CableKind::Unspecified {
+        out.info("cable.unset", format!("{} ↔ {}: cable type not set", a.label(), b.label()), items());
+    }
+    ok
+}
+
+/// Run-level checks between the two active ends: optics, speed, reach of
+/// the whole channel, duplex, and unterminated runs.
+fn check_circuit(p: &Project, c: &Circuit, out: &mut Sink) {
+    let segs: Vec<&Link> = c.links.iter().filter_map(|id| p.link(*id)).collect();
+    let mut items: Vec<Item> = c.links.iter().map(|l| Item::Link(*l)).collect();
+    items.extend(c.ports().map(|e| Item::Device(e.device)));
+    items.dedup();
+    let items = || items.clone();
+
+    if !c.is_terminated(p) {
+        let (Some(a), Some(b)) = (End::resolve(p, c.a), End::resolve(p, c.b)) else { return };
+        if a.dev.kind.is_passthrough() {
+            return; // a spare permanent link: normal
+        }
+        let msg = if is_infra(a.dev.kind) {
+            format!("{} is patched to {}, which goes no further", a.label(), b.label())
+        } else {
+            format!("{} is cabled to {} but the run stops there — patch it through to a switch", a.label(), b.label())
+        };
+        if is_infra(a.dev.kind) {
+            out.info("patch.unterminated", msg, items());
+        } else {
+            out.warn("patch.unterminated", msg, items());
+        }
         return;
     }
-    if l.cable == CableKind::Unspecified {
-        out.info("cable.unset", format!("{pair}: cable type not set"), items());
+    let (Some(a), Some(b)) = (End::resolve(p, c.a), End::resolve(p, c.b)) else { return };
+    let pair = if c.is_direct() {
+        format!("{} ↔ {}", a.label(), b.label())
+    } else {
+        let via: Vec<String> = c.via.iter().filter_map(|e| End::resolve(p, *e)).map(|e| e.label()).collect();
+        format!("{} ↔ {} (via {})", a.label(), b.label(), via.join(", "))
+    };
+
+    // One kind of medium end to end.
+    let families: HashSet<CableFamily> =
+        segs.iter().map(|l| l.cable.family()).filter(|f| *f != CableFamily::Logical).collect();
+    if families.len() > 1 {
+        let kinds: BTreeSet<&str> = segs.iter().map(|l| l.cable.label()).collect();
+        out.error("cable.mixed", format!("{pair}: the run mixes {}", kinds.into_iter().collect::<Vec<_>>().join(" and ")), items());
+        return;
     }
-    if l.cable.is_fibre() {
+    // The end ports see the cable next to them.
+    let (cable_a, cable_b) = (segs[0].cable, segs[segs.len() - 1].cable);
+    if !c.is_direct() {
+        for (e, cable) in [(&a, cable_b), (&b, cable_a)] {
+            // An optic at one end must also suit the fibre at the other end.
+            if let Some(msg) = media_problem(cable, e) {
+                out.error("cable.media", msg, items());
+                return;
+            }
+        }
+    }
+
+    if segs.iter().any(|l| l.cable.is_fibre()) {
+        let cable = cable_a;
         let missing: Vec<&End> = [&a, &b].into_iter().filter(|e| e.tx.is_none() && e.port.transceiver.is_none()).collect();
         if !missing.is_empty() {
             let names: Vec<_> = missing.iter().map(|e| e.label()).collect();
             let picks: Option<Vec<_>> = missing
                 .iter()
-                .map(|e| suggest_optic(e, l.cable).map(|t| (e.dev.id, e.port.id, t.id.to_owned())))
+                .map(|e| suggest_optic(e, cable).map(|t| (e.dev.id, e.port.id, t.id.to_owned())))
                 .collect();
-            out.info("tx.missing", format!("{}: no transceiver selected for the {} link", names.join(", "), l.cable.label()), items())
+            out.info("tx.missing", format!("{}: no transceiver selected for the {} link", names.join(", "), cable.label()), items())
                 .with_fix(picks.filter(|v| !v.is_empty()).map(Fix::SetTransceivers));
         }
     }
-    if l.cable.family() == CableFamily::DirectAttach {
+    if cable_a.family() == CableFamily::DirectAttach {
         for e in [&a, &b] {
             if let Some(t) = e.tx {
-                out.warn("tx.on-dac", format!("{}: {} has integrated ends — remove the {} module", e.label(), l.cable.label(), t.name), items());
+                out.warn("tx.on-dac", format!("{}: {} has integrated ends — remove the {} module", e.label(), cable_a.label(), t.name), items());
             }
         }
     }
@@ -79,13 +157,13 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
     if let (Some(ta), Some(tb)) = (a.tx, b.tx)
         && (ta.medium != tb.medium || ta.wavelength_nm != tb.wavelength_nm || ta.speed_mbps != tb.speed_mbps)
     {
-        let fix = (ta.fits(b.port.media) && ta.reach_on(l.cable).is_some())
+        let fix = (ta.fits(b.port.media) && ta.reach_on(cable_b).is_some())
             .then(|| Fix::SetTransceivers(vec![(b.dev.id, b.port.id, ta.id.to_owned())]));
         out.error("tx.mismatch", format!("{pair}: transceiver mismatch {} ↔ {}", ta.name, tb.name), items()).with_fix(fix);
         return;
     }
 
-    let family = l.cable.family();
+    let family = cable_a.family();
     if matches!(family, CableFamily::Wireless | CableFamily::Logical | CableFamily::Console | CableFamily::Coax) {
         check_duplex(&a, &b, &pair, items(), out);
         return;
@@ -96,11 +174,7 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
     let copper_both = [&a, &b].iter().all(|e| e.port.media == PortMedia::Rj45 || e.tx.is_some_and(|t| t.medium == TxMedium::Copper));
     if sa != sb {
         let (slow, fast) = if sa < sb { (&a, &b) } else { (&b, &a) };
-        let msg = format!(
-            "{pair}: speed mismatch {} vs {}",
-            format_speed(sa),
-            format_speed(sb)
-        );
+        let msg = format!("{pair}: speed mismatch {} vs {}", format_speed(sa), format_speed(sb));
         if !copper_both {
             out.error("link.speed", format!("{msg} — optics and DACs do not auto-negotiate"), items());
         } else if is_infra(slow.dev.kind) && is_infra(fast.dev.kind) {
@@ -116,44 +190,71 @@ fn check_link(p: &Project, l: &Link, out: &mut Sink) {
     }
     let speed = sa.min(sb);
 
-    // Reach: optics define fibre reach; copper modules may shorten copper reach.
-    let mut reach = l.cable.reach(speed);
-    let module_limit = [a.tx, b.tx].into_iter().flatten().filter_map(|t| t.reach_on(l.cable)).reduce(f32::min);
-    if let Some(m) = module_limit {
-        reach = match reach {
-            Reach::Max(c) if !l.cable.is_fibre() => Reach::Max(c.min(m)),
-            Reach::Unsupported if !l.cable.is_fibre() => Reach::Unsupported,
-            _ => Reach::Max(m),
-        };
-    }
-    // Copper that is too slow or too long at 10G: Cat6A carries 10G to 100 m.
-    let upgrade = (l.cable.is_twisted_pair()
-        && speed <= 10_000
-        && module_limit.is_none()
-        && l.cable != CableKind::Cat6A
-        && l.length_m.is_none_or(|m| m <= 100.0))
-    .then_some(Fix::SetCable { link: l.id, cable: CableKind::Cat6A });
-    match reach {
-        Reach::Unsupported => {
-            out.error("cable.speed", format!("{pair}: {} is not rated for {}", l.cable.label(), format_speed(speed)), items())
-                .with_fix(upgrade);
+    // Every cable must carry the speed; the channel as a whole must be in reach.
+    let module_limit = |cable: CableKind| [a.tx, b.tx].into_iter().flatten().filter_map(|t| t.reach_on(cable)).reduce(f32::min);
+    let mut channel: Option<(f32, CableKind)> = None;
+    let mut unrated = false;
+    for l in &segs {
+        let mut reach = l.cable.reach(speed);
+        let module = module_limit(l.cable);
+        if let Some(m) = module {
+            reach = match reach {
+                Reach::Max(c) if !l.cable.is_fibre() => Reach::Max(c.min(m)),
+                Reach::Unsupported if !l.cable.is_fibre() => Reach::Unsupported,
+                _ => Reach::Max(m),
+            };
         }
-        Reach::Max(max) => {
-            if let Some(len) = l.length_m
-                && len > max
-            {
-                out.error(
-                    "cable.reach",
-                    format!("{pair}: {len} m exceeds the {max} m limit of {} at {}", l.cable.label(), format_speed(speed)),
-                    items(),
-                )
-                .with_fix(upgrade);
+        // Copper that is too slow or too long at 10G: Cat6A carries 10G to 100 m.
+        let upgrade = (l.cable.is_twisted_pair()
+            && speed <= 10_000
+            && module.is_none()
+            && l.cable != CableKind::Cat6A
+            && (segs.len() > 1 || l.length_m.is_none_or(|m| m <= 100.0)))
+        .then_some(Fix::SetCable { link: l.id, cable: CableKind::Cat6A });
+        match reach {
+            Reach::Unsupported => {
+                let what = if c.is_direct() { pair.clone() } else { format!("{pair}, cable {}", segment_label(p, l)) };
+                out.error("cable.speed", format!("{what}: {} is not rated for {}", l.cable.label(), format_speed(speed)), items())
+                    .with_fix(upgrade);
+                unrated = true;
             }
+            Reach::Max(max) => {
+                if channel.is_none_or(|(m, _)| max < m) {
+                    channel = Some((max, l.cable));
+                }
+                if c.is_direct()
+                    && let Some(len) = l.length_m
+                    && len > max
+                {
+                    out.error(
+                        "cable.reach",
+                        format!("{pair}: {len} m exceeds the {max} m limit of {} at {}", l.cable.label(), format_speed(speed)),
+                        items(),
+                    )
+                    .with_fix(upgrade);
+                }
+            }
+            Reach::Unlimited | Reach::Unknown => {}
         }
-        Reach::Unlimited | Reach::Unknown => {}
+    }
+    if !c.is_direct() && !unrated && let Some((max, cable)) = channel {
+        // Lengths that are known give a lower bound for the channel.
+        let len: f32 = segs.iter().filter_map(|l| l.length_m).sum();
+        if len > max {
+            out.error(
+                "cable.reach",
+                format!("{pair}: the channel is {len:.0} m over {} cables — more than the {max} m limit of {} at {}", segs.len(), cable.label(), format_speed(speed)),
+                items(),
+            );
+        }
     }
 
     check_duplex(&a, &b, &pair, items(), out);
+}
+
+fn segment_label(p: &Project, l: &Link) -> String {
+    let name = |e: netvis_core::Endpoint| End::resolve(p, e).map(|e| e.label()).unwrap_or_else(|| "?".into());
+    format!("{} ↔ {}", name(l.a), name(l.b))
 }
 
 /// A module for an empty cage that suits the fibre and the port speed:
@@ -220,6 +321,7 @@ fn media_problem(cable: CableKind, e: &End) -> Option<String> {
                 }
                 Some(_) => None,
             },
+            PortMedia::Lc | PortMedia::Mpo => None,
             _ => Some(format!("{at}: {} fibre on a {} port", cable.label(), m.label())),
         },
         CableFamily::DirectAttach => (!m.is_optical_cage()).then(|| format!("{at}: {} needs an SFP/QSFP cage, not {}", cable.label(), m.label())),
@@ -369,5 +471,85 @@ mod tests {
         assert!(t.codes().is_empty());
         t.p.links[0].cable = CableKind::Cat6;
         assert!(t.codes().contains(&"cable.media"));
+    }
+
+    /// Port `i` of `d` (for patch-panel ports that already have one cable).
+    fn nth(t: &T, d: netvis_core::DeviceId, i: usize) -> netvis_core::PortId {
+        t.p.device(d).unwrap().ports[i].id
+    }
+
+    #[test]
+    fn copper_channel_through_panels() {
+        let mut t = T::new();
+        let (sw, pp, wo, pc) = (t.dev(DeviceKind::SwitchL2), t.dev(DeviceKind::PatchPanel), t.dev(DeviceKind::WallOutlet), t.dev(DeviceKind::Pc));
+        let sp = t.port(sw, PortMedia::Rj45);
+        t.link((sw, sp), (pp, nth(&t, pp, 0)), CableKind::Cat6, Some(3.0));
+        t.link((pp, nth(&t, pp, 0)), (wo, nth(&t, wo, 0)), CableKind::Cat6A, Some(90.0));
+        t.link((wo, nth(&t, wo, 0)), (pc, nth(&t, pc, 0)), CableKind::Cat6, Some(5.0));
+        assert!(t.codes().is_empty(), "98 m channel is fine: {:?}", crate::validate(&t.p));
+        assert_eq!(t.p.untagged_vlan_at(pc, nth(&t, pc, 0)), None);
+
+        t.p.links[2].length_m = Some(9.0);
+        let issues = crate::validate(&t.p);
+        assert_eq!(t.codes(), vec!["cable.reach"], "102 m channel");
+        assert!(issues[0].message.contains("via PP-01:1, WO-01:A"), "{}", issues[0].message);
+
+        // 10G on the run: the Cat6 cords are fine at that length, Cat5e is not.
+        t.p.links[2].length_m = Some(5.0);
+        t.p.links[0].cable = CableKind::Cat5e;
+        for d in [sw, pc] {
+            t.p.device_mut(d).unwrap().ports[0].speed_mbps = 10_000;
+        }
+        let codes = t.codes();
+        assert!(codes.contains(&"cable.speed"), "{codes:?}");
+        t.fix("cable.speed");
+        assert_eq!(t.p.links[0].cable, CableKind::Cat6A);
+    }
+
+    #[test]
+    fn fibre_through_lc_panels() {
+        let mut t = T::new();
+        let (a, b) = (t.dev(DeviceKind::SwitchL3), t.dev(DeviceKind::SwitchL2));
+        let (fa, fb) = (t.dev(DeviceKind::PatchPanel), t.dev(DeviceKind::PatchPanel));
+        for pp in [fa, fb] {
+            for port in &mut t.p.device_mut(pp).unwrap().ports {
+                port.media = PortMedia::Lc;
+            }
+        }
+        let (pa, pb) = (t.port(a, PortMedia::SfpPlus), t.port(b, PortMedia::SfpPlus));
+        t.link((a, pa), (fa, nth(&t, fa, 0)), CableKind::Os2, Some(2.0));
+        t.link((fa, nth(&t, fa, 0)), (fb, nth(&t, fb, 0)), CableKind::Os2, Some(1_500.0));
+        t.link((fb, nth(&t, fb, 0)), (b, pb), CableKind::Os2, Some(2.0));
+        assert_eq!(t.codes(), vec!["tx.missing"], "one finding for the whole run");
+        t.fix("tx.missing");
+        assert!(t.codes().is_empty(), "{:?}", crate::validate(&t.p));
+
+        // A multimode trunk between single-mode cords.
+        t.p.links[1].cable = CableKind::Om4;
+        assert_eq!(t.codes(), vec!["cable.mixed"]);
+        t.p.links[1].cable = CableKind::Os2;
+        // Copper into an LC adapter.
+        t.p.links[2].cable = CableKind::Cat6;
+        assert!(t.codes().contains(&"cable.media"));
+        // DAC through a panel.
+        t.p.links[2].cable = CableKind::Dac;
+        assert!(t.codes().contains(&"cable.media"));
+    }
+
+    #[test]
+    fn unterminated_runs() {
+        let mut t = T::new();
+        let (pp, pc, sw) = (t.dev(DeviceKind::PatchPanel), t.dev(DeviceKind::Pc), t.dev(DeviceKind::SwitchL2));
+        t.link((pp, nth(&t, pp, 0)), (pc, nth(&t, pc, 0)), CableKind::Cat6, None);
+        let issues = crate::validate(&t.p);
+        assert_eq!(issues.len(), 1);
+        assert_eq!((issues[0].code, issues[0].severity), ("patch.unterminated", crate::Severity::Warning));
+        // A spare permanent link between two panels is not a problem.
+        let pp2 = t.dev(DeviceKind::PatchPanel);
+        t.link((pp, nth(&t, pp, 1)), (pp2, nth(&t, pp2, 1)), CableKind::Cat6A, None);
+        assert_eq!(crate::validate(&t.p).len(), 1);
+        let sp = t.port(sw, PortMedia::Rj45);
+        t.link((sw, sp), (pp, nth(&t, pp, 0)), CableKind::Cat6, None);
+        assert!(t.codes().is_empty(), "{:?}", crate::validate(&t.p));
     }
 }
