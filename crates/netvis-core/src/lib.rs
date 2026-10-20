@@ -39,7 +39,7 @@ pub use ids::{AreaId, DeviceId, LinkId, LogicalId, PortId, SsidId, SubnetId, Vla
 pub use link::{CableKind, Endpoint, Link};
 pub use patching::Circuit;
 pub use port::{PoeRole, PoeStandard, Port, PortMedia};
-pub use project::{Project, ProjectMeta};
+pub use project::{CopyResult, Project, ProjectMeta};
 pub use routing::{NatKind, NatRule, Routing, Services, StaticRoute};
 pub use select::{Item, Selection};
 pub use subnet::{AddrRange, DhcpScope, Subnet};

@@ -185,6 +185,34 @@
     "pd_draw_w": 45
   },
   {
+    "id": "cam-bullet",
+    "name": "Bullet camera with IR (802.3af)",
+    "kind": "IpCamera",
+    "ports": [{ "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "speed": 100, "poe": { "pd": "Af" } }],
+    "pd_draw_w": 8
+  },
+  {
+    "id": "acs-door-controller",
+    "name": "Door access controller, 2 readers (802.3af)",
+    "kind": "IoT",
+    "ports": [{ "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "speed": 100, "poe": { "pd": "Af" } }],
+    "pd_draw_w": 10
+  },
+  {
+    "id": "ip-speaker-ceiling",
+    "name": "IP ceiling speaker (802.3af)",
+    "kind": "IoT",
+    "ports": [{ "prefix": "eth", "start": 0, "count": 1, "media": "Rj45", "speed": 100, "poe": { "pd": "Af" } }],
+    "pd_draw_w": 9
+  },
+  {
+    "id": "pos-terminal",
+    "name": "POS terminal with receipt printer",
+    "kind": "Pos",
+    "ports": [{ "prefix": "eth", "start": 0, "count": 1, "media": "Rj45" }],
+    "power_w": 40
+  },
+  {
     "id": "phone-desk",
     "name": "Desk IP phone with PC passthrough (802.3af)",
     "kind": "IpPhone",

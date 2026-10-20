@@ -99,6 +99,10 @@ pub enum Action {
     About,
     ResetLayout,
     ShowTools,
+    /// Open the user guide, at a page if given.
+    ShowGuide(Option<&'static str>),
+    /// Replace the document with a copy of `templates::ALL[i]`.
+    NewFromTemplate(usize),
     /// Bring the topology tab to the front (after revealing an item).
     ShowCanvas,
 }
@@ -130,6 +134,10 @@ pub struct State {
     pub vlsm: Option<crate::panels::vlsm::VlsmPlanner>,
     pub tools: crate::panels::tools::ToolsState,
     pub export: Option<crate::panels::export::ExportDialog>,
+    /// File → New from template gallery is open.
+    pub templates_open: bool,
+    pub copy_dialog: Option<crate::panels::copy::CopyDialog>,
+    pub guide: crate::panels::guide::GuideState,
     /// Report from the most recent auto-assign run.
     pub last_assign: Option<(Vec<String>, Vec<String>)>,
     /// Validation results for `issues_rev`.
@@ -150,6 +158,9 @@ impl State {
             vlsm: None,
             tools: Default::default(),
             export: None,
+            templates_open: false,
+            copy_dialog: None,
+            guide: Default::default(),
             last_assign: None,
             issues: Vec::new(),
             issues_rev: None,

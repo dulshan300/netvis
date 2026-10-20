@@ -119,6 +119,21 @@ impl Builder {
         dev.ports.iter_mut().find(|p| p.id == port).unwrap().transceiver = Some(id.to_owned());
     }
 
+    /// Cable the next free copper port of switch `sw` to `dev`'s first free
+    /// port and set the switch port's mode. Returns (switch port, device port).
+    pub fn attach(&mut self, sw: DeviceId, dev: DeviceId, cable: CableKind, len: f32, mode: netvis_core::SwitchportMode) -> (PortId, PortId) {
+        let (sp, dp) = self.link(sw, Some(PortMedia::Rj45), dev, None, Some(cable), Some(len));
+        self.cfg(sw, sp, |c| c.mode = mode);
+        (sp, dp)
+    }
+
+    /// Router-on-a-stick: an 802.1Q sub-interface for `vlan` on `parent`.
+    pub fn sub_if(&mut self, d: DeviceId, parent: PortId, tag: u16, vlan: VlanId) {
+        let pname = self.p.device(d).unwrap().ports.iter().find(|p| p.id == parent).unwrap().name.clone();
+        let l = LogicalInterface::new(format!("{pname}.{tag}"), LogicalKind::SubInterface { parent: Some(parent), vlan: Some(vlan) });
+        self.p.device_mut(d).unwrap().logical.push(l);
+    }
+
     pub fn svi(&mut self, d: DeviceId, tag: u16, vlan: VlanId) {
         let l = LogicalInterface::new(format!("Vlan{tag}"), LogicalKind::Svi { vlan: Some(vlan) });
         self.p.device_mut(d).unwrap().logical.push(l);

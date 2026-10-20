@@ -299,6 +299,89 @@ impl Project {
     }
 }
 
+/// What [`Project::copy_with_rename_edit`] made.
+#[derive(Debug, Clone, Default)]
+pub struct CopyResult {
+    pub devices: Vec<DeviceId>,
+    pub areas: Vec<AreaId>,
+    /// Copies that couldn't take the replaced name (it was taken) and got
+    /// a numbered one instead.
+    pub renumbered: usize,
+}
+
+impl Project {
+    /// Copy areas (with everything inside them) and devices, offset by
+    /// `delta`, replacing `find` with `replace` in their names: copy the
+    /// "L1" floor as "L2" and `SW-L1-SEC` becomes `SW-L2-SEC`. Cables
+    /// between copied devices are copied too, and devices mounted in a
+    /// copied rack keep their rack position in the copy.
+    pub fn copy_with_rename_edit(&self, areas: &[AreaId], devices: &[DeviceId], delta: Pos, find: &str, replace: &str) -> (CopyResult, Edit) {
+        // Everything inside the chosen areas comes along.
+        let mut area_ids: Vec<AreaId> = Vec::new();
+        for a in self.areas.iter().filter(|a| areas.contains(&a.id)) {
+            for b in self.areas.iter().filter(|b| a.rect.contains_rect(&b.rect)) {
+                if !area_ids.contains(&b.id) {
+                    area_ids.push(b.id);
+                }
+            }
+        }
+        let mut dev_ids: Vec<DeviceId> = devices.to_vec();
+        for a in &area_ids {
+            for d in self.devices_in_area(*a) {
+                if !dev_ids.contains(&d.id) {
+                    dev_ids.push(d.id);
+                }
+            }
+        }
+        let rename = |name: &str| if find.is_empty() { name.to_owned() } else { name.replace(find, replace) };
+        let mut out = CopyResult::default();
+        let mut edits = Vec::new();
+
+        let mut area_map = std::collections::HashMap::new();
+        for a in self.areas.iter().filter(|a| area_ids.contains(&a.id)) {
+            let mut copy = a.clone();
+            copy.id = AreaId::new();
+            copy.name = rename(&a.name);
+            copy.rect.min = a.rect.min.offset(delta.x, delta.y);
+            area_map.insert(a.id, copy.id);
+            out.areas.push(copy.id);
+            edits.push(Edit::Area { id: copy.id, before: None, after: Some(copy) });
+        }
+
+        let mut names: Vec<String> = self.devices.iter().map(|d| d.name.clone()).collect();
+        let mut port_map = std::collections::HashMap::new();
+        for d in self.devices.iter().filter(|d| dev_ids.contains(&d.id)) {
+            let wanted = rename(&d.name);
+            let name = if !names.iter().any(|e| e.eq_ignore_ascii_case(&wanted)) {
+                wanted
+            } else {
+                out.renumbered += 1;
+                let prefix = d.kind.name_prefix();
+                (1..).map(|n| format!("{prefix}-{n:02}")).find(|n| !names.iter().any(|e| e.eq_ignore_ascii_case(n))).expect("unbounded range")
+            };
+            names.push(name.clone());
+            let mut copy = d.duplicate(name, d.pos.offset(delta.x, delta.y));
+            copy.hw.rack = d.hw.rack.and_then(|m| area_map.get(&m.rack).map(|r| crate::RackMount { rack: *r, u: m.u }));
+            for (old, new) in d.ports.iter().zip(&copy.ports) {
+                port_map.insert(old.id, Endpoint { device: copy.id, port: new.id });
+            }
+            out.devices.push(copy.id);
+            edits.push(Edit::Device { id: copy.id, before: None, after: Some(copy) });
+        }
+        for l in &self.links {
+            if let (Some(a), Some(b)) = (port_map.get(&l.a.port), port_map.get(&l.b.port)) {
+                let mut copy = l.clone();
+                copy.id = LinkId::new();
+                copy.a = *a;
+                copy.b = *b;
+                copy.label = rename(&l.label);
+                edits.push(Edit::Link { id: copy.id, before: None, after: Some(copy) });
+            }
+        }
+        (out, Edit::Batch(edits))
+    }
+}
+
 fn set_entity<T>(items: &mut Vec<T>, matches: impl Fn(&T) -> bool, value: Option<T>) {
     match (items.iter().position(&matches), value) {
         (Some(i), Some(v)) => items[i] = v,

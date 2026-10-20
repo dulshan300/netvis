@@ -2,7 +2,9 @@
 
 mod inspector;
 mod ipplan;
+pub mod copy;
 pub mod export;
+pub mod guide;
 mod patching;
 mod racks;
 pub mod tools;

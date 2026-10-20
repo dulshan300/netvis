@@ -306,15 +306,7 @@ pub fn show(ui: &mut Ui, st: &mut State) {
         painter.rect_stroke(r, 2.0, Stroke::new(1.0, pal.accent), StrokeKind::Inside);
     }
 
-    if p.devices.is_empty() && p.areas.is_empty() {
-        painter.text(
-            rect.center(),
-            Align2::CENTER_CENTER,
-            "Drag devices from the Toolbox to start designing",
-            FontId::proportional(15.0),
-            pal.subtext,
-        );
-    }
+    let empty = p.devices.is_empty() && p.areas.is_empty();
 
     // ---- cursor & tooltips ----
     if !st.canvas.is_dragging() {
@@ -339,6 +331,9 @@ pub fn show(ui: &mut Ui, st: &mut State) {
 
     if st.settings.show_minimap {
         minimap(ui, rect, st, &pal);
+    }
+    if empty {
+        welcome(ui, rect, st);
     }
 }
 
@@ -971,4 +966,33 @@ fn minimap(ui: &mut Ui, canvas: Rect, st: &mut State, pal: &Palette) {
     if resp.hovered() {
         ui.ctx().set_cursor_icon(CursorIcon::Move);
     }
+}
+
+/// Shown on an empty canvas: ways to get started.
+fn welcome(ui: &mut egui::Ui, rect: Rect, st: &mut State) {
+    use crate::state::Action;
+    let card = Rect::from_center_size(rect.center(), egui::vec2(420.0, 230.0)).intersect(rect.shrink(8.0));
+    ui.scope_builder(egui::UiBuilder::new().max_rect(card), |ui| {
+        egui::Frame::popup(ui.style()).inner_margin(16.0).show(ui, |ui| {
+            ui.set_width(card.width() - 34.0);
+            ui.vertical_centered(|ui| {
+                ui.label(egui::RichText::new("Start a network design").size(17.0).strong());
+                ui.label(egui::RichText::new("Drag devices from the Toolbox onto the canvas, or begin from a template.").weak());
+                ui.add_space(10.0);
+                let w = egui::vec2(260.0, 26.0);
+                if ui.add_sized(w, egui::Button::new(format!("{}  New from template…", icons::SQUARES_FOUR))).clicked() {
+                    st.templates_open = true;
+                }
+                if ui.add_sized(w, egui::Button::new(format!("{}  Open a project…", icons::FOLDER_OPEN))).clicked() {
+                    st.actions.push(Action::Open);
+                }
+                if ui.add_sized(w, egui::Button::new(format!("{}  Read the user guide", icons::BOOK_OPEN))).clicked() {
+                    st.actions.push(Action::ShowGuide(Some("getting-started")));
+                }
+                if ui.add_sized(w, egui::Button::new(format!("{}  Tutorial: shopping mall", icons::GRADUATION_CAP))).clicked() {
+                    st.actions.push(Action::ShowGuide(Some("tutorial-shopping-mall")));
+                }
+            });
+        });
+    });
 }

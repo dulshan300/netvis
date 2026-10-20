@@ -9,6 +9,7 @@ mod file_dialog;
 mod icons;
 mod panels;
 mod state;
+mod templates;
 mod theme;
 mod widgets;
 

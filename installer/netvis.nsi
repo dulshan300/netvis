@@ -119,7 +119,7 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecApp} "The ${APP} program and Start-menu shortcuts."
   !insertmacro MUI_DESCRIPTION_TEXT ${SecAssoc} "Double-click a .netvis project to open it in ${APP}."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecSamples} "Corescale HQ and Corescale Campus example designs."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecSamples} "Corescale HQ, Corescale Campus and the shopping-mall tutorial design."
   !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} "A ${APP} icon on the desktop."
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -128,6 +128,7 @@ Section "Uninstall"
   Delete "$INSTDIR\THIRD-PARTY-FONTS.txt"
   Delete "$INSTDIR\samples\corescale-hq.netvis"
   Delete "$INSTDIR\samples\corescale-campus.netvis"
+  Delete "$INSTDIR\samples\shopping-mall.netvis"
   RMDir "$INSTDIR\samples"
   Delete "$INSTDIR\uninstall.exe"
   RMDir "$INSTDIR"

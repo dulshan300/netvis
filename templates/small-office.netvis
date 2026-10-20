@@ -1,0 +1,3870 @@
+{
+  "format": "netvis",
+  "version": 1,
+  "generator": "NetVis 0.1.0",
+  "project": {
+    "meta": {
+      "name": "Small office",
+      "client": "",
+      "author": "",
+      "company": "Corescale",
+      "revision": "A",
+      "description": "Office for 10–20 people: a firewall routing staff, voice, guest and management VLANs, one PoE switch in a wall rack, two Wi-Fi APs, desks with IP phones, a printer and a NAS."
+    },
+    "devices": [
+      {
+        "id": "bba807c7-85d2-46d4-b7e7-d6c3f894543c",
+        "kind": "Isp",
+        "name": "ISP",
+        "pos": {
+          "x": 60.0,
+          "y": -160.0
+        },
+        "ports": [
+          {
+            "id": "b740aa66-d47e-480c-b146-d57b4b76743e",
+            "name": "link1",
+            "media": "Virtual",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "2cd44927-0a34-46a2-9bee-3314cc026530",
+            "name": "link2",
+            "media": "Virtual",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "3c8c426c-b03e-4e71-b311-745689214f36",
+            "name": "link3",
+            "media": "Virtual",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "44ad6727-baef-400c-8927-d7889069ba2a",
+            "name": "link4",
+            "media": "Virtual",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "7708766f-f8a8-4e83-a703-c3260edc2895",
+        "kind": "Firewall",
+        "name": "FW-01",
+        "pos": {
+          "x": 60.0,
+          "y": 170.0
+        },
+        "ports": [
+          {
+            "id": "1c756185-52a0-4aab-b75e-9d75baaec4e3",
+            "name": "port1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Routed",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [
+                  {
+                    "net": "203.0.113.2/29",
+                    "kind": "Static"
+                  }
+                ],
+                "gateway": "203.0.113.1"
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "e23e0329-46a0-4900-880a-ffd79973d3a7",
+            "name": "port2",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [
+                  {
+                    "net": "10.0.99.3/24",
+                    "kind": "Static"
+                  }
+                ],
+                "gateway": "10.0.99.1"
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "63ee107d-8b6e-49f3-9c08-6b9445de7e76",
+            "name": "port3",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "99c9f58e-972e-4ef4-a63a-6c18ac137ebb",
+            "name": "port4",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "3e3076fa-1876-4911-b038-57d40819b274",
+            "name": "port5",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "1ccc526c-cd2e-46a4-8089-c4aefc81fc95",
+            "name": "port6",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "65bcb3cd-32ab-4a9c-bec9-0144d59160e2",
+            "name": "port7",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "82dc8bb3-5f1c-4fb3-a033-308c585b2f38",
+            "name": "port8",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "ddac0a2b-2364-4069-baa7-b122f1b54199",
+            "name": "x1",
+            "media": "Sfp",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "a3ef5489-299d-4bef-9b32-dc689e27938a",
+            "name": "x2",
+            "media": "Sfp",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Branch firewall 8×1G, 2×SFP",
+        "notes": "",
+        "logical": [
+          {
+            "id": "044de584-5cae-4c36-8184-2a649347729f",
+            "name": "port2.99",
+            "kind": {
+              "SubInterface": {
+                "parent": "e23e0329-46a0-4900-880a-ffd79973d3a7",
+                "vlan": "bfa3ffc8-db09-4007-9fda-525489ee22cd"
+              }
+            },
+            "enabled": true,
+            "description": "",
+            "l3": {
+              "dhcp_client": false,
+              "addresses": [
+                {
+                  "net": "10.0.99.2/24",
+                  "kind": "Static"
+                }
+              ],
+              "gateway": null
+            },
+            "mtu": null
+          },
+          {
+            "id": "444d53e3-e385-46a2-8721-805a07880c63",
+            "name": "port2.10",
+            "kind": {
+              "SubInterface": {
+                "parent": "e23e0329-46a0-4900-880a-ffd79973d3a7",
+                "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+              }
+            },
+            "enabled": true,
+            "description": "",
+            "l3": {
+              "dhcp_client": false,
+              "addresses": [
+                {
+                  "net": "10.0.10.2/24",
+                  "kind": "Static"
+                }
+              ],
+              "gateway": null
+            },
+            "mtu": null
+          },
+          {
+            "id": "7080e737-272a-4bb2-ad62-3d9843e1682f",
+            "name": "port2.20",
+            "kind": {
+              "SubInterface": {
+                "parent": "e23e0329-46a0-4900-880a-ffd79973d3a7",
+                "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1"
+              }
+            },
+            "enabled": true,
+            "description": "",
+            "l3": {
+              "dhcp_client": false,
+              "addresses": [
+                {
+                  "net": "10.0.20.2/24",
+                  "kind": "Static"
+                }
+              ],
+              "gateway": null
+            },
+            "mtu": null
+          },
+          {
+            "id": "27747eb2-a6c7-4319-bfd8-5405abcda331",
+            "name": "port2.30",
+            "kind": {
+              "SubInterface": {
+                "parent": "e23e0329-46a0-4900-880a-ffd79973d3a7",
+                "vlan": "d05547ce-c403-4c94-997d-906c8b3f37db"
+              }
+            },
+            "enabled": true,
+            "description": "",
+            "l3": {
+              "dhcp_client": false,
+              "addresses": [
+                {
+                  "net": "10.0.30.2/24",
+                  "kind": "Static"
+                }
+              ],
+              "gateway": null
+            },
+            "mtu": null
+          }
+        ],
+        "dns": [],
+        "routing": {
+          "static_routes": [
+            {
+              "dest": "0.0.0.0/0",
+              "next_hop": "203.0.113.1",
+              "interface": "",
+              "distance": 1,
+              "description": "Default via ISP"
+            }
+          ],
+          "nat": [
+            {
+              "kind": "SourcePat",
+              "inside": "10.0.0.0/16",
+              "outside": "WAN",
+              "service": "any",
+              "description": "Internet access"
+            }
+          ],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "fw-branch",
+          "rack_units": 1,
+          "rack": {
+            "rack": "6e402545-928b-4d06-9250-3e1aff5ac161",
+            "u": 12
+          },
+          "poe_budget_w": null,
+          "power_w": 35.0,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+        "kind": "SwitchL2",
+        "name": "SW-01",
+        "pos": {
+          "x": 220.0,
+          "y": 170.0
+        },
+        "ports": [
+          {
+            "id": "d2ab0841-9d03-4711-8e42-e4b274368750",
+            "name": "ge1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "bfa3ffc8-db09-4007-9fda-525489ee22cd"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "a08b94a7-2bfa-4e79-9226-c7c77321458f",
+            "name": "ge2",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Trunk": {
+                  "native": "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+                  "allowed": {
+                    "List": [
+                      "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+                      "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42",
+                      "d05547ce-c403-4c94-997d-906c8b3f37db"
+                    ]
+                  }
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "e865c8a3-4560-42a8-aa93-7e37377fcb3e",
+            "name": "ge3",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Trunk": {
+                  "native": "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+                  "allowed": {
+                    "List": [
+                      "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+                      "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42",
+                      "d05547ce-c403-4c94-997d-906c8b3f37db"
+                    ]
+                  }
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "2a1801d4-ea23-44c8-93bc-dd0b053c2e25",
+            "name": "ge4",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "c5f66da9-b12d-4e40-abc2-4b08f3a85f6d",
+            "name": "ge5",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "f2b5d5c8-1305-492e-b704-1235d2ff3e5e",
+            "name": "ge6",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "fc33b898-fcab-4bf3-8725-0307aee9e6a3",
+            "name": "ge7",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "bc25689c-65a2-40f0-a72a-e5d6cc881974",
+            "name": "ge8",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "cbede30f-dd9d-4c9f-9fdf-64e5e72bfe11",
+            "name": "ge9",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "9f163ad1-bfa0-467b-84a9-5facdcf5f261",
+            "name": "ge10",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "f63fc50e-1bc7-43c9-b00b-60d859ecfc4c",
+            "name": "ge11",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "60f107db-5558-4756-b44a-7fdb8d1b6d92",
+            "name": "ge12",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "e472cc15-e528-4eb9-9f7a-f24416ac2120",
+            "name": "ge13",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "713937f1-6262-47cc-9240-6f396c90fd37",
+            "name": "ge14",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "cef90a37-387c-4471-9755-dc0d6221336d",
+            "name": "ge15",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "1c30b011-f3c9-4ec6-b2a1-03d5f731a231",
+            "name": "ge16",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "cb70d44e-4769-42b5-ada3-fb7f92d07dd0",
+            "name": "ge17",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Access": {
+                  "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42"
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "480c2fc5-c848-4d7e-9335-a3a1bde9f142",
+            "name": "ge18",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "ee213f95-5e3b-4e6f-840e-55653c244c92",
+            "name": "ge19",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "71583077-fc77-46a7-b9b5-2c3b0334b040",
+            "name": "ge20",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "99f32aa3-c9f3-4914-ba8f-764bf60e29c7",
+            "name": "ge21",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "2aac1949-a65d-4d3e-8d05-58b4aaf043bb",
+            "name": "ge22",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "a925cc70-a39e-492f-acbf-cf8862f08102",
+            "name": "ge23",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "e058ea08-545f-41f6-94ac-4da98a8837bb",
+            "name": "ge24",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Source": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": {
+                "Trunk": {
+                  "native": "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+                  "allowed": {
+                    "List": [
+                      "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+                      "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42",
+                      "8e32af54-215e-464f-a283-3ac80e5939a1",
+                      "d05547ce-c403-4c94-997d-906c8b3f37db"
+                    ]
+                  }
+                }
+              },
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "560b56cb-bfc1-4e88-8782-4a03c3afc90d",
+            "name": "xe1",
+            "media": "SfpPlus",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "bfed6700-ff91-4f1b-9e9a-ffaf0c409510",
+            "name": "xe2",
+            "media": "SfpPlus",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "6e7501bc-3ed7-4a7a-9ffc-f908e1d827a3",
+            "name": "xe3",
+            "media": "SfpPlus",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "3cb9c216-2b77-41ac-bf8a-c2a0fbcaee65",
+            "name": "xe4",
+            "media": "SfpPlus",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "24-port PoE+ access switch, 4×SFP+ (370 W)",
+        "notes": "",
+        "logical": [
+          {
+            "id": "9f89b034-820f-4a18-9efe-ce44d9b3626f",
+            "name": "Vlan99",
+            "kind": {
+              "Svi": {
+                "vlan": "bfa3ffc8-db09-4007-9fda-525489ee22cd"
+              }
+            },
+            "enabled": true,
+            "description": "",
+            "l3": {
+              "dhcp_client": false,
+              "addresses": [
+                {
+                  "net": "10.0.99.1/24",
+                  "kind": "Static"
+                }
+              ],
+              "gateway": null
+            },
+            "mtu": null
+          }
+        ],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "sw-access-24p-poe",
+          "rack_units": 1,
+          "rack": {
+            "rack": "6e402545-928b-4d06-9250-3e1aff5ac161",
+            "u": 11
+          },
+          "poe_budget_w": 370.0,
+          "power_w": 45.0,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Rstp"
+      },
+      {
+        "id": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+        "kind": "PatchPanel",
+        "name": "PP-01",
+        "pos": {
+          "x": 380.0,
+          "y": 170.0
+        },
+        "ports": [
+          {
+            "id": "d804aadd-adac-44fc-8dec-632f4d0fccf2",
+            "name": "1",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "744371a7-33c4-4204-a7d9-d9df5a0a7464",
+            "name": "2",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "36982d51-bc25-473d-bebd-fe732d23f4fd",
+            "name": "3",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "38d14b3b-b5f0-49fe-9843-be6d03873189",
+            "name": "4",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "c5274d6c-4e83-4619-9cf9-c47b29faf2c0",
+            "name": "5",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "6c5764e4-9ae8-4ac1-8459-1e7cce1dd208",
+            "name": "6",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "6fc06792-0d3c-42fd-8a19-e6403108af10",
+            "name": "7",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "8a7a475d-fe5a-4294-af8e-483ddda1f090",
+            "name": "8",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "1b05784f-c9e5-43f5-98ee-1050935d3f6e",
+            "name": "9",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "a7796320-1494-4c0b-87c1-0cbab21e0e07",
+            "name": "10",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "0907913e-48ed-4f7c-a3f6-cc25520692df",
+            "name": "11",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "c26fcf01-beb4-461d-8015-d2da916f80f2",
+            "name": "12",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "04e193b0-e00e-4c14-a732-59324f1c2517",
+            "name": "13",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "ab13fc5d-061c-4df8-8cf5-f76c3a1faffb",
+            "name": "14",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "ec13ded1-f4a7-48db-b4a1-de6d0f7f69d6",
+            "name": "15",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "43b8f1b3-a85f-4868-93af-f89a141ff202",
+            "name": "16",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "94cdc4a3-dcb4-43ee-a222-c70bec006cda",
+            "name": "17",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "cd3def44-6eb8-46c3-ae51-d3152e95a828",
+            "name": "18",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "bcfd2970-fdf6-4112-a9a5-50f2ad0a131f",
+            "name": "19",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "4006e460-1579-4ff2-8203-46b7b180632b",
+            "name": "20",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "72700b49-0310-4179-ac94-e81723790e74",
+            "name": "21",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "96036bce-a209-4369-8915-f4af46e2700d",
+            "name": "22",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "9d128f5b-e001-44cc-b7a3-4ec57e7e6b35",
+            "name": "23",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "a3e80deb-f24a-4ec5-b841-1e6823b5c846",
+            "name": "24",
+            "media": "Rj45",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "24-port Cat6A patch panel",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "pp-24-cat6a",
+          "rack_units": 1,
+          "rack": {
+            "rack": "6e402545-928b-4d06-9250-3e1aff5ac161",
+            "u": 10
+          },
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "8f73e3f6-4888-4da2-87e6-7d9a1a3c8944",
+        "kind": "Ups",
+        "name": "UPS-01",
+        "pos": {
+          "x": 60.0,
+          "y": 290.0
+        },
+        "ports": [
+          {
+            "id": "3956bd77-5c6b-47e4-8015-02d3ad4cf41b",
+            "name": "mgmt0",
+            "media": "Rj45",
+            "speed_mbps": 100,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [
+                  {
+                    "net": "10.0.99.4/24",
+                    "kind": "Static"
+                  }
+                ],
+                "gateway": "10.0.99.1"
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Line-interactive UPS 1500 VA / 1000 W",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "ups-1500",
+          "rack_units": 2,
+          "rack": {
+            "rack": "6e402545-928b-4d06-9250-3e1aff5ac161",
+            "u": 1
+          },
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": 1000.0
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "d3d20e71-fbb3-48e0-b9c7-cf713d58c6d5",
+        "kind": "AccessPoint",
+        "name": "AP-01",
+        "pos": {
+          "x": 620.0,
+          "y": 170.0
+        },
+        "ports": [
+          {
+            "id": "751bc003-bb5a-4bf0-8ec5-4ba25cda7e74",
+            "name": "eth0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [
+                  {
+                    "net": "10.0.99.5/24",
+                    "kind": "Static"
+                  }
+                ],
+                "gateway": "10.0.99.1"
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "2905aea9-b772-45ea-beda-24782e94d294",
+            "name": "radio0",
+            "media": "Wireless",
+            "speed_mbps": 1200,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": {
+                "standard": "Wifi6",
+                "band": "G5",
+                "channel": 36,
+                "width_mhz": 80,
+                "tx_power_dbm": null
+              },
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Wi-Fi 6 AP 2×2, 1G uplink (PoE+)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "ap-wifi6-2x2",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 14.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "95c99ab4-b3e0-48e0-923c-bdf7af956f80",
+        "kind": "AccessPoint",
+        "name": "AP-02",
+        "pos": {
+          "x": 800.0,
+          "y": 170.0
+        },
+        "ports": [
+          {
+            "id": "f1f77d46-aff3-408b-bf5b-608d8de46bdc",
+            "name": "eth0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "At"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [
+                  {
+                    "net": "10.0.99.6/24",
+                    "kind": "Static"
+                  }
+                ],
+                "gateway": "10.0.99.1"
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "2bcb2ed4-2165-46b1-b4f0-78eb312f8dad",
+            "name": "radio0",
+            "media": "Wireless",
+            "speed_mbps": 1200,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": {
+                "standard": "Wifi6",
+                "band": "G5",
+                "channel": 52,
+                "width_mhz": 80,
+                "tx_power_dbm": null
+              },
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Wi-Fi 6 AP 2×2, 1G uplink (PoE+)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "ap-wifi6-2x2",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 14.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "c973513d-c797-4db2-a7aa-59e064976d8a",
+        "kind": "Pc",
+        "name": "PC-01",
+        "pos": {
+          "x": 60.0,
+          "y": 460.0
+        },
+        "ports": [
+          {
+            "id": "ac34739b-e445-4123-a5dc-ddc98d8ab7e3",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "c6f172ce-bfe4-4abc-b6c5-dbc26b1ad7bb",
+        "kind": "IpPhone",
+        "name": "PH-01",
+        "pos": {
+          "x": 60.0,
+          "y": 580.0
+        },
+        "ports": [
+          {
+            "id": "f77f51cd-e8d8-40ca-bd14-c304bab0ddb1",
+            "name": "lan0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "Af"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "30629578-f271-4561-85fa-caafcd2e36bd",
+            "name": "pc0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Desk IP phone with PC passthrough (802.3af)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "phone-desk",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 5.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "01578d79-98e1-4861-a9d0-f05853ed0e44",
+        "kind": "Pc",
+        "name": "PC-02",
+        "pos": {
+          "x": 240.0,
+          "y": 460.0
+        },
+        "ports": [
+          {
+            "id": "507c0952-f0c8-4922-a877-ac73ac9625df",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "291d1524-650d-4d86-a75d-d03010d1ed90",
+        "kind": "IpPhone",
+        "name": "PH-02",
+        "pos": {
+          "x": 240.0,
+          "y": 580.0
+        },
+        "ports": [
+          {
+            "id": "ce583d1d-1e32-49e6-973f-60661d8562e0",
+            "name": "lan0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "Af"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "cf136c23-af3c-4d8d-9003-20bdc9eb84c5",
+            "name": "pc0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Desk IP phone with PC passthrough (802.3af)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "phone-desk",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 5.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "bd17478e-8be4-467b-8ebe-e143fddf9f04",
+        "kind": "Pc",
+        "name": "PC-03",
+        "pos": {
+          "x": 420.0,
+          "y": 460.0
+        },
+        "ports": [
+          {
+            "id": "91056f13-67e7-4cc4-9d3d-3e67ae2669f5",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "5cbca2ab-a3fc-483f-a693-0fbd4f8b1117",
+        "kind": "IpPhone",
+        "name": "PH-03",
+        "pos": {
+          "x": 420.0,
+          "y": 580.0
+        },
+        "ports": [
+          {
+            "id": "94617fe5-236e-499d-9474-b3daaad9bdf2",
+            "name": "lan0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "Af"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "58648d85-7481-49ad-b66b-ecd3f3e057f0",
+            "name": "pc0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Desk IP phone with PC passthrough (802.3af)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "phone-desk",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 5.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "38f46acf-3c29-4c35-847c-6a430b6720d8",
+        "kind": "Pc",
+        "name": "PC-04",
+        "pos": {
+          "x": 600.0,
+          "y": 460.0
+        },
+        "ports": [
+          {
+            "id": "2a1c1b14-1a42-4b56-bbbc-7557fd2d6d58",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "351c9ce8-6a70-4d9b-8710-7df2880cf8a8",
+        "kind": "IpPhone",
+        "name": "PH-04",
+        "pos": {
+          "x": 600.0,
+          "y": 580.0
+        },
+        "ports": [
+          {
+            "id": "d0f37cf3-0cb8-4b3b-8220-f319833305cd",
+            "name": "lan0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "Af"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "40b0d539-e506-4e71-9ced-acd23edef91e",
+            "name": "pc0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Desk IP phone with PC passthrough (802.3af)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "phone-desk",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 5.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "d763d926-8b64-48ad-bee2-738676f231ab",
+        "kind": "Pc",
+        "name": "PC-05",
+        "pos": {
+          "x": 780.0,
+          "y": 460.0
+        },
+        "ports": [
+          {
+            "id": "cd191a2e-c85b-4e33-a229-faa62c676e2e",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "ab35d334-3dbc-48d2-920f-2a69b432aa8b",
+        "kind": "IpPhone",
+        "name": "PH-05",
+        "pos": {
+          "x": 780.0,
+          "y": 580.0
+        },
+        "ports": [
+          {
+            "id": "4b4b3b0d-cfcb-467a-b0f5-26be23b78403",
+            "name": "lan0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "Af"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "b00db403-b22d-49e5-9cdd-ea8c4ceeb6f6",
+            "name": "pc0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Desk IP phone with PC passthrough (802.3af)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "phone-desk",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 5.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "af0d19e2-175d-4b02-8797-e1c1404fe963",
+        "kind": "Pc",
+        "name": "PC-06",
+        "pos": {
+          "x": 960.0,
+          "y": 460.0
+        },
+        "ports": [
+          {
+            "id": "b5111252-e96c-4fa2-bf8d-f50b3f85f766",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "f3b0f58e-c721-404a-97ad-b736401c5327",
+        "kind": "IpPhone",
+        "name": "PH-06",
+        "pos": {
+          "x": 960.0,
+          "y": 580.0
+        },
+        "ports": [
+          {
+            "id": "71ffb02b-ed38-42a1-a685-d62b669b8a95",
+            "name": "lan0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": {
+              "Powered": "Af"
+            },
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": true,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "d76b2269-0cbd-442c-b847-6e86e5d11493",
+            "name": "pc0",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "Desk IP phone with PC passthrough (802.3af)",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": "phone-desk",
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": 5.0,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "d5d3ec0b-4666-4f4f-a631-ad56d68015d0",
+        "kind": "Printer",
+        "name": "PRN-01",
+        "pos": {
+          "x": 1160.0,
+          "y": 460.0
+        },
+        "ports": [
+          {
+            "id": "3ef064f2-bdd2-412d-9dca-038c263b8669",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [
+                  {
+                    "net": "10.0.10.3/24",
+                    "kind": "Static"
+                  }
+                ],
+                "gateway": "10.0.10.1"
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 0,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      },
+      {
+        "id": "038c30b6-916a-4bcd-b1de-1abcc66f702f",
+        "kind": "Storage",
+        "name": "NAS-01",
+        "pos": {
+          "x": 1160.0,
+          "y": 580.0
+        },
+        "ports": [
+          {
+            "id": "e4fcf1e1-e5dc-4850-b694-7ad11222e981",
+            "name": "eth1",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [
+                  {
+                    "net": "10.0.10.4/24",
+                    "kind": "Static"
+                  }
+                ],
+                "gateway": "10.0.10.1"
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "4fa8e594-b787-4dbc-beec-046847bd38c9",
+            "name": "eth2",
+            "media": "Rj45",
+            "speed_mbps": 1000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "ace9b3dd-ef16-4bb7-b8e6-3007b1e7660a",
+            "name": "ens1",
+            "media": "SfpPlus",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          },
+          {
+            "id": "8eda3a1e-8f29-4667-aadf-19da7c3909f1",
+            "name": "ens2",
+            "media": "SfpPlus",
+            "speed_mbps": 10000,
+            "poe": "None",
+            "description": "",
+            "cfg": {
+              "enabled": true,
+              "mode": "Unset",
+              "l3": {
+                "dhcp_client": false,
+                "addresses": [],
+                "gateway": null
+              },
+              "mtu": null,
+              "duplex": "Auto",
+              "mac": "",
+              "radio": null,
+              "lag": null
+            },
+            "transceiver": null
+          }
+        ],
+        "vendor": "",
+        "model": "",
+        "notes": "",
+        "logical": [],
+        "dns": [],
+        "routing": {
+          "static_routes": [],
+          "nat": [],
+          "dynamic": ""
+        },
+        "hw": {
+          "model": null,
+          "rack_units": 2,
+          "rack": null,
+          "poe_budget_w": null,
+          "power_w": null,
+          "pd_draw_w": null,
+          "capacity_w": null
+        },
+        "stp": "Unset"
+      }
+    ],
+    "links": [
+      {
+        "id": "ff5f1757-8491-44d5-af26-bd4522d7a7c2",
+        "a": {
+          "device": "bba807c7-85d2-46d4-b7e7-d6c3f894543c",
+          "port": "b740aa66-d47e-480c-b146-d57b4b76743e"
+        },
+        "b": {
+          "device": "7708766f-f8a8-4e83-a703-c3260edc2895",
+          "port": "1c756185-52a0-4aab-b75e-9d75baaec4e3"
+        },
+        "cable": "Virtual",
+        "length_m": null,
+        "label": "C-001"
+      },
+      {
+        "id": "195d9a95-b873-4ea0-ae24-ba148ed17b06",
+        "a": {
+          "device": "7708766f-f8a8-4e83-a703-c3260edc2895",
+          "port": "e23e0329-46a0-4900-880a-ffd79973d3a7"
+        },
+        "b": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "e058ea08-545f-41f6-94ac-4da98a8837bb"
+        },
+        "cable": "Cat6A",
+        "length_m": 1.0,
+        "label": "C-002"
+      },
+      {
+        "id": "a1ceb568-0d16-42e2-959f-712d72847c79",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "d2ab0841-9d03-4711-8e42-e4b274368750"
+        },
+        "b": {
+          "device": "8f73e3f6-4888-4da2-87e6-7d9a1a3c8944",
+          "port": "3956bd77-5c6b-47e4-8015-02d3ad4cf41b"
+        },
+        "cable": "Cat6",
+        "length_m": 1.0,
+        "label": "C-003"
+      },
+      {
+        "id": "b3104f05-abc7-495f-b84f-d8d049e819cd",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "a08b94a7-2bfa-4e79-9226-c7c77321458f"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "d804aadd-adac-44fc-8dec-632f4d0fccf2"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-004.1"
+      },
+      {
+        "id": "15480d11-8874-4c1f-9c8a-3f61e27726c5",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "d804aadd-adac-44fc-8dec-632f4d0fccf2"
+        },
+        "b": {
+          "device": "d3d20e71-fbb3-48e0-b9c7-cf713d58c6d5",
+          "port": "751bc003-bb5a-4bf0-8ec5-4ba25cda7e74"
+        },
+        "cable": "Cat6A",
+        "length_m": 20.0,
+        "label": "C-004.2"
+      },
+      {
+        "id": "56540c37-5519-47ab-86c0-1243616ab4be",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "e865c8a3-4560-42a8-aa93-7e37377fcb3e"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "744371a7-33c4-4204-a7d9-d9df5a0a7464"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-005.1"
+      },
+      {
+        "id": "ec5aa55d-c8c0-477c-b0cd-c57517ec4fdb",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "744371a7-33c4-4204-a7d9-d9df5a0a7464"
+        },
+        "b": {
+          "device": "95c99ab4-b3e0-48e0-923c-bdf7af956f80",
+          "port": "f1f77d46-aff3-408b-bf5b-608d8de46bdc"
+        },
+        "cable": "Cat6A",
+        "length_m": 28.0,
+        "label": "C-005.2"
+      },
+      {
+        "id": "71147380-daf6-491f-a9be-99f90baf9e0d",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "2a1801d4-ea23-44c8-93bc-dd0b053c2e25"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "36982d51-bc25-473d-bebd-fe732d23f4fd"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-006.1"
+      },
+      {
+        "id": "7b4a94a5-0536-42f5-bef6-a6b9553e4c8a",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "36982d51-bc25-473d-bebd-fe732d23f4fd"
+        },
+        "b": {
+          "device": "c973513d-c797-4db2-a7aa-59e064976d8a",
+          "port": "ac34739b-e445-4123-a5dc-ddc98d8ab7e3"
+        },
+        "cable": "Cat6A",
+        "length_m": 15.0,
+        "label": "C-006.2"
+      },
+      {
+        "id": "508b5d59-8ede-4d76-ba4e-c408937ccdb5",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "c5f66da9-b12d-4e40-abc2-4b08f3a85f6d"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "38d14b3b-b5f0-49fe-9843-be6d03873189"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-007.1"
+      },
+      {
+        "id": "859e684a-52db-4cbd-9686-650d60625004",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "38d14b3b-b5f0-49fe-9843-be6d03873189"
+        },
+        "b": {
+          "device": "c6f172ce-bfe4-4abc-b6c5-dbc26b1ad7bb",
+          "port": "f77f51cd-e8d8-40ca-bd14-c304bab0ddb1"
+        },
+        "cable": "Cat6A",
+        "length_m": 15.0,
+        "label": "C-007.2"
+      },
+      {
+        "id": "91c5c1e3-9698-4035-81c7-3f5a55e69053",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "f2b5d5c8-1305-492e-b704-1235d2ff3e5e"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "c5274d6c-4e83-4619-9cf9-c47b29faf2c0"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-008.1"
+      },
+      {
+        "id": "2be46b3b-136b-4a7b-b533-291603cca478",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "c5274d6c-4e83-4619-9cf9-c47b29faf2c0"
+        },
+        "b": {
+          "device": "01578d79-98e1-4861-a9d0-f05853ed0e44",
+          "port": "507c0952-f0c8-4922-a877-ac73ac9625df"
+        },
+        "cable": "Cat6A",
+        "length_m": 19.0,
+        "label": "C-008.2"
+      },
+      {
+        "id": "550e30c9-6344-43cf-8656-fdbcc14e1d6f",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "fc33b898-fcab-4bf3-8725-0307aee9e6a3"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "6c5764e4-9ae8-4ac1-8459-1e7cce1dd208"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-009.1"
+      },
+      {
+        "id": "1d92bd7e-f4c9-430a-a37c-b09c01e45fdd",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "6c5764e4-9ae8-4ac1-8459-1e7cce1dd208"
+        },
+        "b": {
+          "device": "291d1524-650d-4d86-a75d-d03010d1ed90",
+          "port": "ce583d1d-1e32-49e6-973f-60661d8562e0"
+        },
+        "cable": "Cat6A",
+        "length_m": 19.0,
+        "label": "C-009.2"
+      },
+      {
+        "id": "d3ba5b61-993f-4164-b1f5-68fc9b68ef0b",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "bc25689c-65a2-40f0-a72a-e5d6cc881974"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "6fc06792-0d3c-42fd-8a19-e6403108af10"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-010.1"
+      },
+      {
+        "id": "3c481201-7cde-40ab-a3c5-f465f82f0f61",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "6fc06792-0d3c-42fd-8a19-e6403108af10"
+        },
+        "b": {
+          "device": "bd17478e-8be4-467b-8ebe-e143fddf9f04",
+          "port": "91056f13-67e7-4cc4-9d3d-3e67ae2669f5"
+        },
+        "cable": "Cat6A",
+        "length_m": 23.0,
+        "label": "C-010.2"
+      },
+      {
+        "id": "8be16c69-5299-44f2-a9e7-9c7bd632b8e3",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "cbede30f-dd9d-4c9f-9fdf-64e5e72bfe11"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "8a7a475d-fe5a-4294-af8e-483ddda1f090"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-011.1"
+      },
+      {
+        "id": "75e11a27-989e-46e2-b73c-76386ef5987f",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "8a7a475d-fe5a-4294-af8e-483ddda1f090"
+        },
+        "b": {
+          "device": "5cbca2ab-a3fc-483f-a693-0fbd4f8b1117",
+          "port": "94617fe5-236e-499d-9474-b3daaad9bdf2"
+        },
+        "cable": "Cat6A",
+        "length_m": 23.0,
+        "label": "C-011.2"
+      },
+      {
+        "id": "7febc7cc-0ba1-4e58-8437-2328fb11482e",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "9f163ad1-bfa0-467b-84a9-5facdcf5f261"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "1b05784f-c9e5-43f5-98ee-1050935d3f6e"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-012.1"
+      },
+      {
+        "id": "65a51451-ed70-40e0-bc76-0275ed1f7a82",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "1b05784f-c9e5-43f5-98ee-1050935d3f6e"
+        },
+        "b": {
+          "device": "38f46acf-3c29-4c35-847c-6a430b6720d8",
+          "port": "2a1c1b14-1a42-4b56-bbbc-7557fd2d6d58"
+        },
+        "cable": "Cat6A",
+        "length_m": 27.0,
+        "label": "C-012.2"
+      },
+      {
+        "id": "edee1bdf-c764-45f1-9fa7-015d32ed6052",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "f63fc50e-1bc7-43c9-b00b-60d859ecfc4c"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "a7796320-1494-4c0b-87c1-0cbab21e0e07"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-013.1"
+      },
+      {
+        "id": "7743364a-a1cd-4de7-83e9-477bca49821d",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "a7796320-1494-4c0b-87c1-0cbab21e0e07"
+        },
+        "b": {
+          "device": "351c9ce8-6a70-4d9b-8710-7df2880cf8a8",
+          "port": "d0f37cf3-0cb8-4b3b-8220-f319833305cd"
+        },
+        "cable": "Cat6A",
+        "length_m": 27.0,
+        "label": "C-013.2"
+      },
+      {
+        "id": "36f40379-af65-4b11-b3ca-5b0698ab1485",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "60f107db-5558-4756-b44a-7fdb8d1b6d92"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "0907913e-48ed-4f7c-a3f6-cc25520692df"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-014.1"
+      },
+      {
+        "id": "f6187964-1826-43b2-84cf-84be9f83cf13",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "0907913e-48ed-4f7c-a3f6-cc25520692df"
+        },
+        "b": {
+          "device": "d763d926-8b64-48ad-bee2-738676f231ab",
+          "port": "cd191a2e-c85b-4e33-a229-faa62c676e2e"
+        },
+        "cable": "Cat6A",
+        "length_m": 31.0,
+        "label": "C-014.2"
+      },
+      {
+        "id": "880dd166-1fb4-44b7-afc1-88161e58da26",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "e472cc15-e528-4eb9-9f7a-f24416ac2120"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "c26fcf01-beb4-461d-8015-d2da916f80f2"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-015.1"
+      },
+      {
+        "id": "172afa7f-6cda-4dd5-add5-7edd207ef02f",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "c26fcf01-beb4-461d-8015-d2da916f80f2"
+        },
+        "b": {
+          "device": "ab35d334-3dbc-48d2-920f-2a69b432aa8b",
+          "port": "4b4b3b0d-cfcb-467a-b0f5-26be23b78403"
+        },
+        "cable": "Cat6A",
+        "length_m": 31.0,
+        "label": "C-015.2"
+      },
+      {
+        "id": "75e87d48-e2a6-4eb4-bba5-019edb93811c",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "713937f1-6262-47cc-9240-6f396c90fd37"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "04e193b0-e00e-4c14-a732-59324f1c2517"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-016.1"
+      },
+      {
+        "id": "08321bf8-fbd6-4073-a001-1acf7acc074c",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "04e193b0-e00e-4c14-a732-59324f1c2517"
+        },
+        "b": {
+          "device": "af0d19e2-175d-4b02-8797-e1c1404fe963",
+          "port": "b5111252-e96c-4fa2-bf8d-f50b3f85f766"
+        },
+        "cable": "Cat6A",
+        "length_m": 35.0,
+        "label": "C-016.2"
+      },
+      {
+        "id": "7e2e93d1-9336-4a72-afdf-416fae5802e5",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "cef90a37-387c-4471-9755-dc0d6221336d"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "ab13fc5d-061c-4df8-8cf5-f76c3a1faffb"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-017.1"
+      },
+      {
+        "id": "e8c3c7e2-9b4a-4d73-96f6-f45250848f3c",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "ab13fc5d-061c-4df8-8cf5-f76c3a1faffb"
+        },
+        "b": {
+          "device": "f3b0f58e-c721-404a-97ad-b736401c5327",
+          "port": "71ffb02b-ed38-42a1-a685-d62b669b8a95"
+        },
+        "cable": "Cat6A",
+        "length_m": 35.0,
+        "label": "C-017.2"
+      },
+      {
+        "id": "79601c6d-606a-4e1c-9f18-62829d71ea07",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "1c30b011-f3c9-4ec6-b2a1-03d5f731a231"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "ec13ded1-f4a7-48db-b4a1-de6d0f7f69d6"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-018.1"
+      },
+      {
+        "id": "0fe19a21-a866-4ebf-a4b1-24fbcc4edd91",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "ec13ded1-f4a7-48db-b4a1-de6d0f7f69d6"
+        },
+        "b": {
+          "device": "d5d3ec0b-4666-4f4f-a631-ad56d68015d0",
+          "port": "3ef064f2-bdd2-412d-9dca-038c263b8669"
+        },
+        "cable": "Cat6A",
+        "length_m": 12.0,
+        "label": "C-018.2"
+      },
+      {
+        "id": "75425b1a-f366-46df-98a8-9ae86bd8c203",
+        "a": {
+          "device": "878bd636-d1ec-468f-a30a-e8cd03c84547",
+          "port": "cb70d44e-4769-42b5-ada3-fb7f92d07dd0"
+        },
+        "b": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "43b8f1b3-a85f-4868-93af-f89a141ff202"
+        },
+        "cable": "Cat6",
+        "length_m": 0.5,
+        "label": "C-019.1"
+      },
+      {
+        "id": "ae368a9f-4e91-4354-9bd8-2c7a1b156612",
+        "a": {
+          "device": "62a579a1-ad53-4bc2-a519-902b74eda2f7",
+          "port": "43b8f1b3-a85f-4868-93af-f89a141ff202"
+        },
+        "b": {
+          "device": "038c30b6-916a-4bcd-b1de-1abcc66f702f",
+          "port": "e4fcf1e1-e5dc-4850-b694-7ad11222e981"
+        },
+        "cable": "Cat6A",
+        "length_m": 3.0,
+        "label": "C-019.2"
+      }
+    ],
+    "areas": [
+      {
+        "id": "52ef4a60-a15c-4c5b-85fa-521143eebda3",
+        "kind": "Site",
+        "name": "Office",
+        "rect": {
+          "min": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "size": {
+            "x": 1500.0,
+            "y": 760.0
+          }
+        },
+        "color": [
+          59,
+          130,
+          246
+        ],
+        "notes": "",
+        "rack_units": 42
+      },
+      {
+        "id": "6e402545-928b-4d06-9250-3e1aff5ac161",
+        "kind": "Rack",
+        "name": "Comms cabinet",
+        "rect": {
+          "min": {
+            "x": 20.0,
+            "y": 120.0
+          },
+          "size": {
+            "x": 520.0,
+            "y": 260.0
+          }
+        },
+        "color": [
+          100,
+          116,
+          139
+        ],
+        "notes": "",
+        "rack_units": 12
+      }
+    ],
+    "vlans": [
+      {
+        "id": "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+        "tag": 99,
+        "name": "Management",
+        "purpose": "Switch, APs, UPS",
+        "color": [
+          249,
+          115,
+          22
+        ],
+        "notes": ""
+      },
+      {
+        "id": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42",
+        "tag": 10,
+        "name": "Staff",
+        "purpose": "Desktops, printer, NAS",
+        "color": [
+          16,
+          185,
+          129
+        ],
+        "notes": ""
+      },
+      {
+        "id": "8e32af54-215e-464f-a283-3ac80e5939a1",
+        "tag": 20,
+        "name": "Voice",
+        "purpose": "IP phones",
+        "color": [
+          245,
+          158,
+          11
+        ],
+        "notes": ""
+      },
+      {
+        "id": "d05547ce-c403-4c94-997d-906c8b3f37db",
+        "tag": 30,
+        "name": "Guest",
+        "purpose": "Visitor Wi-Fi, internet only",
+        "color": [
+          239,
+          68,
+          68
+        ],
+        "notes": ""
+      }
+    ],
+    "subnets": [
+      {
+        "id": "e9dcbbab-3f94-41fd-b7f3-4137bb9253d6",
+        "name": "Management",
+        "net": "10.0.99.0/24",
+        "vlan": "bfa3ffc8-db09-4007-9fda-525489ee22cd",
+        "gateway": "10.0.99.1",
+        "dhcp": null,
+        "reserved": [],
+        "notes": ""
+      },
+      {
+        "id": "0196b698-4ce3-4583-ac7b-c62a211899cb",
+        "name": "Staff",
+        "net": "10.0.10.0/24",
+        "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42",
+        "gateway": "10.0.10.1",
+        "dhcp": {
+          "start": "10.0.10.128",
+          "end": "10.0.10.254",
+          "lease_hours": 24,
+          "dns": [],
+          "server": null
+        },
+        "reserved": [],
+        "notes": ""
+      },
+      {
+        "id": "c7bc97eb-a3a5-4ed2-a18c-c2e857616c91",
+        "name": "Voice",
+        "net": "10.0.20.0/24",
+        "vlan": "8e32af54-215e-464f-a283-3ac80e5939a1",
+        "gateway": "10.0.20.1",
+        "dhcp": {
+          "start": "10.0.20.128",
+          "end": "10.0.20.254",
+          "lease_hours": 24,
+          "dns": [],
+          "server": null
+        },
+        "reserved": [],
+        "notes": ""
+      },
+      {
+        "id": "7597f8b1-d4c9-457a-bcba-eba0a1688fef",
+        "name": "Guest",
+        "net": "10.0.30.0/24",
+        "vlan": "d05547ce-c403-4c94-997d-906c8b3f37db",
+        "gateway": "10.0.30.1",
+        "dhcp": {
+          "start": "10.0.30.128",
+          "end": "10.0.30.254",
+          "lease_hours": 24,
+          "dns": [],
+          "server": null
+        },
+        "reserved": [],
+        "notes": ""
+      },
+      {
+        "id": "34941170-4f7c-496a-a907-7a0b9591d4bc",
+        "name": "ISP handoff",
+        "net": "203.0.113.0/29",
+        "vlan": null,
+        "gateway": null,
+        "dhcp": null,
+        "reserved": [],
+        "notes": ""
+      }
+    ],
+    "ssids": [
+      {
+        "id": "57972da4-1b82-4ee0-8d1b-bb0a27280490",
+        "name": "Office",
+        "vlan": "cdfa82f3-26c4-4daf-ba27-2d5b028d6e42",
+        "security": "Wpa2Wpa3Transition",
+        "bands": [
+          "G2_4",
+          "G5"
+        ],
+        "hidden": false,
+        "notes": ""
+      },
+      {
+        "id": "30132ace-0da7-4ce8-9acd-66d19f010738",
+        "name": "Office-Guest",
+        "vlan": "d05547ce-c403-4c94-997d-906c8b3f37db",
+        "security": "Owe",
+        "bands": [
+          "G2_4",
+          "G5"
+        ],
+        "hidden": false,
+        "notes": ""
+      }
+    ],
+    "services": {
+      "domain": "",
+      "dns_servers": [],
+      "ntp_servers": [],
+      "syslog": "",
+      "notes": ""
+    }
+  }
+}

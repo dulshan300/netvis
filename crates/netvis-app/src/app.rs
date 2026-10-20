@@ -29,6 +29,7 @@ pub enum Tab {
     Tools,
     Patching,
     PortMap,
+    Guide,
 }
 
 impl Tab {
@@ -45,6 +46,7 @@ impl Tab {
             Tab::Tools => (icons::WRENCH, "IT Tools"),
             Tab::Patching => (icons::PLUGS_CONNECTED, "Patch schedule"),
             Tab::PortMap => (icons::DOTS_NINE, "Port map"),
+            Tab::Guide => (icons::BOOK_OPEN, "User guide"),
         };
         format!("{icon}  {name}")
     }
@@ -65,6 +67,7 @@ enum Pending {
     New,
     Open,
     OpenPath(PathBuf),
+    Template(usize),
     Quit,
 }
 
@@ -153,6 +156,16 @@ impl NetVisApp {
         if let Some(t) = std::env::var("NETVIS_TOOL").ok().and_then(|k| panels::tools::Tool::from_key(&k)) {
             self.st.tools.tool = t;
         }
+        if let Some(i) = std::env::var("NETVIS_TEMPLATE").ok().and_then(|k| crate::templates::ALL.iter().position(|t| t.key == k)) {
+            self.run_pending(Pending::Template(i));
+        }
+        if std::env::var_os("NETVIS_TEMPLATES").is_some() {
+            self.st.templates_open = true;
+        }
+        if let Ok(page) = std::env::var("NETVIS_GUIDE") {
+            self.st.guide.open(&page);
+            self.show_guide();
+        }
         if std::env::var_os("NETVIS_LAYOUT").is_some() {
             self.st.auto_layout(false);
         }
@@ -194,6 +207,19 @@ impl NetVisApp {
                 self.st.replace_document(Document::new(Project::default(), None));
                 self.remove_autosave();
                 self.st.set_status("New project");
+            }
+            Pending::Template(i) => {
+                let t = &crate::templates::ALL[i];
+                match crate::templates::load(t) {
+                    Ok(project) => {
+                        self.st.replace_document(Document::new(project, None));
+                        self.remove_autosave();
+                        self.st.canvas.request_fit();
+                        self.show_tab(Tab::Canvas);
+                        self.st.set_status(format!("New project from the “{}” template — Save As to keep it", t.title));
+                    }
+                    Err(e) => self.dialog = Some(Dialog::Error(format!("Could not load the template:\n{e}"))),
+                }
             }
             Pending::Open => self.request_path(PathPurpose::Open, None),
             Pending::OpenPath(path) => self.open_path(&path),
@@ -323,8 +349,25 @@ impl NetVisApp {
             Action::About => self.dialog = Some(Dialog::About),
             Action::ResetLayout => self.dock = default_layout(),
             Action::ShowTools => self.show_tab(Tab::Tools),
+            Action::ShowGuide(page) => {
+                if let Some(p) = page {
+                    self.st.guide.open(p);
+                }
+                self.show_guide();
+            }
+            Action::NewFromTemplate(i) => self.guard_unsaved(Pending::Template(i)),
             Action::ShowCanvas => self.show_tab(Tab::Canvas),
         }
+    }
+
+    /// The guide opens next to the topology, not in whichever panel has focus.
+    fn show_guide(&mut self) {
+        if self.dock.find_tab(&Tab::Guide).is_none()
+            && let Some(canvas) = self.dock.find_tab(&Tab::Canvas)
+        {
+            self.dock.set_focused_node_and_surface(canvas.node_path());
+        }
+        self.show_tab(Tab::Guide);
     }
 
     fn show_tab(&mut self, tab: Tab) {
@@ -339,7 +382,7 @@ impl NetVisApp {
     // ---- input ---------------------------------------------------------
 
     fn shortcuts(&mut self, ctx: &egui::Context) {
-        if self.dialog.is_some() || self.st.vlsm.is_some() || self.st.export.is_some() {
+        if self.dialog.is_some() || self.st.vlsm.is_some() || self.st.export.is_some() || self.st.templates_open || self.st.copy_dialog.is_some() {
             return;
         }
         let typing = ctx.egui_wants_keyboard_input();
@@ -348,7 +391,12 @@ impl NetVisApp {
         let sc = |m, k| KeyboardShortcut::new(m, k);
         let fire = |s: KeyboardShortcut| ctx.input_mut(|i| i.consume_shortcut(&s));
 
-        if fire(sc(cmd, Key::N)) {
+        if fire(sc(Modifiers::NONE, Key::F1)) {
+            self.st.actions.push(Action::ShowGuide(None));
+        }
+        if fire(sc(cmd_shift, Key::N)) {
+            self.st.templates_open = true;
+        } else if fire(sc(cmd, Key::N)) {
             self.st.actions.push(Action::New);
         }
         if fire(sc(cmd, Key::O)) {
@@ -388,7 +436,11 @@ impl NetVisApp {
         if fire(sc(cmd, Key::A)) {
             self.st.select_all();
         }
-        if fire(sc(cmd, Key::D)) {
+        if fire(sc(cmd_shift, Key::D)) {
+            if !self.st.sel.devices.is_empty() || !self.st.sel.areas.is_empty() {
+                self.st.copy_dialog = Some(panels::copy::CopyDialog::new(&self.st));
+            }
+        } else if fire(sc(cmd, Key::D)) {
             self.st.duplicate_selection();
         }
         if fire(sc(Modifiers::NONE, Key::Delete)) || fire(sc(Modifiers::NONE, Key::Backspace)) {
@@ -417,6 +469,9 @@ impl NetVisApp {
             ui.menu_button("File", |ui| {
                 if ui.button(format!("{}  New            Ctrl+N", icons::FILE_PLUS)).clicked() {
                     st.actions.push(Action::New);
+                }
+                if ui.add(egui::Button::new(format!("{}  New from template…", icons::SQUARES_FOUR)).shortcut_text("Ctrl+Shift+N")).clicked() {
+                    st.templates_open = true;
                 }
                 if ui.button(format!("{}  Open…          Ctrl+O", icons::FOLDER_OPEN)).clicked() {
                     st.actions.push(Action::Open);
@@ -479,6 +534,14 @@ impl NetVisApp {
                 let has_dev = !st.sel.devices.is_empty();
                 if ui.add_enabled(has_dev, egui::Button::new(format!("{}  Duplicate", icons::COPY)).shortcut_text("Ctrl+D")).clicked() {
                     st.duplicate_selection();
+                }
+                let can_copy = has_dev || !st.sel.areas.is_empty();
+                if ui
+                    .add_enabled(can_copy, egui::Button::new(format!("{}  Duplicate with rename…", icons::COPY)).shortcut_text("Ctrl+Shift+D"))
+                    .on_hover_text("Copy a floor or rack with everything in it, replacing text in the names (L1 → L2)")
+                    .clicked()
+                {
+                    st.copy_dialog = Some(panels::copy::CopyDialog::new(st));
                 }
                 if ui.add_enabled(!st.sel.is_empty(), egui::Button::new(format!("{}  Delete", icons::TRASH)).shortcut_text("Del")).clicked() {
                     st.delete_selection();
@@ -545,9 +608,16 @@ impl NetVisApp {
                 }
             });
             ui.menu_button("Help", |ui| {
-                if ui.button(format!("{}  Keyboard & mouse", icons::KEYBOARD)).clicked() {
-                    st.actions.push(Action::About);
+                if ui.add(egui::Button::new(format!("{}  User guide", icons::BOOK_OPEN)).shortcut_text("F1")).clicked() {
+                    st.actions.push(Action::ShowGuide(None));
                 }
+                if ui.button(format!("{}  Tutorial: shopping mall", icons::GRADUATION_CAP)).clicked() {
+                    st.actions.push(Action::ShowGuide(Some("tutorial-shopping-mall")));
+                }
+                if ui.button(format!("{}  Keyboard & mouse", icons::KEYBOARD)).clicked() {
+                    st.actions.push(Action::ShowGuide(Some("shortcuts")));
+                }
+                ui.separator();
                 if ui.button(format!("{}  About {APP_NAME}", icons::INFO)).clicked() {
                     st.actions.push(Action::About);
                 }
@@ -819,6 +889,10 @@ impl egui_dock::TabViewer for Tabs<'_> {
             canvas::show(ui, self.st);
             return;
         }
+        if *tab == Tab::Guide {
+            egui::Frame::new().inner_margin(8.0).show(ui, |ui| panels::guide::show(ui, self.st));
+            return;
+        }
         if *tab == Tab::Tools {
             // Has its own side navigation and scroll area.
             egui::Frame::new().inner_margin(8.0).show(ui, |ui| panels::tools(ui, self.st));
@@ -834,13 +908,13 @@ impl egui_dock::TabViewer for Tabs<'_> {
             Tab::Vlans => panels::vlans(ui, self.st),
             Tab::Patching => panels::patch_schedule(ui, self.st),
             Tab::PortMap => panels::port_map(ui, self.st),
-            Tab::Tools => {}
+            Tab::Tools | Tab::Guide => {}
             Tab::Canvas => unreachable!(),
         });
     }
 
-    fn is_closeable(&self, _tab: &Tab) -> bool {
-        false
+    fn is_closeable(&self, tab: &Tab) -> bool {
+        *tab == Tab::Guide
     }
 
     fn scroll_bars(&self, _tab: &Tab) -> [bool; 2] {
@@ -884,6 +958,8 @@ impl eframe::App for NetVisApp {
 
         panels::vlsm::show(&ctx, &mut self.st);
         panels::export::show(&ctx, &mut self.st);
+        crate::templates::show(&ctx, &mut self.st);
+        panels::copy::show(&ctx, &mut self.st);
         self.dialogs(&ctx);
 
         for a in std::mem::take(&mut self.st.actions) {
